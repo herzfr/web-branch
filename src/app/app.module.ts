@@ -8,13 +8,15 @@ import { NgbModule, NgbPaginationModule, NgbAlertModule } from '@ng-bootstrap/ng
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { Page404Component } from './page404/page404.component';
+import { FragmentComponent } from './fragment/fragment.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
-    Page404Component
+    Page404Component,
+    FragmentComponent
   ],
   imports: [
     BrowserModule,
