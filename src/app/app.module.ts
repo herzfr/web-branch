@@ -6,6 +6,7 @@ import { CryptoService } from './services/crypto.service';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthenticateService } from './services/authenticate.service';
 import { AuthGuard } from './services/auth.guard';
+import { NotifierSetting } from './config/notifier-setting';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -16,47 +17,12 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { Page404Component } from './page404/page404.component';
 import { FragmentComponent } from './fragment/fragment.component';
+import { NavigationComponent } from './navigation/navigation.component';
+import { ContentComponent } from './content/content.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { NgxBootstrapModule } from './ngx-bootstrap.module';
 
-const customNotifierOptions: NotifierOptions = {
-  position: {
-    horizontal: {
-      position: 'left',
-      distance: 12
-    },
-    vertical: {
-      position: 'bottom',
-      distance: 12,
-      gap: 10
-    }
-  },
-  theme: 'material',
-  behaviour: {
-    autoHide: 10000,
-    onClick: 'hide',
-    onMouseover: 'pauseAutoHide',
-    showDismissButton: true,
-    stacking: 4
-  },
-  animations: {
-    enabled: true,
-    show: {
-      preset: 'slide',
-      speed: 300,
-      easing: 'ease'
-    },
-    hide: {
-      preset: 'fade',
-      speed: 300,
-      easing: 'ease',
-      offset: 50
-    },
-    shift: {
-      speed: 300,
-      easing: 'ease'
-    },
-    overlap: 150
-  }
-};
+
 
 
 @NgModule({
@@ -65,7 +31,10 @@ const customNotifierOptions: NotifierOptions = {
     LoginComponent,
     HomeComponent,
     Page404Component,
-    FragmentComponent
+    FragmentComponent,
+    NavigationComponent,
+    DashboardComponent,
+    ContentComponent
   ],
   imports: [
     BrowserModule,
@@ -77,7 +46,8 @@ const customNotifierOptions: NotifierOptions = {
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    NotifierModule.withConfig(customNotifierOptions),
+    NotifierModule.withConfig(NotifierSetting),
+    NgxBootstrapModule
   ],
   providers: [CryptoService, AuthenticateService, AuthGuard],
   bootstrap: [AppComponent]

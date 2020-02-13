@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'app-fragment',
-    template: `
-  <router-outlet></router-outlet>
+  selector: 'app-fragment',
+  template: `
+  <app-navigation></app-navigation>
+  <hom></hom>
   `,
-    styles: []
+  styles: []
 })
 export class FragmentComponent {
 

@@ -6,6 +6,8 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { Page404Component } from './page404/page404.component';
 import { AuthGuard } from './services/auth.guard';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { FragmentComponent } from './fragment/fragment.component';
 
 
 const routes: Routes = [
@@ -16,11 +18,11 @@ const routes: Routes = [
   },
   { path: 'login', component: LoginComponent },
   {
-    path: 'home', component: HomeComponent,
+    path: 'dashboard', component: DashboardComponent,
     canActivate: [AuthGuard]
   },
   {
-    path: '404notfound', component: HomeComponent,
+    path: '404notfound', component: Page404Component,
     // canActivate: [AuthGuard]
   },
 ];

@@ -29,10 +29,10 @@ export class LoginComponent implements OnInit {
     this.auth.authenticate(this.loginForm.value.username, this.loginForm.value.password).subscribe(data => {
       console.log(data.status);
 
-      if(data.status === 500){
+      if (data.status === 500) {
 
-      }else{
-        this.router.navigate(['home']);
+      } else {
+        this.router.navigate(['dashboard']);
         this.ls.set('user', data);
       }
       // if(data.sta){}
