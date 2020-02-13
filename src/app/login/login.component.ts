@@ -26,20 +26,24 @@ export class LoginComponent implements OnInit {
 
 
   onSubmit() {
-    console.log(this.loginForm.value);
-    this.auth.asAuth(this.loginForm.value.username, this.loginForm.value.password).subscribe(data => {
-      console.log(data);
-      if (data) {
-        this.router.navigate(['home'])
-        this.ls.set('user', data)
-      } else {
-        alert('tidak ada')
-      }
+    this.auth.authenticate(this.loginForm.value.username, this.loginForm.value.password).subscribe(data => {
+      console.log(data.status);
 
-    },
-      err => {
-        console.log(err);
-      })
+      if(data.status === 500){
+
+      }else{
+        this.router.navigate(['home']);
+        this.ls.set('user', data);
+      }
+      // if(data.sta){}
+      // if (data) {
+      //   this.router.navigate(['home'])
+      //   this.ls.set('user', data)
+      // } else {
+      //   alert('tidak ada')
+      // }
+
+    })
   }
 
 }

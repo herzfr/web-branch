@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpHeaders, HttpParams, HttpClient, HttpBackend } from '@angular/common/http';
-import { catchError, timeout, map } from 'rxjs/operators';
+import { HttpHeaders, HttpClient, HttpBackend } from '@angular/common/http';
+import { catchError, timeout, } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as securels from 'secure-ls';
 import { NotifierService } from 'angular-notifier';
@@ -34,8 +34,6 @@ export class AuthenticateService {
       timeout(this.timeOut),
       catchError(e => {
         console.log(e);
-
-
         if (e.name === "TimeoutError") {
           this.showNotification("error", e.message)
         } else if (e.name === "HttpErrorResponse") {
@@ -48,6 +46,34 @@ export class AuthenticateService {
         return of(e);
       })
     );
+  }
+
+
+
+  authenticate(username, password) {
+
+    return this.http.post(this.apiUrl + '/authenticate', { username, password }, {
+      headers: new HttpHeaders()
+        .set('Content-Type', 'application/json')
+    }).pipe(
+      timeout(this.timeOut),
+      catchError(e => {
+        console.log("error " ,e);
+        
+        if (e.name === "TimeoutError") {
+          this.showNotification("error", e.message)
+        } else if (e.name === "HttpErrorResponse") {
+          if (e.status == 401) {
+            this.showNotification("error", e.error.message);
+          } else {
+            console.log("status 500");
+            alert("error ");
+            this.showNotification("error", e.message);
+          }
+        }
+        return of(e);
+      })
+    )
   }
 
 

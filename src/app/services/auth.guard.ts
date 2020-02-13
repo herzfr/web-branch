@@ -15,13 +15,23 @@ export class AuthGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    let user = this.ls.get('user')
 
-    if (user.record['enabled']) {
-      return true
-    } else
 
+
+
+    try {
+      let user = this.ls.get('user')
+      console.log(user);
+      if (user.record['enabled']) {
+        return true
+      }
+    } catch (error) {
       this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+      return false;
+    }
+
+
+
     return false;
 
   }
