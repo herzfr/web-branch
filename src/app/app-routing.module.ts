@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { Page404Component } from './page404/page404.component';
+import { AuthGuard } from './services/auth.guard';
 
 
 const routes: Routes = [
@@ -14,8 +15,14 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   { path: 'login', component: LoginComponent },
-  { path: 'home', component: HomeComponent },
-  { path: '404notfound', component: HomeComponent },
+  {
+    path: 'home', component: HomeComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: '404notfound', component: HomeComponent,
+    // canActivate: [AuthGuard]
+  },
 ];
 
 @NgModule({

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpHeaders, HttpParams, HttpClient } from '@angular/common/http';
-import { catchError, timeout } from 'rxjs/operators';
+import { HttpHeaders, HttpParams, HttpClient, HttpBackend } from '@angular/common/http';
+import { catchError, timeout, map } from 'rxjs/operators';
 import { of } from 'rxjs';
+import * as securels from 'secure-ls';
+import { NotifierService } from 'angular-notifier';
 
 @Injectable({
   providedIn: 'root'
@@ -9,53 +11,48 @@ import { of } from 'rxjs';
 export class AuthenticateService {
 
 
-  apiUrl: string = 'http://localhost:8080';
-  // apiAs: string = '';
+  apiUrl: string = 'https://10.62.10.23:8443';
   timeOut: number = 10000;
 
+  private authenticated = false;
   private token: any = "";
 
-  headers_object = new HttpHeaders().set('Content-Type', 'application/json')
-    .set('Content-Type', 'undefined')
-    .set('Access-Control-Allow-Origin', '*')
-    .set('Access-Control-Allow-Methods', 'POST')
-    .set('Access-Control-Allow-Methods', 'GET')
-    .set('Access-Control-Allow-Headers', 'Origin')
-    .set('Access-Control-Allow-Credentials', 'true')
+  headers_object = new HttpHeaders()
+    .set('Content-Type', 'application/json')
   // .set('Authorization', 'Bearer ' + this.token);
 
   httpOptions = {
     headers: this.headers_object
   };
 
-  constructor(private http: HttpClient) { }
+  ls = new securels({ encodingType: 'aes' });
 
-  asAuth(username: string, password: string) {
+  constructor(private http: HttpClient, private notifier: NotifierService, private handler: HttpBackend) { }
 
-
-    return this.http.get(this.apiUrl + '/api/authenticate?username=' + username + '&password=' + password, this.httpOptions)
-      .pipe(
-        timeout(this.timeOut),
-        catchError(e => {
-          console.log(e);
-
+  asAuth(username, password) {
+    return this.http.post<any>(this.apiUrl + '/authenticate', { username, password }).pipe(
+      timeout(this.timeOut),
+      catchError(e => {
+        console.log(e);
 
 
-          return of(e)
-        })
-      )
-
+        if (e.name === "TimeoutError") {
+          this.showNotification("error", e.message)
+        } else if (e.name === "HttpErrorResponse") {
+          if (e.status == 401) {
+            this.showNotification("error", e.error.message);
+          } else {
+            this.showNotification("error", e.message);
+          }
+        }
+        return of(e);
+      })
+    );
   }
 
-  // showConfirm(title: string, errorMsg: string, typeModal: string) {
-  //   let disposable = this.dialogService.addDialog(ModalComponent, {
-  //     title: title,
-  //     message: errorMsg,
-  //     type: typeModal
-  //   }, { backdropColor: 'rgba(90,90,90,0.5)' })
-  //     .subscribe((isConfirmed) => {
-  //     });
-  // }
 
+  public showNotification(type: string, message: string): void {
+    this.notifier.notify(type, message);
+  }
 
 }

@@ -1,9 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { NotifierModule } from "angular-notifier";
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CryptoService } from './services/crypto.service';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { AuthenticateService } from './services/authenticate.service';
+import { AuthGuard } from './services/auth.guard';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -13,7 +16,6 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { Page404Component } from './page404/page404.component';
 import { FragmentComponent } from './fragment/fragment.component';
-import { AuthenticateService } from './services/authenticate.service';
 
 @NgModule({
   declarations: [
@@ -33,8 +35,9 @@ import { AuthenticateService } from './services/authenticate.service';
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
+    NotifierModule
   ],
-  providers: [CryptoService, AuthenticateService],
+  providers: [CryptoService, AuthenticateService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
