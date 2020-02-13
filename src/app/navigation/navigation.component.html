@@ -1,22 +1,34 @@
 <nav id="sidebar" class="active fixed-top">
   <!-- <h1><a href="index.html" class="logo">M.</a></h1> -->
-  <ul class="list-unstyled components">
+  <ul class="list-unstyled components font-weight-normal">
     <li class="active">
-      <a href="#"><span class="fa fa-home"></span> Home</a>
+      <a href="finance" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+        data-target="#financial"><span class="fa"><img class="svg" src="../../assets/svgs/financial-retail.svg"
+            alt=""></span>
+        Financial Retail</a>
+    </li>
+    <ul *ngFor="let item of subMenu" class="nav nav-list collapse" id="financial">
+      <li class="sublist p-0">
+        <a href="" class="d-flex justify-content-between pl-3 pr-3">{{ item }} <i
+            class="fad fa-caret-right d-flex align-items-center"></i></a>
+      </li>
+    </ul>
+    <li>
+      <a href="#"><span class="fa"><img src="../../assets/svgs/report.svg" alt=""></span> Report</a>
     </li>
     <li>
-      <a href="#"><span class="fa fa-user"></span> About</a>
+      <a href="#"><span class="fa"><img src="../../assets/svgs/passbook.svg" alt=""></span> Passbook</a>
     </li>
     <li>
-      <a href="#"><span class="fa fa-sticky-note"></span> Blog</a>
+      <a href="#"><span class="fa"><img src="../../assets/svgs/payment.svg" alt=""></span> Pembayaran</a>
     </li>
     <li>
-      <a href="#"><span class="fa fa-cogs"></span> Services</a>
+      <a href="#"><span class="fa"><img src="../../assets/svgs/cash-drawer.svg" alt=""></span> Cash Drawer</a>
     </li>
-    <li>
-      <a href="#"><span class="fa fa-paper-plane"></span> Contacts</a>
-    </li>
+    <!-- ********** -->
+
   </ul>
+
 
   <!-- <div class="footer">
     <p>
@@ -31,9 +43,11 @@
   <div class="container-fluid">
 
     <button type="button" id="sidebarCollapse" class="btn btn-toggle">
-      <i class="fad fa-clone fa-3x"></i>
+      <i class="fad fa-expand-alt fa-3x"></i>
       <span class="sr-only">Toggle Menu</span>
     </button>
+
+    <img class="ml-5 mr-5" src="../../assets/svgs/logo-blue.svg" alt="">
 
 
     <!-- <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
@@ -50,7 +64,7 @@
             Selamat Datang
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            <p class="card-text">Admin034 | Dian Admin | 034-Cabang Utama</p>
+            <p class="card-text text-right">{{ userID }} | {{ userName }} | {{ branchCode }}</p>
           </li>
         </ul>
       </div>
@@ -59,11 +73,11 @@
         <ul class="list-group">
           <li class="list-group-item d-flex justify-content-between align-items-center">
             Tanggal Bisnis :
-            <p class="card-text">10/12/2020</p>
+            <p class="card-text">{{ today | date:'mediumDate' }}</p>
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center">
             Last Login :
-            <p class="card-text">10/12/2020 10:25</p>
+            <p class="card-text">{{ lastloginDate | date:'short'}}</p>
           </li>
         </ul>
       </div>
@@ -72,16 +86,16 @@
         <ul class="list-group">
           <li class="list-group-item d-flex justify-content-between align-items-center">
             Status :
-            <p class="card-text">Status</p>
+            <p class="card-text">Online</p>
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center">
             IP Anda :
-            <p class="card-text">127.192.62.81</p>
+            <p class="card-text">{{ ipAddress }}</p>
           </li>
         </ul>
       </div>
 
-      <div class="btn btn-logout align-items-center d-flex justify-content-center"><i
+      <div (click)="logout()" class="btn btn-logout align-items-center d-flex justify-content-center"><i
           class="fad fa-power-off fa-3x"></i>
       </div>
 

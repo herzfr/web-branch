@@ -9,8 +9,13 @@
   width: 50px;
 }
 
-i.fa-clone {
+i.fa-expand-alt {
   color: #133764;
+  transition: all 0.3s ease;
+}
+
+i.fa-expand-alt:hover {
+  color: #476c99;
 }
 
 
@@ -11867,14 +11872,14 @@ h5,
 }
 
 #sidebar {
-  min-width: 270px;
-  max-width: 270px;
+  min-width: 400px;
+  max-width: 400px;
   background: transparent;
   color: #fff;
   -webkit-transition: all 0.3s;
   -o-transition: all 0.3s;
   transition: all 0.3s;
-  padding-top: 130px;
+  padding-top: 150px;
 }
 
 #sidebar.active {
@@ -11978,10 +11983,37 @@ h5,
   color: #fff;
 }
 
-#sidebar ul li.active>a {
-  background: transparent;
-  color: #fff;
+#sidebar ul li.active {
+  background: #fff;
+  border: 1px solid #133764;
 }
+
+#sidebar ul li.active>a {
+  color: #133764;
+}
+
+
+/* ===============================SubMenu=================================== */
+
+ul#financial {
+  min-width: 600px;
+  width: auto;
+}
+
+li.sublist {
+  min-width: 600px;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 22px !important;
+  font-weight: 400;
+  line-height: 31px;
+  color: #133764;
+  background: #E2E7ED !important;
+
+}
+
+/* ===============================SubMenu=================================== */
+
 
 @media (max-width: 991.98px) {
   #sidebar {

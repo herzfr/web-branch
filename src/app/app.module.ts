@@ -16,7 +16,6 @@ import { NgbModule, NgbPaginationModule, NgbAlertModule } from '@ng-bootstrap/ng
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { Page404Component } from './page404/page404.component';
-import { FragmentComponent } from './fragment/fragment.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { ContentComponent } from './content/content.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -31,7 +30,6 @@ import { NgxBootstrapModule } from './ngx-bootstrap.module';
     LoginComponent,
     HomeComponent,
     Page404Component,
-    FragmentComponent,
     NavigationComponent,
     DashboardComponent,
     ContentComponent
