@@ -3,6 +3,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthenticateService } from '../services/authenticate.service';
 import { Router } from '@angular/router';
 import * as securels from 'secure-ls';
+// import { $ } from 'protractor';
+declare var $: any;
 
 @Component({
   selector: 'app-login',
@@ -13,19 +15,34 @@ export class LoginComponent implements OnInit {
 
   loginForm: FormGroup
   ls = new securels({ encodingType: 'aes' });
+  isRequired: boolean = true;
 
   constructor(private auth: AuthenticateService, private router: Router) {
     this.loginForm = new FormGroup({
       username: new FormControl('', Validators.required),
-      password: new FormControl('', Validators.required),
+      // password: new FormControl(''),
     });
   }
 
   ngOnInit() {
   }
 
+  verify() {
+
+    if (this.loginForm.valid) {
+      $('#verify').modal('show')
+      // console.log('ok');
+    } else {
+      alert('Silahkan masukan username')
+    }
+
+  }
+
 
   onSubmit() {
+
+    // console.log(this.loginForm.value.username, "admin");
+
     this.auth.authenticate(this.loginForm.value.username, "admin").subscribe(data => {
       console.log(data.status);
 
