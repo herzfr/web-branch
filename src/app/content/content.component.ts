@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { QueueService } from '../services/queue.service';
 import * as securels from 'secure-ls';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-content',
@@ -22,11 +23,13 @@ export class ContentComponent implements OnInit {
   ngOnInit() {
     this.getDataQueue()
 
-    setTimeout(() => {
-      console.log(this.dataQueue);
-    }, 3000)
+    // setTimeout(() => {
+    //   console.log(this.dataQueue);
+    // }, 3000)
 
-
+    const source = interval(3000);
+    const subscribe = source.subscribe(val =>
+      this.getDataQueue());
   }
 
   getDataQueue() {
@@ -36,8 +39,45 @@ export class ContentComponent implements OnInit {
     this.queue.getDataQue(brch, 999).subscribe(res => {
       // console.log(res);
       this.dataSource = res;
-    })
 
+      var index = 0;
+      this.dataSource.forEach(element => {
+        //  console.log(element.transbuff);
+
+        let data = JSON.parse(element.transbuff);
+
+
+        for (const key in data) {
+          if (data.hasOwnProperty(key)) {
+            const elData = data[key];
+
+            console.log(elData);
+
+            for (let index = 0; index < elData.length; index++) {
+              const elements = elData[index];
+              console.log(elements);
+              console.log(elements.name);
+              
+
+
+            }
+
+
+
+          }
+        }
+
+        this.dataSource[index].label = data.type;
+
+        // console.log(data);
+        console.log(
+          this.dataSource[index]);
+
+
+        index++;
+      });
+
+    })
 
   }
 
