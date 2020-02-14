@@ -1,0 +1,78 @@
+#content {
+  margin-top: 130px;
+  padding-left: 200px !important;
+}
+
+
+.display-4 {
+  color: #133764b0;
+}
+
+.search {
+  position: relative;
+  color: #aaa;
+  font-size: 16px;
+}
+
+.search input {
+  width: 250px;
+  height: 50px;
+  border: 1px solid #aaa;
+  background: #F1F1F3;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.25);
+  border-radius: 50px;
+}
+
+.search input {
+  text-indent: 50px;
+  color: #133764b0;
+}
+
+.search input:focus {
+  outline: none;
+}
+
+.search .fa-search {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: rgba(19, 55, 100, 0.69);
+}
+
+.h2 {
+  color: #133764b0 !important;
+}
+
+.btn-next {
+  width: 268px;
+  height: 68px;
+  color: #fff;
+  background: linear-gradient(265.14deg, #434976 -4.48%, #2E5676 53.7%, #55BA96 125.93%);
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
+  border-radius: 50px;
+  border: transparent;
+  transition: all 0.8s ease;
+}
+
+.btn-next:hover {
+  background: #fff;
+  color: #2E5676;
+}
+
+.card-title {
+  font-style: normal;
+  font-weight: 800;
+  line-height: 31px;
+  /* identical to box height */
+  color: #234A7B;
+}
+
+table {
+  color: #234A7B !important;
+  font-size: 20px;
+}
+
+.thead-custom {
+  background: #C4CFDA;
+  color: #234A7B;
+}
