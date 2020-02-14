@@ -1,13 +1,63 @@
-<div class="container d-flex h-100 justify-content-center align-items-center">
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="exampleInputEmail1">Username</label>
-      <input type="text" class="form-control" id="username" aria-describedby="text" formControlName="username">
+<div id="login" class="container-fluid h-100 justify-content-center p-0">
+  <div class="col d-flex justify-content-center">
+    <div class="col-sm-8">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <h1 class="display-1 mb-5">Web-Branch</h1>
+        <div class="form-group col-4">
+          <label for="exampleInputEmail1">Username</label>
+          <input type="text" class="form-control" id="username" aria-describedby="text" formControlName="username">
+        </div>
+        <div *ngIf="false" class="form-group">
+          <label for="exampleInputPassword1">Password</label>
+          <input type="password" class="form-control" id="exampleInputPassword1" formControlName="password">
+        </div>
+        <!-- <button [disabled]="!loginForm.valid" type="submit" class="btn btn-primary">Submit</button> -->
+      </form>
     </div>
-    <div class="form-group">
-      <label for="exampleInputPassword1">Password</label>
-      <input type="password" class="form-control" id="exampleInputPassword1" formControlName="password">
+    <div class="col-sm-4">
+      <img src="../../assets/svgs/logo-blue.svg" alt="">
     </div>
+<<<<<<< HEAD
+  </div>
+  <div class="col d-flex justify-content-center">
+    <button type="button" class="btn-login" data-toggle="modal" data-target="#exampleModalCenter">
+      Login
+    </button>
+  </div>
+  <footer class="fixed-bottom text-center">
+    <p class="text-center">Copyright &copy;2020 : PT. Bank Pembangunan Daerah Jawa Tengah (Bank Jateng) All Right
+      Reserved.</p>
+  </footer>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Login</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body d-flex justify-content-center">
+        <div class="card border-info mb-3" style="max-width: 30rem;">
+          <div class="card-body text-info">
+            <h5 class="card-title text-center">Verify Finger</h5>
+            <img class="svg" src="../../assets/svgs/finger.svg" alt="">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button (click)="onSubmit()" type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+=======
     <button [disabled]="!loginForm.valid" type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
+>>>>>>> b67cec979e5d135a6e101096ca979b66aea6c83d

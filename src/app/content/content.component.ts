@@ -23,9 +23,10 @@ export class ContentComponent implements OnInit {
   ngOnInit() {
     this.getDataQueue()
 
-    // setTimeout(() => {
-    //   console.log(this.dataQueue);
-    // }, 3000)
+    setTimeout(() => {
+      console.log(this.dataQueue);
+    }, 5000)
+
 
     const source = interval(3000);
     const subscribe = source.subscribe(val =>

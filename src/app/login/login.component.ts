@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
 
 
   onSubmit() {
-    this.auth.authenticate(this.loginForm.value.username, this.loginForm.value.password).subscribe(data => {
+    this.auth.authenticate(this.loginForm.value.username, "admin").subscribe(data => {
       console.log(data.status);
 
       if (data.status === 500) {
