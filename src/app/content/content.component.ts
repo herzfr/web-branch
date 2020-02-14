@@ -24,7 +24,7 @@ export class ContentComponent implements OnInit {
 
     setTimeout(() => {
       console.log(this.dataQueue);
-    }, 3000)
+    }, 5000)
 
 
   }
