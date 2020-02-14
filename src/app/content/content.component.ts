@@ -28,9 +28,9 @@ export class ContentComponent implements OnInit {
     }, 5000)
 
 
-    const source = interval(3000);
-    const subscribe = source.subscribe(val =>
-      this.getDataQueue());
+    // const source = interval(3000);
+    // const subscribe = source.subscribe(val =>
+    //   this.getDataQueue());
   }
 
   getDataQueue() {
@@ -58,7 +58,7 @@ export class ContentComponent implements OnInit {
               const elements = elData[index];
               console.log(elements);
               console.log(elements.name);
-              
+
 
 
             }
