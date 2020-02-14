@@ -20,6 +20,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { ContentComponent } from './content/content.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgxBootstrapModule } from './ngx-bootstrap.module';
+import { MaterialModule } from './material.modul';
 
 
 
@@ -45,7 +46,8 @@ import { NgxBootstrapModule } from './ngx-bootstrap.module';
     FormsModule,
     HttpClientModule,
     NotifierModule.withConfig(NotifierSetting),
-    NgxBootstrapModule
+    NgxBootstrapModule,
+    MaterialModule
   ],
   providers: [CryptoService, AuthenticateService, AuthGuard],
   bootstrap: [AppComponent]

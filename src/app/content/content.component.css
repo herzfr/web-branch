@@ -72,7 +72,19 @@ table {
   font-size: 20px;
 }
 
-.thead-custom {
-  background: #C4CFDA;
-  color: #234A7B;
+.example-container {
+  height: 400px;
+  overflow: auto;
 }
+
+table {
+  width: 100%;
+}
+
+/* tr.example-element-row:not(.example-expanded-row):hover {
+    background: #777;
+  }
+  
+  tr.example-element-row:not(.example-expanded-row):active {
+    background: #efefef;
+  } */
