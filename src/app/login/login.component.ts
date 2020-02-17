@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthenticateService } from '../services/authenticate.service';
 import { Router } from '@angular/router';
 import * as securels from 'secure-ls';
+import { LoginModel } from '../models/login-model';
 // import { $ } from 'protractor';
 declare var $: any;
 
@@ -26,27 +27,26 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
   }
-
+ 
   verify() {
-
     if (this.loginForm.valid) {
       $('#verify').modal('show')
       // console.log('ok');
     } else {
       alert('Silahkan masukan username')
     }
-
   }
 
 
   onSubmit() {
-
-    // console.log(this.loginForm.value.username, "admin");
-
-    this.auth.authenticate(this.loginForm.value.username, "admin").subscribe(data => {
+    let authenticate= new LoginModel;
+    authenticate.password = this.loginForm.value.username;
+    authenticate.username = this.loginForm.value.username;
+    
+    this.auth.authenticate(authenticate).subscribe(data => {
       console.log(data.status);
 
-      if (data.status === 500) {
+      if (data.status === 500) {  
 
       } else {
         this.router.navigate(['dashboard']);

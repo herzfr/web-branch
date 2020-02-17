@@ -35,7 +35,7 @@ export class NavigationComponent implements OnInit {
   userName = 'Dian Puspita';
   branchCode = '034';
   lastloginDate: number = Date.now()
-  today: number = Date.now();
+  today= Date.now();
   ipAddress: any;
   status = 'Online';
   isConnected = true;

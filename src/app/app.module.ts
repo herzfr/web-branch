@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { NotifierModule, notifierCustomConfigFactory, NotifierOptions } from "angular-notifier";
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CryptoService } from './services/crypto.service';
@@ -21,9 +21,14 @@ import { ContentComponent } from './content/content.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgxBootstrapModule } from './ngx-bootstrap.module';
 import { MaterialModule } from './material.modul';
+import { JsonAppConfigService } from './services/json-app-config.service';
+import { AppConfiguration } from './models/app.configuration';
 
-
-
+export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
+  return () => {
+    return jsonAppConfigService.load();
+  };
+}
 
 @NgModule({
   declarations: [
@@ -49,7 +54,19 @@ import { MaterialModule } from './material.modul';
     NgxBootstrapModule,
     MaterialModule
   ],
-  providers: [CryptoService, AuthenticateService, AuthGuard],
+  providers: [
+    CryptoService, AuthenticateService, AuthGuard,JsonAppConfigService,
+    {
+      provide: AppConfiguration,
+      deps: [HttpClient],
+      useExisting: JsonAppConfigService
+    },
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      deps: [JsonAppConfigService],
+      useFactory: initializerFn
+    }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
