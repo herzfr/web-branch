@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import * as securels from 'secure-ls';
 import { LoginModel } from '../models/login-model';
 // import { $ } from 'protractor';
+declare var ActiveXObject: (type: string) => void;
 declare var $: any;
 
 @Component({
@@ -27,7 +28,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
   }
- 
+
   verify() {
     if (this.loginForm.valid) {
       $('#verify').modal('show')
@@ -35,18 +36,27 @@ export class LoginComponent implements OnInit {
     } else {
       alert('Silahkan masukan username')
     }
+    console.log("test");
+    window.open('C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE')
+
+    // var dir = "C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE"
+    // var oShell = new ActiveXObject("Shell.Application");
+    // oShell.ShellExecute(dir, "", "", "open", "1")
+
   }
 
 
+
+
   onSubmit() {
-    let authenticate= new LoginModel;
+    let authenticate = new LoginModel;
     authenticate.password = this.loginForm.value.username;
     authenticate.username = this.loginForm.value.username;
-    
+
     this.auth.authenticate(authenticate).subscribe(data => {
       console.log(data.status);
 
-      if (data.status === 500) {  
+      if (data.status === 500) {
 
       } else {
         this.router.navigate(['dashboard']);
