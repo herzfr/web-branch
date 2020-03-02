@@ -37,6 +37,9 @@ export class ContentComponent implements OnInit {
     let data = this.ls.get('user')
     var brch = data.record['branchcode'];
 
+    console.log(brch);
+
+
     this.queue.getDataQue(brch, 999).subscribe(res => {
       // console.log(res);
       this.dataSource = res;

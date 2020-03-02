@@ -1,5 +1,4 @@
 {
-    "ipServer": "https://127.0.0.1:8443/",
-    "requestTimeout": 30000
-  }
-  
+  "ipServer": "https://10.62.10.23:8443/",
+  "requestTimeout": 30000
+}
