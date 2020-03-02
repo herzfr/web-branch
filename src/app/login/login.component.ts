@@ -102,6 +102,11 @@ export class LoginComponent implements OnInit {
     authenticate.password = this.loginForm.value.username;
     authenticate.username = this.loginForm.value.username;
 
+    $('#verify').modal('hide')
+    $('.container-fluid').removeClass('modalBlur');
+
+    this.router.navigate(['/dashboard'])
+
     // this.auth.authenticate(authenticate).subscribe(data => {
     //   console.log(data.status);
     //   if (data.status === 500) {
