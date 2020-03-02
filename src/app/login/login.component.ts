@@ -7,6 +7,7 @@ import { LoginModel } from '../models/login-model';
 
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import { DataBranchServices } from '../services/data-branch.service';
 
 declare var $: any;
 
@@ -14,7 +15,7 @@ declare var $: any;
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css', './login.component.scss']
 })
 export class LoginComponent implements OnInit {
 
@@ -22,11 +23,18 @@ export class LoginComponent implements OnInit {
   private title = 'WebSockets chat';
   private stompClient;
 
+  private branch;
+  private terminal;
+  private selectedBranch;
+  private selectedTerm;
+  private selectedIp;
+  private isChossed = true;
+
   loginForm: FormGroup
   ls = new securels({ encodingType: 'aes' });
   isRequired: boolean = true;
 
-  constructor(private auth: AuthenticateService, private router: Router) {
+  constructor(private auth: AuthenticateService, private router: Router, private dataBranch: DataBranchServices) {
     this.loginForm = new FormGroup({
       username: new FormControl('', Validators.required),
       // password: new FormControl(''),
@@ -34,19 +42,59 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.initializeWebSocketConnection();
 
+    let ip = localStorage.getItem('IP');
+    if (ip == null || ip == undefined) {
+      this.dataBranch.getIp().subscribe(res => {
+        this.selectedIp = res['ipadd'];
+        localStorage.setItem('IP', this.selectedIp)
+      }, err => {
+        console.log(err);
+      })
+    } else {
+      localStorage.removeItem('IP')
+      this.dataBranch.getIp().subscribe(res => {
+        this.selectedIp = res['ipadd'];
+        localStorage.setItem('IP', this.selectedIp)
+      }, err => {
+        console.log(err);
+      })
+    }
+
+
+    // this.initializeWebSocketConnection();
+    let term = localStorage.getItem('terminal');
+    if (term == null) {
+
+      $('#modalTerm').modal('show')
+      $('.container-fluid').addClass('modalBlur');
+
+      this.dataBranch.getBranchAll().subscribe((res) => {
+        console.log(res);
+        this.branch = res;
+      })
+    } else {
+      console.log("ada");
+    }
   }
 
   verify() {
+
+
     if (this.loginForm.valid) {
       $('#verify').modal('show')
-      // console.log('ok');
+      $('.container-fluid').addClass('modalBlur');
+      var ipSocket = this.selectedIp.split(".").join("")
+      var userName = this.loginForm.get('username').value;
+      var socket = ipSocket + userName;
+      console.log(socket);
+
+      // this.initializeWebSocketConnection(socket)
     } else {
       alert('Silahkan masukan username')
     }
     console.log("test");
-    window.open('C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE')
+    // window.open('C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE')
   }
 
   onSubmit() {
@@ -54,22 +102,26 @@ export class LoginComponent implements OnInit {
     authenticate.password = this.loginForm.value.username;
     authenticate.username = this.loginForm.value.username;
 
-    this.auth.authenticate(authenticate).subscribe(data => {
-      console.log(data.status);
-      if (data.status === 500) {
-      } else {
-        this.router.navigate(['dashboard']);
-        this.ls.set('user', data);
-      }
-    })
+    // this.auth.authenticate(authenticate).subscribe(data => {
+    //   console.log(data.status);
+    //   if (data.status === 500) {
+    //   } else {
+    //     this.router.navigate(['dashboard']);
+    //     this.ls.set('user', data);
+    //   }
+    // })
   }
 
-  initializeWebSocketConnection() {
+  transform(value: string): string {
+    return value.split(".").join("")
+  }
+
+  initializeWebSocketConnection(socket) {
     let ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(ws);
     let that = this;
     this.stompClient.connect({}, function (frame) {
-      that.stompClient.subscribe("/socet", (message) => {
+      that.stompClient.subscribe("/" + socket, (message) => {
         if (message.body) {
           $(".chat").append("<div class='message'>" + message.body + "</div>")
           console.log(message.body);
@@ -78,6 +130,43 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  onChangeBranch() {
+    this.dataBranch.getTerminalId(this.selectedBranch).subscribe(res => {
+      console.log(res);
+      this.terminal = res;
+    }, err => {
+      console.log(err);
+      this.isChossed = true;
+    })
+
+    setTimeout(() => {
+      console.log(this.terminal);
+      if (this.terminal.length > 0) {
+        console.log("ada");
+        this.isChossed = false;
+      } else {
+        console.log("gak ada");
+        this.isChossed = true;
+      }
+    }, 100)
+  }
+
+
+  postTerm() {
+    console.log(this.selectedIp);
+
+
+    var term: any = [{
+      "terminalID": this.selectedTerm,
+      "branchCode": this.selectedBranch,
+    }]
+
+    localStorage.setItem('terminal', JSON.stringify(term))
+    $('#modalTerm').modal('hide');
+    $('.container-fluid').removeClass('modalBlur');
+
+    console.log(term);
+  }
 
 
 

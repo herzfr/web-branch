@@ -1,38 +1,67 @@
-<div id="login" class="container-fluid h-100 justify-content-center p-0">
-  <div class="col d-flex justify-content-center">
-    <div class="col-sm-8">
-      <form autocomplete="off" [formGroup]="loginForm">
-        <h1 class="display-1 mb-5">Web-Branch</h1>
-        <div class="form-group col-4">
-          <label for="exampleInputEmail1">Username</label>
-          <input type="text" class="form-control" id="username" aria-describedby="text" formControlName="username">
+<div id="login" class="container-fluid h-100 align-items-center d-flex">
+
+  <div class="container-fluid justify-content-center d-flex">
+    <div class="col-sm-9">
+      <h1 class="display-4">Web-Branch</h1>
+      <div class="row">
+        <div class="col-12 col-md-8">
+          <form [formGroup]="loginForm" autocomplete="off">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Username</label>
+              <input type="text" class="form-control" id="user" placeholder="Enter Username" formControlName="username">
+              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+          </form>
         </div>
-        <!-- <div *ngIf="false" class="form-group">
-          <label for="exampleInputPassword1">Password</label>
-          <input type="password" class="form-control" id="exampleInputPassword1" formControlName="password">
-        </div> -->
-        <!-- <button [disabled]="!loginForm.valid" type="submit" class="btn btn-primary">Submit</button> -->
-      </form>
-    </div>
-    <div class="col-sm-4">
-      <img src="./assets/svgs/logo-blue.svg" alt="">
+        <div class="col-6 col-md-4">
+          <img src="/assets/svgs/logo-blue.svg" class="img-fluid logo" alt="Responsive image">
+        </div>
+      </div>
+      <div class="container d-flex justify-content-center h-auto align-items-end">
+        <button type="button" (click)="verify()" class="btn-login">Login</button>
+      </div>
+      <div class="footer text-center fixed-bottom">
+        <p>Copyright © 2019 : PT. Bank Pembangunan Daerah Jawa Tengah (Bank Jateng) All Right Reserved.</p>
+      </div>
     </div>
   </div>
-  <div class="col d-flex justify-content-center">
-    <button (click)="verify()" type="button" class="btn-login">
-      Login
-    </button>
-  </div>
-  <footer class="fixed-bottom text-center">
-    <p class="text-center">Copyright &copy;2020 : PT. Bank Pembangunan Daerah Jawa Tengah (Bank Jateng) All Right
-      Reserved.</p>
-  </footer>
 </div>
 
 
 <!-- Modal -->
 <div class="modal fade" id="verify" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-  aria-hidden="true">
+  data-backdrop="static" data-keyboard="false" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header p-1 justify-content-center">
+        <ul class="container justify-content-center mb-0 pb-3">
+          <li class="list-inline-item row justify-content-center">
+            <img id="logoQue" src="../../assets/svgs/logo-blue.svg" alt="">
+          </li>
+          <li class="list-inline-item row justify-content-center">034 - Cabang Utama</li>
+        </ul>
+      </div>
+      <div class="modal-body d-flex justify-content-center">
+        <div class="card border-info mb-3" style="max-width: 30rem;">
+          <div class="card-body text-info">
+            <h5 class="card-title text-center">Verify Finger</h5>
+            <img class="svg" src="./assets/svgs/finger.svg" alt="">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button (click)="onSubmit()" type="button" class="btn btn-ok" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="ipterm" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  data-backdrop="static" data-keyboard="false" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -44,14 +73,54 @@
       <div class="modal-body d-flex justify-content-center">
         <div class="card border-info mb-3" style="max-width: 30rem;">
           <div class="card-body text-info">
-            <h5 class="card-title text-center">Verify Finger</h5>
-            <img class="svg" src="./assets/svgs/finger.svg" alt="">
+
           </div>
         </div>
       </div>
       <div class="modal-footer justify-content-center">
         <button (click)="onSubmit()" type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
       </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="modalTerm" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header justify-content-center">
+        <h4 class="modal-title text-center  d-block">Terminal Id</h4>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+
+        <div class="form-group row pl-5 pr-5">
+          <label for="inputState">Branch Code</label>
+          <select id="inputState" [(ngModel)]="selectedBranch" (change)="onChangeBranch()" class="form-control">
+            <option selected>Choose...</option>
+            <option *ngFor="let br of branch" [ngValue]="br.branchcode">{{br.branchcode}}-{{br.description}}</option>
+          </select>
+        </div>
+
+        <div class="form-group row pl-5 pr-5">
+          <label for="inputState">Terminal Id</label>
+          <select [disabled]="isChossed" id="inputState" [(ngModel)]="selectedTerm" class="form-control">
+            <option selected>Choose...</option>
+            <option *ngFor="let tr of terminal" [ngValue]="tr.terminalid">{{tr.terminalmodel}}-{{tr.terminalid}}
+            </option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer justify-content-center">
+        <button [disabled]="isChossed" (click)="postTerm()" type="button" class="btn btn-ok">OK</button>
+      </div>
+
     </div>
   </div>
 </div>

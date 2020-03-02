@@ -1,0 +1,68 @@
+h5.modal-title {
+  color: #192A59;
+}
+
+img.logo-modal {
+  width: 100px;
+}
+
+.body-list {
+  background: #E5EEF7;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+}
+
+
+.modal#verify>.modal-dialog>.modal-content {
+  border-radius: 30px;
+}
+
+.modal#verify>.modal-dialog>.modal-content>.modal-header {
+  border-bottom: none;
+}
+
+.modal#verify>.modal-dialog>.modal-content>.modal-body {
+
+  .form-group>label {
+    color: #192A59;
+  }
+
+  .form-group>select {
+    box-shadow: none !important;
+
+    &:focus {
+      box-shadow: none !important;
+    }
+  }
+}
+
+.modal#verify>.modal-dialog>.modal-content>.modal-footer {
+  border-top: none;
+
+  .btn-ok {
+    border: 0px;
+    width: 259px;
+    background: linear-gradient(116.75deg, #F3DFBC 9.46%, #C4C4C4 63.37%);
+    box-shadow: 0px 4px 15px rgba(35, 74, 123, 0.878);
+    border-radius: 50px;
+    outline: none;
+    font-size: 26px;
+    color: #133764;
+    transition: all 0.8s ease;
+
+
+    &:hover {
+      background: #133764;
+      color: #F3DFBC;
+    }
+  }
+}
+
+
+
+.container-fluid.modalBlur>*:not(.modal) {
+  -webkit-filter: blur(8px);
+  -ms-filter: blur(8px);
+  -moz-filter: blur(8px);
+  -o-filter: blur(8px);
+  filter: blur(8px);
+}

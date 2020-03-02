@@ -3,12 +3,13 @@
 
 html,
 body {
-  /* background-size: cover;
-  background-image: url('./assets/image/Artboardblur.png');
+  background-size: cover;
+  background-image: url('../src/assets/svgs/login-background.svg');
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-position: center; */
+  background-position: center;
   height: 100%;
+  overflow-y: hidden;
 }
 
 /* total width */

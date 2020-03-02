@@ -7,14 +7,9 @@
 }
 
 
-form {
-  padding: 200px;
-}
 
 label {
-  font-style: normal;
-  font-weight: 500;
-  font-size: 30px;
+  font-size: 20px;
   line-height: 32px;
   color: #133764;
 }
@@ -27,14 +22,26 @@ input {
   border-radius: 50px;
 }
 
-h1 {
+h1,
+small,
+.footer {
   /* padding: 200px; */
-  color: #133764;
+  color: #133764 !important;
 }
 
-img {
-  padding-top: 200px;
-  width: 400px;
+small {
+  font-size: 15px;
+}
+
+
+img.logo {
+  margin-left: 150px;
+  min-width: 300px;
+}
+
+.form-control:focus {
+  box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.25) !important;
+  border-color: transparent !important;
 }
 
 .btn-login {
@@ -90,4 +97,13 @@ footer>p {
 .svg {
   padding-top: 0px;
   width: 300px;
+}
+
+
+.container-fluid.modalBlur>*:not(.modal) {
+  -webkit-filter: blur(8px);
+  -ms-filter: blur(8px);
+  -moz-filter: blur(8px);
+  -o-filter: blur(8px);
+  filter: blur(8px);
 }

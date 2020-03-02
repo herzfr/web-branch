@@ -8,7 +8,6 @@ import { AuthenticateService } from './services/authenticate.service';
 import { AuthGuard } from './services/auth.guard';
 import { NotifierSetting } from './config/notifier-setting';
 
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
