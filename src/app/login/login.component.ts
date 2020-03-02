@@ -4,9 +4,12 @@ import { AuthenticateService } from '../services/authenticate.service';
 import { Router } from '@angular/router';
 import * as securels from 'secure-ls';
 import { LoginModel } from '../models/login-model';
-// import { $ } from 'protractor';
-declare var ActiveXObject: (type: string) => void;
+
+import * as Stomp from 'stompjs';
+import * as SockJS from 'sockjs-client';
+
 declare var $: any;
+
 
 @Component({
   selector: 'app-login',
@@ -14,6 +17,10 @@ declare var $: any;
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+
+  private serverUrl = 'http://10.62.10.28:8080/socket'
+  private title = 'WebSockets chat';
+  private stompClient;
 
   loginForm: FormGroup
   ls = new securels({ encodingType: 'aes' });
@@ -27,6 +34,8 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.initializeWebSocketConnection();
+
   }
 
   verify() {
@@ -38,15 +47,7 @@ export class LoginComponent implements OnInit {
     }
     console.log("test");
     window.open('C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE')
-
-    // var dir = "C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE"
-    // var oShell = new ActiveXObject("Shell.Application");
-    // oShell.ShellExecute(dir, "", "", "open", "1")
-
   }
-
-
-
 
   onSubmit() {
     let authenticate = new LoginModel;
@@ -55,22 +56,32 @@ export class LoginComponent implements OnInit {
 
     this.auth.authenticate(authenticate).subscribe(data => {
       console.log(data.status);
-
       if (data.status === 500) {
-
       } else {
         this.router.navigate(['dashboard']);
         this.ls.set('user', data);
       }
-      // if(data.sta){}
-      // if (data) {
-      //   this.router.navigate(['home'])
-      //   this.ls.set('user', data)
-      // } else {
-      //   alert('tidak ada')
-      // }
-
     })
   }
+
+  initializeWebSocketConnection() {
+    let ws = new SockJS(this.serverUrl);
+    this.stompClient = Stomp.over(ws);
+    let that = this;
+    this.stompClient.connect({}, function (frame) {
+      that.stompClient.subscribe("/socet", (message) => {
+        if (message.body) {
+          $(".chat").append("<div class='message'>" + message.body + "</div>")
+          console.log(message.body);
+        }
+      });
+    });
+  }
+
+
+
+
+
+
 
 }
