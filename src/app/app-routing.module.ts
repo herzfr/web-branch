@@ -17,8 +17,9 @@ const routes: Routes = [
   },
   { path: 'login', component: LoginComponent },
   {
-    path: 'dashboard', component: DashboardComponent,
+    path: 'home', component: HomeComponent,
     // canActivate: [AuthGuard]
+    loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
   },
   {
     path: '404', component: Page404Component,

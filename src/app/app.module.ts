@@ -16,8 +16,6 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { Page404Component } from './page404/page404.component';
 import { NavigationComponent } from './navigation/navigation.component';
-import { ContentComponent } from './content/content.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgxBootstrapModule } from './ngx-bootstrap.module';
 import { MaterialModule } from './material.modul';
 import { JsonAppConfigService } from './services/json-app-config.service';
@@ -37,8 +35,6 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     HomeComponent,
     Page404Component,
     NavigationComponent,
-    DashboardComponent,
-    ContentComponent,
     NavsComponent
   ],
   imports: [

@@ -1,0 +1,152 @@
+.mat-toolbar.mat-toolbar-single-row {
+  height: 100px !important;
+  background: linear-gradient(267.67deg, #FCFCFC 0%, #B6C4D1 100.7%);
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* .togle {} */
+
+#nav-icon {
+  width: 60px;
+  height: 45px;
+  /* position: relative; */
+  /* margin: 50px auto; */
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: .5s ease-in-out;
+  -moz-transition: .5s ease-in-out;
+  -o-transition: .5s ease-in-out;
+  transition: .5s ease-in-out;
+  cursor: pointer;
+}
+
+#nav-icon span {
+  display: block;
+  position: absolute;
+  height: 6px;
+  width: 100%;
+  background: #133764;
+  border-radius: 9px;
+  opacity: 1;
+  left: 0;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: .25s ease-in-out;
+  -moz-transition: .25s ease-in-out;
+  -o-transition: .25s ease-in-out;
+  transition: .25s ease-in-out;
+}
+
+/* Icon 3 */
+
+#nav-icon span:nth-child(1) {
+  top: 0px;
+}
+
+#nav-icon span:nth-child(2),
+#nav-icon span:nth-child(3) {
+  top: 18px;
+}
+
+#nav-icon span:nth-child(4) {
+  top: 36px;
+}
+
+#nav-icon.open span:nth-child(1) {
+  top: 18px;
+  width: 0%;
+  left: 50%;
+}
+
+#nav-icon.open span:nth-child(2) {
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+#nav-icon.open span:nth-child(3) {
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+#nav-icon.open span:nth-child(4) {
+  top: 18px;
+  width: 0%;
+  left: 50%;
+}
+
+.border-welcome {
+  border: 0px solid transparent !important;
+  background: transparent !important;
+  color: #133764 !important;
+  font-size: medium;
+}
+
+.border-card {
+  border: 2px solid #133764 !important;
+  box-sizing: border-box !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  color: #133764 !important;
+  font-size: medium;
+}
+
+.list-group-item {
+  border: 0px solid transparent !important;
+  background-color: transparent !important;
+  color: #133764 !important;
+  font-size: medium;
+}
+
+
+.example-container {
+  position: absolute;
+  top: 100px;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+}
+
+.example-sidenav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  background: rgba(255, 0, 0, 0.5);
+}
+
+.example-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.example-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.mat-drawer {
+  background: transparent;
+  border: none;
+}
+
+.mat-button {
+  height: 60px;
+  color: #133764;
+}
+
+::ng-deep .mat-menu-content {
+  width: 220px !important;
+  color: #fff;
+}
