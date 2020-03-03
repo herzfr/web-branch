@@ -1,105 +1,32 @@
-<nav id="sidebar" class="active fixed-top">
-  <!-- <h1><a href="index.html" class="logo">M.</a></h1> -->
-  <ul class="list-unstyled components font-weight-normal">
-    <li class="active">
-      <a href="finance" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
-        data-target="#financial"><span class="fa"><img class="svg" src="./assets/svgs/financial-retail.svg"
-            alt=""></span>
-        Financial Retail</a>
-    </li>
-    <ul *ngFor="let item of subMenu" class="nav nav-list collapse" id="financial">
-      <li class="sublist p-0">
-        <a href="" class="d-flex justify-content-between pl-3 pr-3">{{ item }} <i
-            class="fad fa-caret-right d-flex align-items-center"></i></a>
+<div class="wrapper d-flex align-items-stretch">
+  <nav id="sidebar" class="active">
+    <h1><a href="index.html" class="logo">M.</a></h1>
+    <ul class="list-unstyled components mb-5">
+      <li class="active">
+        <a href="#"><span class="fa fa-home"></span> Home</a>
+      </li>
+      <li>
+        <a href="#"><span class="fa fa-user"></span> About</a>
+      </li>
+      <li>
+        <a href="#"><span class="fa fa-sticky-note"></span> Blog</a>
+      </li>
+      <li>
+        <a href="#"><span class="fa fa-cogs"></span> Services</a>
+      </li>
+      <li>
+        <a href="#"><span class="fa fa-paper-plane"></span> Contacts</a>
       </li>
     </ul>
-    <li>
-      <a href="#"><span class="fa"><img src="./assets/svgs/report.svg" alt=""></span> Report</a>
-    </li>
-    <li>
-      <a href="#"><span class="fa"><img src="./assets/svgs/passbook.svg" alt=""></span> Passbook</a>
-    </li>
-    <li>
-      <a href="#"><span class="fa"><img src="./assets/svgs/payment.svg" alt=""></span> Pembayaran</a>
-    </li>
-    <li>
-      <a href="#"><span class="fa"><img src="./assets/svgs/cash-drawer.svg" alt=""></span> Cash Drawer</a>
-    </li>
-    <!-- ********** -->
 
-  </ul>
+    <div class="footer">
+      <p>
+        Copyright &copy;<script>
+          document.write(new Date().getFullYear());
 
-
-  <!-- <div class="footer">
-    <p>
-      Copyright &copy; 2020 All rights reserved | This template is made with <i class="icon-heart"
-        aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib.com</a>
-    </p>
-  </div> -->
-</nav>
-
-<!-- Page Content  -->
-<nav id="mainNavs" class="navbar navbar-expand-lg navbar-light bg-light mb-0 fixed-top">
-  <div class="container-fluid">
-
-    <button type="button" id="sidebarCollapse" class="btn btn-toggle">
-      <i class="fad fa-expand-alt fa-3x"></i>
-      <span class="sr-only">Toggle Menu</span>
-    </button>
-
-    <img class="ml-5 mr-5" src="./assets/svgs/logo-blue.svg" alt="">
-
-
-    <!-- <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
-      data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-      aria-label="Toggle navigation">
-      <i class="fa fa-bars"></i>
-    </button> -->
-
-    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-
-      <div class="card border-welcome ml-2 mr-2" style="max-width: 25rem;">
-        <ul class="list-group">
-          <li class="list-group-item d-flex justify-content-end align-items-center">
-            Selamat Datang
-          </li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <p class="card-text text-right">{{ userID }} | {{ userName }} | {{ branchCode }}</p>
-          </li>
-        </ul>
-      </div>
-
-      <div class="card border-card ml-2 mr-2" style="max-width: 18rem; min-width: 18rem;">
-        <ul class="list-group">
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            Tanggal Bisnis :
-            <p class="card-text">{{ today | date:'mediumDate' }}</p>
-          </li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            Last Login :
-            <p class="card-text">{{ lastloginDate | date:'short'}}</p>
-          </li>
-        </ul>
-      </div>
-
-      <div class="card border-card ml-2 mr-2" style="max-width: 18rem; min-width: 18rem;">
-        <ul class="list-group">
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            Status :
-            <p class="card-text">Online</p>
-          </li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            IP Anda :
-            <p class="card-text">{{ ipAddress }}</p>
-          </li>
-        </ul>
-      </div>
-
-      <div (click)="logout()" class="btn btn-logout align-items-center d-flex justify-content-center"><i
-          class="fad fa-power-off fa-3x"></i>
-      </div>
-
-
+        </script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a
+          href="https://colorlib.com" target="_blank">Colorlib.com</a>
+      </p>
     </div>
-  </div>
-</nav>
+  </nav>
+</div>

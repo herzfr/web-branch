@@ -22,6 +22,7 @@ import { NgxBootstrapModule } from './ngx-bootstrap.module';
 import { MaterialModule } from './material.modul';
 import { JsonAppConfigService } from './services/json-app-config.service';
 import { AppConfiguration } from './models/app.configuration';
+import { NavsComponent } from './navs/navs.component';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -37,7 +38,8 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     Page404Component,
     NavigationComponent,
     DashboardComponent,
-    ContentComponent
+    ContentComponent,
+    NavsComponent
   ],
   imports: [
     BrowserModule,

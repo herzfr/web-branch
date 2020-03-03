@@ -8,6 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
     imports: [
@@ -30,7 +31,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         MatMenuModule,
         MatRippleModule,
         MatProgressSpinnerModule,
-        MatSliderModule
+        MatSliderModule,
+        MatToolbarModule
 
     ],
     exports: [
@@ -52,7 +54,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         MatSnackBarModule,
         MatMenuModule,
         MatRippleModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatToolbarModule
     ],
     providers: []
 })
