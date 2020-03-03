@@ -137,12 +137,23 @@ export class LoginComponent implements OnInit {
 
         console.log(JSON.parse(message.body));
 
-        // if (message.body) {
+        if (message.body) {
 
 
-        //   console.log(message.body);
+      
 
-        // }
+          const body = JSON.parse(message.body);
+          console.log(body.success);
+
+          if(body.success){
+            $('#verify').modal('hide')
+            $('.container-fluid').removeClass('modalBlur');
+            that.router.navigate(['/dashboard']);
+          }
+
+        
+
+        }
       }, err => {
         console.log(err);
 
