@@ -56,7 +56,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     MaterialModule
   ],
   providers: [
-    CryptoService, AuthenticateService, AuthGuard,JsonAppConfigService,
+    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],
