@@ -86,10 +86,10 @@ export class LoginComponent implements OnInit {
       $('.container-fluid').addClass('modalBlur');
       var ipSocket = this.selectedIp.split(".").join("")
       var userName = this.loginForm.get('username').value;
-      var socket = ipSocket + userName;
+      var socket = ipSocket + "x" + userName;
       console.log(socket);
 
-      // this.initializeWebSocketConnection(socket)
+      this.initializeWebSocketConnection(socket);
     } else {
       alert('Silahkan masukan username')
     }
