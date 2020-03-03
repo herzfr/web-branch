@@ -1,22 +1,82 @@
-<mat-toolbar color="primary">
-  <mat-toolbar-row>
-    <button mat-icon-button>
-      <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
-    </button>
-    <h1>SimpleCRM</h1>
-    <span class="menu-spacer"></span>
-    <div>
-      <a mat-button [routerLink]="'/accounts'"> Accounts </a>
-      <a mat-button [routerLink]="'/create-account'"> Create Account </a>
-      <a mat-button [routerLink]="'/contacts'"> Contacts </a>
-      <a mat-button [routerLink]="'/create-contact'"> Create Contact </a>
-      <a mat-button [routerLink]="'/activities'"> Activities </a>
-      <a mat-button [routerLink]="'/create-activity'"> Create Activity </a>
-
+<mat-toolbar>
+  <div class="container-fluid justify-content-between d-flex p-0">
+    <div class="col-6 col-md-3 d-flex align-items-center p-0">
+      <div id="nav-icon" (click)="drawer.toggle()">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <img class="pl-3 pr-3" src="../../assets/svgs/logo-blue.svg" alt="logo">
     </div>
-  </mat-toolbar-row>
+    <div class="col-12 col-sm-6 col-md-9 d-flex align-items-center justify-content-end">
 
-  <mat-toolbar-row>
-    <span style="font-size: 12px;">SimpleCRM helps you easily manage your contacts</span>
-  </mat-toolbar-row>
+      <div class="card border-welcome ml-2 mr-2" style="max-width: 25rem;">
+        <ul class="list-group p-1">
+          <li class="list-group-item d-flex justify-content-end align-items-center p-0">
+            Selamat Datang
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center p-0">
+            <p class="card-text text-right">12312312 | admin | 034-Cabang Utama</p>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card border-card ml-2 mr-2" style="max-width: 18rem; min-width: 18rem;">
+        <ul class="list-group p-1">
+          <li class="list-group-item d-flex justify-content-between align-items-center p-0">
+            Tanggal Bisnis :
+            <p class="card-text">28/01/2019</p>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center p-0">
+            Last Login :
+            <p class="card-text">26/02/2019 12:45</p>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card border-card ml-2 mr-2" style="max-width: 18rem; min-width: 18rem;">
+        <ul class="list-group p-1">
+          <li class="list-group-item d-flex justify-content-between align-items-center p-0">
+            Status :
+            <p class="card-text">Online</p>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center p-0">
+            IP Anda :
+            <p class="card-text">10.62.65.52</p>
+          </li>
+        </ul>
+      </div>
+
+      <div (click)="logout()" class="btn btn-logout align-items-center d-flex justify-content-center"><i
+          class="fad fa-power-off fa-3x"></i>
+      </div>
+    </div>
+  </div>
 </mat-toolbar>
+<mat-drawer-container class="example-container h-100" autosize>
+  <mat-drawer #drawer class="example-sidenav" mode="side">
+
+    <span *ngFor="let item of navItems">
+      <!-- Handle branch node buttons here -->
+      <span *ngIf="item.children && item.children.length > 0">
+        <button mat-button [matMenuTriggerFor]="menu.childMenu" [disabled]="item.disabled">
+          {{item.displayName}}
+        </button>
+        <app-navs #menu [items]="item.children"></app-navs>
+      </span>
+      <!-- Leaf node buttons here -->
+      <span *ngIf="!item.children || item.children.length === 0">
+        <button mat-button color="primary" [routerLink]="item.route">
+          {{item.displayName}}
+        </button>
+      </span>
+    </span>
+
+  </mat-drawer>
+
+  <div class="example-sidenav-content">
+    TEST
+  </div>
+
+</mat-drawer-container>
