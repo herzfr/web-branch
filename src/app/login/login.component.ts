@@ -20,7 +20,6 @@ declare var $: any;
 export class LoginComponent implements OnInit {
 
   private serverUrl = 'http://10.62.10.28:8080/socket'
-  private title = 'WebSockets chat';
   private stompClient;
 
   private branch;
@@ -86,10 +85,14 @@ export class LoginComponent implements OnInit {
       $('.container-fluid').addClass('modalBlur');
       var ipSocket = this.selectedIp.split(".").join("")
       var userName = this.loginForm.get('username').value;
-      var socket = ipSocket + "x" + userName;
-      console.log(socket);
+      var socket = "log" + ipSocket + "x" + userName;
+
+      console.log("destination : ", socket);
 
       this.initializeWebSocketConnection(socket);
+
+
+
     } else {
       alert('Silahkan masukan username')
     }
@@ -101,6 +104,11 @@ export class LoginComponent implements OnInit {
     let authenticate = new LoginModel;
     authenticate.password = this.loginForm.value.username;
     authenticate.username = this.loginForm.value.username;
+
+    $('#verify').modal('hide')
+    $('.container-fluid').removeClass('modalBlur');
+
+    this.router.navigate(['/dashboard'])
 
     // this.auth.authenticate(authenticate).subscribe(data => {
     //   console.log(data.status);
@@ -121,11 +129,24 @@ export class LoginComponent implements OnInit {
     this.stompClient = Stomp.over(ws);
     let that = this;
     this.stompClient.connect({}, function (frame) {
+
+      console.log("connected tersambung");
+
+
       that.stompClient.subscribe("/" + socket, (message) => {
-        if (message.body) {
-          $(".chat").append("<div class='message'>" + message.body + "</div>")
-          console.log(message.body);
-        }
+
+        console.log(JSON.parse(message.body));
+
+        // if (message.body) {
+
+
+        //   console.log(message.body);
+
+        // }
+      }, err => {
+        console.log(err);
+
+
       });
     });
   }
