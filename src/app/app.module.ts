@@ -1,12 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { NotifierModule, notifierCustomConfigFactory, NotifierOptions } from "angular-notifier";
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CryptoService } from './services/crypto.service';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthenticateService } from './services/authenticate.service';
 import { AuthGuard } from './services/auth.guard';
-import { NotifierSetting } from './config/notifier-setting';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,6 +19,9 @@ import { MaterialModule } from './material.modul';
 import { JsonAppConfigService } from './services/json-app-config.service';
 import { AppConfiguration } from './models/app.configuration';
 import { NavsComponent } from './navs/navs.component';
+import { LottieModule } from 'ngx-lottie';
+import { DialogErrorComponent } from './dialog/dialog-error/dialog-error.component';
+import { DialogService } from './services/dialog.service';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -35,8 +36,10 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     HomeComponent,
     Page404Component,
     NavigationComponent,
-    NavsComponent
+    NavsComponent,
+    DialogErrorComponent
   ],
+  entryComponents: [DialogErrorComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -47,12 +50,12 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    NotifierModule.withConfig(NotifierSetting),
     NgxBootstrapModule,
-    MaterialModule
+    MaterialModule,
+    LottieModule.forRoot({ player: playerFactory, useCache: true }),
   ],
   providers: [
-    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService,
+    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],
@@ -67,3 +70,6 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+export function playerFactory() {
+  return import('lottie-web');
+}

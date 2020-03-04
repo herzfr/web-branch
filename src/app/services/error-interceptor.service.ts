@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
-import { NotifierService } from 'angular-notifier';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -9,7 +8,8 @@ import { tap } from 'rxjs/operators';
 })
 export class ErrorInterceptorService implements HttpInterceptor {
 
-  constructor(private notifier: NotifierService) { }
+  // constructor(private notifier: NotifierService) { }
+  constructor() { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
@@ -19,16 +19,16 @@ export class ErrorInterceptorService implements HttpInterceptor {
       }, error => {
         if (error instanceof HttpErrorResponse) {
           if (error.error === null) {
-            this.showNotification('error', error.message);
+            // this.showNotification('error', error.message);
           } else {
-            this.showNotification('error', error.message);
+            // this.showNotification('error', error.message);
           }
         }
       }));
   }
 
   public showNotification(type: string, message: string): void {
-    this.notifier.notify(type, message);
+    // this.notifier.notify(type, message);
   }
 
 }

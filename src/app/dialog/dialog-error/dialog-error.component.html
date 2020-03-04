@@ -1,0 +1,14 @@
+<mat-dialog-content>
+  <ng-lottie [options]="options" (animationCreated)="animationCreated($event)">
+  </ng-lottie>
+
+  <p class="text-center"><strong> {{message}}</strong></p>
+  <p class="text-center"><strong> {{message2}}</strong></p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-center">
+  <div class="button_cont">
+    <Button class="btnClose" [mat-dialog-close]="true" (click)="close()">Close</Button>
+  </div>
+</mat-dialog-actions>
