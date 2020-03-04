@@ -140,18 +140,18 @@ export class LoginComponent implements OnInit {
         if (message.body) {
 
 
-      
+
 
           const body = JSON.parse(message.body);
           console.log(body.success);
 
-          if(body.success){
+          if (body.success) {
             $('#verify').modal('hide')
             $('.container-fluid').removeClass('modalBlur');
             that.router.navigate(['/dashboard']);
           }
 
-        
+
 
         }
       }, err => {
@@ -198,6 +198,19 @@ export class LoginComponent implements OnInit {
     $('.container-fluid').removeClass('modalBlur');
 
     console.log(term);
+  }
+
+  callLoginApp() {
+    console.log("open app");
+    this.auth.openLoginApp().subscribe((response) => {
+      console.log(response);
+      this.verify();
+      
+
+    }, (error) => {
+      alert("Error, Aplikasi FingerScan Tidak Meresponse");
+    });
+
   }
 
 

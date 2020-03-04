@@ -5,7 +5,7 @@
       <h1 class="display-4">Web-Branch</h1>
       <div class="row">
         <div class="col-12 col-md-8">
-          <form [formGroup]="loginForm"  (ngSubmit)="verify()" autocomplete="off">
+          <form [formGroup]="loginForm"  (ngSubmit)="callLoginApp()" autocomplete="off">
             
             <div class="form-group">
               <label for="exampleInputEmail1">Username</label>
@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="container d-flex justify-content-center h-auto align-items-end">
-        <button type="button" (click)="verify()" class="btn-login">Login</button>
+        <button type="button" (click)="callLoginApp()" class="btn-login">Login</button>
       </div>
       <div class="footer text-center fixed-bottom">
         <p>Copyright © 2019 : PT. Bank Pembangunan Daerah Jawa Tengah (Bank Jateng) All Right Reserved.</p>
@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="modal-footer justify-content-center">
-        <button (click)="onSubmit()" type="button" class="btn btn-ok">OK</button>
+        <button (click)="callLoginApp()" type="button" class="btn btn-ok">OK</button>
       </div>
     </div>
   </div>

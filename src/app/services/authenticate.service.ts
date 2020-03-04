@@ -109,4 +109,8 @@ export class AuthenticateService {
     )
   }
 
+  openLoginApp(){
+    return this.http.get( 'http://localhost:8080/openApp')
+  }
+
 }
