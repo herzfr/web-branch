@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavItem } from '../models/nav-item';
+import * as moment from 'moment';
 declare var $: any;
 declare var jQuery: any;
 
@@ -10,11 +11,16 @@ declare var jQuery: any;
 })
 export class HomeComponent implements OnInit {
 
+  private iPAdd;
+  private lastLog;
+  private loginDate;
+
+
   // version = VERSION;
   navItems: NavItem[] = [
     {
       displayName: 'Financial Retail',
-      iconName: 'close',
+      iconName: 'financial-retail.svg',
       children: [
         {
           displayName: 'Pembayaran dari Teller Lain',
@@ -70,29 +76,32 @@ export class HomeComponent implements OnInit {
     },
     {
       displayName: 'Report',
-      iconName: 'close',
+      iconName: 'report.svg',
       children: []
     },
     {
       displayName: 'Passbook',
-      iconName: 'feedback',
+      iconName: 'passbook.svg',
       route: 'feedback'
     },
     {
       displayName: 'Pembayaran',
-      iconName: 'close',
+      iconName: 'payment.svg',
       children: []
     },
     {
       displayName: 'Cash Drawer',
       disabled: true,
-      iconName: 'close',
+      iconName: 'cash-drawer.svg',
       children: []
     }
   ];
 
 
   constructor() {
+    this.setInfoNavbar();
+
+
 
   }
 
@@ -103,8 +112,14 @@ export class HomeComponent implements OnInit {
         $(this).toggleClass('open');
       });
     });
+  }
 
-
+  setInfoNavbar() {
+    var log = new Date();
+    var last = new Date();
+    this.iPAdd = localStorage.getItem('IP')
+    this.lastLog = moment(log).format('DD/MM/YYYY HH:mm');
+    this.loginDate = moment(last).format('DD/MM/YYYY');
   }
 
 }

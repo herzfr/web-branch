@@ -1,0 +1,25 @@
+::ng-deep .mat-menu-panel {
+  min-width: 300px !important;
+}
+
+
+::ng-deep .mat-menu-content {
+  min-width: inherit;
+}
+
+
+.mat-menu-item {
+  outline: none;
+  transition: all 0.3s ease;
+  color: #133764;
+}
+
+.mat-menu-item:hover:not([disabled]) {
+  background: #E2E7ED;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+
+.text {
+  color: #133764;
+}

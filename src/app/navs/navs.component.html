@@ -2,17 +2,18 @@
   <span *ngFor="let child of items">
     <!-- Handle branch node menu items -->
     <span *ngIf="child.children && child.children.length > 0">
-      <button mat-menu-item color="primary" [matMenuTriggerFor]="menu.childMenu">
-        <mat-icon>{{child.iconName}}</mat-icon>
-        <span>{{child.displayName}}</span>
+      <button class="justify-content-between d-flex align-items-center" mat-menu-item color="primary"
+        [matMenuTriggerFor]="menu.childMenu">
+        <span class="text">{{child.displayName}}</span>
+        <mat-icon class="text-right">{{child.iconName}}</mat-icon>
       </button>
       <app-navs #menu [items]="child.children"></app-navs>
     </span>
     <!-- Handle leaf node menu items -->
     <span *ngIf="!child.children || child.children.length === 0">
-      <button mat-menu-item [routerLink]="child.route">s
+      <button class="justify-content-between d-flex align-items-center" mat-menu-item [routerLink]="child.route">
+        <span class="text">{{child.displayName}}</span>
         <mat-icon>{{child.iconName}}</mat-icon>
-        <span>{{child.displayName}}</span>
       </button>
     </span>
   </span>

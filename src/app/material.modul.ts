@@ -67,7 +67,9 @@ import { PlatformModule } from '@angular/cdk/platform';
         MatToolbarModule,
         MatTooltipModule,
         MatNativeDateModule,
-        MatFormFieldModule
+        MatFormFieldModule,
+        MatTableModule,
+        MatPaginatorModule
     ]
 })
 export class MaterialModule { }
