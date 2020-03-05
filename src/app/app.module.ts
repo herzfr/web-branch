@@ -22,6 +22,7 @@ import { NavsComponent } from './navs/navs.component';
 import { LottieModule } from 'ngx-lottie';
 import { DialogErrorComponent } from './dialog/dialog-error/dialog-error.component';
 import { DialogService } from './services/dialog.service';
+import { DialogTransactionComponent } from './dialog/dialog-transaction/dialog-transaction.component';
 import { MatTableModule } from '@angular/material';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
@@ -38,9 +39,10 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     Page404Component,
     NavigationComponent,
     NavsComponent,
-    DialogErrorComponent
+    DialogErrorComponent,
+    DialogTransactionComponent
   ],
-  entryComponents: [DialogErrorComponent],
+  entryComponents: [DialogErrorComponent, DialogTransactionComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

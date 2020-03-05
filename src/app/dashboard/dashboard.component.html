@@ -4,7 +4,8 @@
     <h1 class="display-4">Selamat Datang</h1>
   </div>
   <div class="col-6 col-md-4 d-flex align-items-center justify-content-end">
-    <button class="btn-chat"><i class="fad fa-comments-alt fa-2x"></i></button>
+    <button matBadge="8" matBadgePosition="before" matBadgeColor="accent" class="btn-chat"><i
+        class="fad fa-comments-alt fa-2x"></i></button>
     <div class="input-search ml-3 mr-3">
       <input matInput (keyup)="applyFilter($event)" id="search" type="text" placeholder="       Search . . ." required>
     </div>
