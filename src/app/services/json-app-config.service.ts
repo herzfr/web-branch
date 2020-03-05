@@ -18,6 +18,7 @@ export class JsonAppConfigService extends AppConfiguration {
       .then(data => {
         this.ipAs = data.ipAs;
         this.ipServer = data.ipServer;
+        this.ipSocketServer = data.ipSocketServer;
         this.requestTimeout = data.requestTimeout;
         console.log("configuration loaded");
       })

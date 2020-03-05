@@ -23,6 +23,7 @@ import { LottieModule } from 'ngx-lottie';
 import { DialogErrorComponent } from './dialog/dialog-error/dialog-error.component';
 import { DialogService } from './services/dialog.service';
 import { DialogTransactionComponent } from './dialog/dialog-transaction/dialog-transaction.component';
+import { MatTableModule } from '@angular/material';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -54,6 +55,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     HttpClientModule,
     NgxBootstrapModule,
     MaterialModule,
+    MatTableModule,
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
   ],
   providers: [

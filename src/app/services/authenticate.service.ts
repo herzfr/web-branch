@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient, HttpBackend } from '@angular/common/http';
 import { catchError, timeout, } from 'rxjs/operators';
 import { of } from 'rxjs';
-import * as securels from 'secure-ls';
+// import * as securels from 'secure-ls';
 import { AppConfiguration } from '../models/app.configuration';
 import { LoginModel } from '../models/login-model';
 
@@ -14,7 +14,7 @@ export class AuthenticateService {
   private apiUrl: string;
   private timeOut: number;
   private localHost: string = "http://localhost:1111/";
-  private ls = new securels({ encodingType: 'aes' });
+  // private ls = new securels({ encodingType: 'aes' });
 
   constructor(private AppConfiguration: AppConfiguration, private http: HttpClient) {
     this.apiUrl = this.AppConfiguration.ipServer;
