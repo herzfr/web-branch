@@ -10,7 +10,6 @@ import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 
 import { LoginModel } from '../models/login-model';
-import { UserData } from '../models/UserData';
 
 declare var $: any;
 
@@ -21,8 +20,7 @@ declare var $: any;
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-
-  private serverUrl = 'http://10.62.10.28:8080/socket'
+  private serverUrl = 'https://10.62.10.28:8444/socket'
   private stompClient;
 
   private branch;
@@ -110,7 +108,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     let ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(ws);
     let that = this;
-    this.stompClient.connect({}, function (frame) {
+    this.stompClient.connect({"testing":"testaja"}, function (frame) {
+
 
       that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
 
