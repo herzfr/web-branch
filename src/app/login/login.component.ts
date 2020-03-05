@@ -108,7 +108,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     let ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(ws);
     let that = this;
-    this.stompClient.connect({"testing":"testaja"}, function (frame) {
+    this.stompClient.connect({ "testing": "testaja" }, function (frame) {
       that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
 
       that.stompClient.subscribe("/" + socket, (message) => {
@@ -150,10 +150,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   postTerm() {
-    var term: any = [{
+    var term: any = {
       "terminalID": this.selectedTerm,
       "branchCode": this.selectedBranch,
-    }]
+    }
     localStorage.setItem('terminal', JSON.stringify(term))
     $('#modalTerm').modal('hide');
     $('.container-fluid').removeClass('modalBlur');

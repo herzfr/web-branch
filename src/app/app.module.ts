@@ -24,6 +24,7 @@ import { DialogErrorComponent } from './dialog/dialog-error/dialog-error.compone
 import { DialogService } from './services/dialog.service';
 import { DialogTransactionComponent } from './dialog/dialog-transaction/dialog-transaction.component';
 import { MatTableModule } from '@angular/material';
+import { WebsocketService } from './services/websocket.service';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -59,7 +60,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
   ],
   providers: [
-    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService,
+    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],
