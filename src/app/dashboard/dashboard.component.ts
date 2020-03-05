@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { NavItem } from '../models/nav-item';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
+import { DialogService } from '../services/dialog.service';
+import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
 declare var $: any;
 declare var jQuery: any;
 
@@ -17,7 +19,7 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor() {
+  constructor(private dialog: DialogService, public dlg: MatDialog) {
 
   }
 
@@ -32,8 +34,9 @@ export class DashboardComponent implements OnInit {
   }
 
   nextQueue() {
-    $('#transaction-queue').modal('show')
+    this.dialog.transactionDialog("Test", "uhuy")
   }
+
 
 }
 

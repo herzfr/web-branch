@@ -1,0 +1,111 @@
+<div mat-dialog-title>
+  <ul class="container justify-content-center mb-0">
+    <li class="list-inline-item row justify-content-center">
+      <img id="logoQue" src="./assets/svgs/logo-blue.svg" alt="">
+    </li>
+    <li class="list-inline-item row justify-content-center">034 - Cabang Utama</li>
+  </ul>
+</div>
+<mat-dialog-content class="mat-typography">
+
+  <div class="form-group row mb-0 ml-1 mr-1">
+    <label class="col-sm-6 col-form-label font-weight-bold p-0">Date</label>
+    <div class="col-sm-6 text-right p-0">
+      <label class="font-weight-bold">Time</label>
+    </div>
+  </div>
+
+
+  <div class="form-group row mb-0 ml-1 mr-1">
+    <label class="col-sm-6 col-form-label font-weight-normal p-0">01 JAN 2020</label>
+    <div class="col-sm-6 text-right p-0">
+      <label class="font-weight-normal">13:45</label>
+    </div>
+  </div>
+
+  <div class="form-group row ml-1 mr-1 align-items-center main-list pt-2 pb-2">
+    <h2 class="h4 mb-0 col-sm-6 col-form-label font-weight-bold p-0 text-left ">Ringkasan Transaksi</h2>
+    <h2 class="h4 mb-0 col-sm-6 col-form-label font-weight-bold p-0 text-right">A 008</h2>
+  </div>
+
+  <div class="row">
+    <div class="col-8 col-md-8">
+      <p class="h6 ml-1 mr-1">Data Nasabah</p>
+      <div class="container-fluid d-flex justify-content-between">
+        <div class="col text-center">
+          <img src="../../../assets/png/avatar.png" alt="..." class="img-thumbnail rounded">
+          <p class="text-center font-weight-bold">Foto Nasabah</p>
+        </div>
+        <div class="col text-center">
+          <img src="../../../assets/png/signature.png" alt="..." class="img-thumbnail retangle">
+          <p class="text-center font-weight-bold">Tanda Tangan Nasabah</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-4 col-md-4 text-center">
+      <button class="col-12 btn-nasabah mb-2 mt-2"><i class="fad fa-plus mr-3"></i><span class="align-items-center">Foto
+          Nasabah</span></button>
+      <button class="col-12 btn-nasabah mb-2 mt-2">SCAN TTD/ Surat Kuasa</button>
+    </div>
+  </div>
+
+  <div class="form-group row mb-0">
+    <label class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama <span
+        class="text-right">:</span></label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control-plaintext col-6" id="nameName">
+    </div>
+  </div>
+
+  <hr class="m-3">
+
+  <mat-horizontal-stepper labelPosition="bottom" #stepper>
+    <mat-step [stepControl]="firstFormGroup">
+      <form [formGroup]="firstFormGroup">
+        <ng-template matStepLabel>Fill out your name</ng-template>
+
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama
+            <span class="text-right">:</span></label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext col-6" id="nameName">
+          </div>
+        </div>
+
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="secondFormGroup" optional>
+      <form [formGroup]="secondFormGroup">
+        <ng-template matStepLabel>Fill out your address</ng-template>
+
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama
+            <span class="text-right">:</span></label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext col-6" id="nameName">
+          </div>
+        </div>
+
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Done</ng-template>
+
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama
+          <span class="text-right">:</span></label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control-plaintext col-6" id="nameName">
+        </div>
+      </div>
+
+    </mat-step>
+  </mat-horizontal-stepper>
+
+
+
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button mat-button mat-dialog-close>Prosses</button>
+  <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
+</mat-dialog-actions>
