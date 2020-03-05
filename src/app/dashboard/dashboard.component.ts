@@ -31,6 +31,10 @@ export class DashboardComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  nextQueue() {
+    $('#transaction-queue').modal('show')
+  }
+
 }
 
 
