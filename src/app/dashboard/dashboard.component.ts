@@ -75,22 +75,18 @@ export class DashboardComponent implements OnInit {
       // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
 
       that.stompClient.subscribe(socket, (message) => {
+        if (message.body) {
+          console.log(JSON.parse(message.body));
 
-        console.log(message);
-
-
-        // if (message.body) {
-
-        //   console.log(message.body);
-
-        // }
-
+          if (JSON.parse(message.body).success) {
+            console.log("Success bro");
+          }
+        }
       }, () => {
-        // that.dialog.errorDialog("Error", "Koneksi Terputus");
+        that.dialog.errorDialog("Error", "Koneksi Terputus");
       });
     }, err => {
-
-      // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
+      that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
     });
   }
 
