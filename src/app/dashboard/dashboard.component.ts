@@ -5,6 +5,7 @@ import { MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { DialogService } from '../services/dialog.service';
 import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
 import { WebsocketService } from '../services/websocket.service';
+import * as moment from 'moment';
 declare var $: any;
 declare var jQuery: any;
 
@@ -40,7 +41,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.getDataTableQ();
     this.dataSource.paginator = this.paginator;
-    // this.connect();
+    this.connect();
   }
 
   getDataTableQ() {
@@ -57,6 +58,7 @@ export class DashboardComponent implements OnInit {
         if (res.hasOwnProperty(key)) {
           const element = res[key];
           let transBf = JSON.parse(element.transbuff);
+          let date = moment(element.timestampentry).format('DD/MM/YYYY HH:mm:ss')
           // this.DataTableQ.push(element)
           switch (transBf.tp) {
             case 'trk':
@@ -75,8 +77,10 @@ export class DashboardComponent implements OnInit {
               break;
           }
 
-          element.transbuff = transBf;
-          console.log(element);
+
+          element.transbuff = JSON.stringify(transBf);
+          element.timestampentry = date;
+          console.log(transBf);
           data.push(element)
         }
       }
@@ -87,7 +91,7 @@ export class DashboardComponent implements OnInit {
       for (var i = 1; i < data.length; i++) {
         var alreadyExistsAt = this.existsAt(_data, 'queueno', data[i].queueno);
         if (alreadyExistsAt !== false) {
-          _data[alreadyExistsAt].writer += ', ' + data[i].writer;
+          _data[alreadyExistsAt].transbuff += ', ' + data[i].transbuff;
         } else {
           _data.push(data[i]);
         }
@@ -158,6 +162,7 @@ export class DashboardComponent implements OnInit {
 
           if (JSON.parse(message.body).success) {
             console.log("Success bro");
+            that.getDataTableQ();
           }
         }
       }, () => {
