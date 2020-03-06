@@ -34,7 +34,6 @@ export class DashboardComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private dialog: DialogService, public dlg: MatDialog, private websocket: WebsocketService, private queueServ: QueueService) {
-
   }
 
 
@@ -78,20 +77,12 @@ export class DashboardComponent implements OnInit {
 
           element.transbuff = transBf;
           console.log(element);
-          // if (element.queueno === element.queueno) {
-
-          // }
           data.push(element)
         }
       }
 
-
-      // var merged = Object.assign(data);
-
       var _data = [];
       _data.push(data[0]);
-
-
 
       for (var i = 1; i < data.length; i++) {
         var alreadyExistsAt = this.existsAt(_data, 'queueno', data[i].queueno);
