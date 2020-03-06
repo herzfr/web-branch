@@ -78,7 +78,7 @@ export class DashboardComponent implements OnInit {
               break;
           }
 
-          element.transbuff = "[" + JSON.stringify(transBf) + "]";
+          element.transbuff = JSON.stringify(transBf);
           element.timestampentry = date;
 
           data.push(element)
@@ -88,11 +88,11 @@ export class DashboardComponent implements OnInit {
 
 
       var _data = [];
-      var _subData = new Array;
       _data.push(data[0]);
 
       for (var i = 1; i < data.length; i++) {
         var alreadyExistsAt = this.existsAt(_data, 'queueno', data[i].queueno);
+        // console.log(alreadyExistsAt);
         if (alreadyExistsAt !== false) {
           _data[alreadyExistsAt].transbuff += ', ' + data[i].transbuff;
         } else {
@@ -100,8 +100,22 @@ export class DashboardComponent implements OnInit {
         }
       }
 
-      console.log(_data);
+      // console.log(_data);
 
+
+
+      for (const key in _data) {
+        if (_data.hasOwnProperty(key)) {
+          const element = _data[key];
+          console.log(element.transbuff);
+          _data[key].transbuff = "[" + element.transbuff + "]";
+          let parse = JSON.parse(_data[key].transbuff)
+          _data[key].transbuff = parse;
+        }
+      }
+
+
+      console.log(_data);
       this.DataTableQ = _data;
       this.dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
 

@@ -56,7 +56,9 @@
           <!-- Weight Column -->
           <ng-container matColumnDef="type">
             <th mat-header-cell *matHeaderCellDef> TIPE TRANSAKSI </th>
-            <td mat-cell *matCellDef="let element "> {{element.transbuff}} </td>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngFor="let item of element">{{ item }}</ng-container>
+            </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
