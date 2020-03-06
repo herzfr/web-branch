@@ -10,6 +10,8 @@ declare var jQuery: any;
 
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import { QueueService } from '../services/queue.service';
+import { QTable } from '../models/queue-table';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,19 +20,105 @@ import * as SockJS from 'sockjs-client';
 })
 export class DashboardComponent implements OnInit {
 
+  waitingStatusX: string = '999';
+  waitingStatusY: string = '000';
+
+  DataTableQ: QTable[];
+  // ELEMENT_DATA: QTable[];
+
   displayedColumns = ['queue', 'time', 'type'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private dialog: DialogService, public dlg: MatDialog, private websocket: WebsocketService) {
+  constructor(private dialog: DialogService, public dlg: MatDialog, private websocket: WebsocketService, private queueServ: QueueService) {
 
   }
 
 
   ngOnInit() {
+    this.getDataTableQ();
     this.dataSource.paginator = this.paginator;
-    this.connect();
+    // this.connect();
+  }
+
+  getDataTableQ() {
+
+    console.log('jalan');
+
+    let branch = JSON.parse(localStorage.getItem('terminal'))
+    let branchCode = branch.branchCode;
+
+    this.queueServ.getDataQue(branchCode, this.waitingStatusX).subscribe(res => {
+      console.log(res);
+      let data = new Array;
+      for (const key in res) {
+        if (res.hasOwnProperty(key)) {
+          const element = res[key];
+          let transBf = JSON.parse(element.transbuff);
+          // this.DataTableQ.push(element)
+          switch (transBf.tp) {
+            case 'trk':
+              transBf.tp = 'Tarik Tunai';
+              break;
+            case 'str':
+              transBf.tp = 'Setor Tunai';
+              break;
+            case 'tar':
+              transBf.tp = 'Transfer Antar Rekening';
+              break;
+            case 'tab':
+              transBf.tp = 'Transfer Antar Bank';
+              break;
+            default:
+              break;
+          }
+
+          element.transbuff = transBf;
+          console.log(element);
+          // if (element.queueno === element.queueno) {
+
+          // }
+          data.push(element)
+        }
+      }
+
+
+      // var merged = Object.assign(data);
+
+      var _data = [];
+      _data.push(data[0]);
+
+
+
+      for (var i = 1; i < data.length; i++) {
+        var alreadyExistsAt = this.existsAt(_data, 'queueno', data[i].queueno);
+        if (alreadyExistsAt !== false) {
+          _data[alreadyExistsAt].writer += ', ' + data[i].writer;
+        } else {
+          _data.push(data[i]);
+        }
+      }
+
+      console.log(_data);
+
+      this.DataTableQ = _data;
+      this.dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
+
+    })
+
+    setTimeout(() => {
+      console.log(this.DataTableQ);
+    }, 1000)
+  }
+
+  existsAt(array, key, value) {
+    for (var i = 0; i < array.length; i++) {
+      if (array[i][key] == value) {
+        return i;
+      }
+    }
+    return false;
   }
 
   applyFilter(event: Event) {
@@ -49,7 +137,7 @@ export class DashboardComponent implements OnInit {
     const branchCode = ls.branchCode;
     const socketChannel = "tellerx" + branchCode;
     console.log(socketChannel);
-    
+
     // this.websocket.initializeWebSocketConnection(socketChannel);
 
     this.initializeWebSocketConnection(socketChannel);
@@ -71,7 +159,7 @@ export class DashboardComponent implements OnInit {
       that.stompClient.subscribe("/" + socket, (message) => {
 
         console.log(message);
-        
+
 
         if (message.body) {
 

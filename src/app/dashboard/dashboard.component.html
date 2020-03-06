@@ -34,7 +34,7 @@
         <div class="col-8">
           <mat-paginator class="col" [pageSizeOptions]="[10, 20]" showFirstLastButtons></mat-paginator>
         </div>
-      </div> 
+      </div>
     </div>
     <div class="card-body">
 
@@ -44,19 +44,19 @@
           <!-- Position Column -->
           <ng-container matColumnDef="queue">
             <th mat-header-cell *matHeaderCellDef> NOMOR ANTRIAN </th>
-            <td mat-cell *matCellDef="let element"> {{element.queue}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.queueno}} </td>
           </ng-container>
 
           <!-- Name Column -->
           <ng-container matColumnDef="time">
             <th mat-header-cell *matHeaderCellDef> WAKTU </th>
-            <td mat-cell *matCellDef="let element"> {{element.time}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.queuedate}} </td>
           </ng-container>
 
           <!-- Weight Column -->
           <ng-container matColumnDef="type">
             <th mat-header-cell *matHeaderCellDef> TIPE TRANSAKSI </th>
-            <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+            <td mat-cell *matCellDef="let element "> {{element.transbuff.tp}} </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
