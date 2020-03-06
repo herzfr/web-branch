@@ -7,7 +7,7 @@
         <span></span>
         <span></span>
       </div>
-      <img class="pl-3 pr-3" src="../../assets/svgs/logo-blue.svg" alt="logo">
+      <img class="pl-3 pr-3" src="/assets/svgs/logo-blue.svg" alt="logo">
     </div>
     <div class="col-12 col-sm-6 col-md-9 d-flex align-items-center justify-content-end">
 
@@ -61,7 +61,7 @@
       <!-- Handle branch node buttons here -->
       <span *ngIf="item.children && item.children.length > 0">
         <button class="container-fluid text-left" mat-button [matMenuTriggerFor]="menu.childMenu"
-          [disabled]="item.disabled"><img class="pr-3" src="../../assets/svgs/{{ item.iconName }}" alt="">
+          [disabled]="item.disabled"><img class="pr-3" src="/assets/svgs/{{ item.iconName }}" alt="">
           {{item.displayName}}
         </button>
         <app-navs #menu [items]="item.children"></app-navs>
@@ -69,7 +69,7 @@
       <!-- Leaf node buttons here -->
       <span *ngIf="!item.children || item.children.length === 0">
         <button class="container-fluid text-left" mat-button color="primary" [routerLink]="item.route">
-          <img class="pr-3" src="../../assets/svgs/{{ item.iconName }}" alt="">
+          <img class="pr-3" src="/assets/svgs/{{ item.iconName }}" alt="">
           {{item.displayName}}
         </button>
       </span>
