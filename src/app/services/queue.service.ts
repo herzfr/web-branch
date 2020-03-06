@@ -29,6 +29,7 @@ export class QueueService {
     // let body = "?branchcode=" + brch + "&status=" + stus;
 
     return this.http.get(this.apiUrl + '/api/queue/getqueue?' + params, this.httpOptions)
+    
   }
 
   getDataQueByNo(brch: string, stus: number, que: number) {

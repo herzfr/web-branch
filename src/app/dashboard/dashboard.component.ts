@@ -41,7 +41,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.getDataTableQ();
     this.dataSource.paginator = this.paginator;
-    // this.connect();
+    this.connect();
   }
 
   getDataTableQ() {
@@ -78,15 +78,9 @@ export class DashboardComponent implements OnInit {
 
           element.transbuff = transBf;
           console.log(element);
-          // if (element.queueno === element.queueno) {
-
-          // }
           data.push(element)
         }
       }
-
-
-      // var merged = Object.assign(data);
 
       var _data = [];
       _data.push(data[0]);
