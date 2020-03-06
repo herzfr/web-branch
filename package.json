@@ -32,6 +32,7 @@
     "ng-connection-service": "^1.0.4",
     "ngx-bootstrap": "^5.3.2",
     "ngx-lottie": "^5.3.2",
+    "number-to-words": "^1.2.4",
     "popper.js": "^1.16.1",
     "rxjs": "~6.4.0",
     "rxjs-websockets": "^8.0.0",

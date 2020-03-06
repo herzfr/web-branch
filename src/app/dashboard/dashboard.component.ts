@@ -8,6 +8,8 @@ import { WebsocketService } from '../services/websocket.service';
 declare var $: any;
 declare var jQuery: any;
 
+
+
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { QueueService } from '../services/queue.service';
@@ -133,18 +135,21 @@ export class DashboardComponent implements OnInit {
   connect() {
 
     let ls = JSON.parse(localStorage.getItem("terminal"));
-    console.log(ls.branchCode);
     const branchCode = ls.branchCode;
-    const socketChannel = "tellerx" + branchCode;
-    console.log(socketChannel);
+    // const branchWord = converter.toWords(branchCode).split("-").join("");
+    const socketChannel = "/tlrx" + branchCode;
 
+    console.log(socketChannel);
     // this.websocket.initializeWebSocketConnection(socketChannel);
+    // console.log("branch code ", branchCode.replace(/^0+/, ''));
+    // console.log(a.split("-").join(""));
 
     this.initializeWebSocketConnection(socketChannel);
   }
 
 
   private serverUrl = 'https://10.62.10.28:8444/socket';
+
   private stompClient;
 
 
@@ -156,23 +161,19 @@ export class DashboardComponent implements OnInit {
     this.stompClient.connect({ "testing": "testaja" }, function (frame) {
       // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
 
-      that.stompClient.subscribe("/" + socket, (message) => {
-
-        console.log(message);
-
-
+      that.stompClient.subscribe(socket, (message) => {
         if (message.body) {
+          console.log(JSON.parse(message.body));
 
-          console.log(message.body);
-
+          if (JSON.parse(message.body).success) {
+            console.log("Success bro");
+          }
         }
-
       }, () => {
-        // that.dialog.errorDialog("Error", "Koneksi Terputus");
+        that.dialog.errorDialog("Error", "Koneksi Terputus");
       });
     }, err => {
-
-      // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
+      that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
     });
   }
 
