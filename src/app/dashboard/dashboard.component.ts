@@ -5,6 +5,7 @@ import { MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { DialogService } from '../services/dialog.service';
 import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
 import { WebsocketService } from '../services/websocket.service';
+import * as moment from 'moment';
 declare var $: any;
 declare var jQuery: any;
 
@@ -34,7 +35,6 @@ export class DashboardComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private dialog: DialogService, public dlg: MatDialog, private websocket: WebsocketService, private queueServ: QueueService) {
-
   }
 
 
@@ -58,6 +58,8 @@ export class DashboardComponent implements OnInit {
         if (res.hasOwnProperty(key)) {
           const element = res[key];
           let transBf = JSON.parse(element.transbuff);
+          let date = moment(element.timestampentry).format('DD/MM/YYYY HH:mm:ss')
+          let transf = new Array;
           // this.DataTableQ.push(element)
           switch (transBf.tp) {
             case 'trk':
@@ -76,21 +78,23 @@ export class DashboardComponent implements OnInit {
               break;
           }
 
-          element.transbuff = transBf;
-          console.log(element);
+          element.transbuff = "[" + JSON.stringify(transBf) + "]";
+          element.timestampentry = date;
+
           data.push(element)
         }
       }
 
+
+
       var _data = [];
+      var _subData = new Array;
       _data.push(data[0]);
-
-
 
       for (var i = 1; i < data.length; i++) {
         var alreadyExistsAt = this.existsAt(_data, 'queueno', data[i].queueno);
         if (alreadyExistsAt !== false) {
-          _data[alreadyExistsAt].writer += ', ' + data[i].writer;
+          _data[alreadyExistsAt].transbuff += ', ' + data[i].transbuff;
         } else {
           _data.push(data[i]);
         }
@@ -161,6 +165,7 @@ export class DashboardComponent implements OnInit {
 
           if (JSON.parse(message.body).success) {
             console.log("Success bro");
+            that.getDataTableQ();
           }
         }
       }, () => {
