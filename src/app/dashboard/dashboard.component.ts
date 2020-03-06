@@ -59,6 +59,7 @@ export class DashboardComponent implements OnInit {
           const element = res[key];
           let transBf = JSON.parse(element.transbuff);
           let date = moment(element.timestampentry).format('DD/MM/YYYY HH:mm:ss')
+          let transf = new Array;
           // this.DataTableQ.push(element)
           switch (transBf.tp) {
             case 'trk':
@@ -77,15 +78,17 @@ export class DashboardComponent implements OnInit {
               break;
           }
 
-
-          element.transbuff = JSON.stringify(transBf);
+          element.transbuff = "[" + JSON.stringify(transBf) + "]";
           element.timestampentry = date;
-          console.log(transBf);
+
           data.push(element)
         }
       }
 
+
+
       var _data = [];
+      var _subData = new Array;
       _data.push(data[0]);
 
       for (var i = 1; i < data.length; i++) {
