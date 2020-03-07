@@ -3,6 +3,11 @@ import { NavItem } from '../models/nav-item';
 import * as moment from 'moment';
 declare var $: any;
 declare var jQuery: any;
+import * as securels from 'secure-ls';
+import * as Stomp from 'stompjs';
+import * as SockJS from 'sockjs-client';
+import { DialogService } from '../services/dialog.service';
+
 
 @Component({
   selector: 'app-home',
@@ -14,9 +19,13 @@ export class HomeComponent implements OnInit {
   private iPAdd;
   private lastLog;
   private loginDate;
+  private userName = "";
+  private branchCode = "";
 
+  private serverUrl = 'https://10.62.10.28:8444/socket'
+  private stompClient;
 
-
+  secureLs = new securels({ encodingType: 'aes' });
 
   // version = VERSION;
   navItems: NavItem[] = [
@@ -100,11 +109,8 @@ export class HomeComponent implements OnInit {
   ];
 
 
-  constructor() {
+  constructor(private dialog: DialogService) {
     this.setInfoNavbar();
-
-
-
   }
 
   ngOnInit() {
@@ -114,6 +120,23 @@ export class HomeComponent implements OnInit {
         $(this).toggleClass('open');
       });
     });
+
+    this.userVoid();
+
+
+  
+
+  }
+
+
+  userVoid() {
+    const data = JSON.parse(this.secureLs.get("data"));
+    this.userName = data.username;
+    this.branchCode = data.branchcode;
+    const socketDestination = "usr"+ this.userName;
+
+    this.initializeWebSocketConnection(socketDestination);
+    
   }
 
   setInfoNavbar() {
@@ -123,5 +146,32 @@ export class HomeComponent implements OnInit {
     this.lastLog = moment(log).format('DD/MM/YYYY HH:mm');
     this.loginDate = moment(last).format('DD/MM/YYYY');
   }
+
+
+  initializeWebSocketConnection(socket) {
+    let ws = new SockJS(this.serverUrl);
+    this.stompClient = Stomp.over(ws);
+    this.stompClient.debug = null
+    let that = this;
+    this.stompClient.connect({ "testing": "testaja" }, function (frame) {
+
+
+      that.stompClient.subscribe("/" + socket, (message) => {
+
+        if (message.body) {
+
+          console.log("user log " + message.body);
+
+        }
+
+      }, () => {
+        that.dialog.errorDialog("Error", "Koneksi Terputus");
+      });
+    }, err => {
+      that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
+    });
+  }
+
+
 
 }

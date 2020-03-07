@@ -79,7 +79,7 @@ export class DashboardComponent implements OnInit {
               break;
           }
 
-          // element.transbuff = "[" + JSON.stringify(transBf) + "]";
+          element.transbuff = JSON.stringify(transBf);
           element.timestampentry = date;
 
           data.push(element)
@@ -93,6 +93,7 @@ export class DashboardComponent implements OnInit {
 
       for (var i = 1; i < data.length; i++) {
         var alreadyExistsAt = this.existsAt(_data, 'queueno', data[i].queueno);
+        // console.log(alreadyExistsAt);
         if (alreadyExistsAt !== false) {
           _data[alreadyExistsAt].transbuff += ', ' + data[i].transbuff;
         } else {
@@ -105,9 +106,21 @@ export class DashboardComponent implements OnInit {
       }
 
       // console.log(_data);
-      console.log("data : ", dataQ);
 
 
+
+      for (const key in _data) {
+        if (_data.hasOwnProperty(key)) {
+          const element = _data[key];
+          console.log(element.transbuff);
+          _data[key].transbuff = "[" + element.transbuff + "]";
+          let parse = JSON.parse(_data[key].transbuff)
+          _data[key].transbuff = parse;
+        }
+      }
+
+
+      console.log(_data);
       this.DataTableQ = _data;
       this.dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
 
@@ -155,7 +168,7 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  private serverUrl = 'https://10.62.10.28:8444/socket';
+  private serverUrl = 'https://192.168.137.1:8444/socket';
 
   private stompClient;
 
