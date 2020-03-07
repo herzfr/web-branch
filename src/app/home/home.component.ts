@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
   private userName = "";
   private branchCode = "";
 
-  private serverUrl = 'https://10.62.10.28:8444/socket'
+  private serverUrl = 'https://192.168.137.1:8444/socket'
   private stompClient;
 
   secureLs = new securels({ encodingType: 'aes' });
@@ -151,7 +151,7 @@ export class HomeComponent implements OnInit {
   initializeWebSocketConnection(socket) {
     let ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(ws);
-    this.stompClient.debug = null
+    // this.stompClient.debug = null
     let that = this;
     this.stompClient.connect({ "testing": "testaja" }, function (frame) {
 
