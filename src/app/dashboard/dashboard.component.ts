@@ -3,13 +3,10 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { NavItem } from '../models/nav-item';
 import { MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { DialogService } from '../services/dialog.service';
-import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
 import { WebsocketService } from '../services/websocket.service';
 import * as moment from 'moment';
 declare var $: any;
 declare var jQuery: any;
-
-
 
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
@@ -37,7 +34,6 @@ export class DashboardComponent implements OnInit {
   constructor(private dialog: DialogService, public dlg: MatDialog, private websocket: WebsocketService, private queueServ: QueueService) {
   }
 
-
   ngOnInit() {
     this.getDataTableQ();
     this.dataSource.paginator = this.paginator;
@@ -47,20 +43,25 @@ export class DashboardComponent implements OnInit {
   getDataTableQ() {
 
     console.log('jalan');
+    let dataQ;
 
     let branch = JSON.parse(localStorage.getItem('terminal'))
     let branchCode = branch.branchCode;
 
     this.queueServ.getDataQue(branchCode, this.waitingStatusX).subscribe(res => {
-      console.log(res);
+      // console.log(res);
       let data = new Array;
       for (const key in res) {
         if (res.hasOwnProperty(key)) {
           const element = res[key];
           let transBf = JSON.parse(element.transbuff);
           let date = moment(element.timestampentry).format('DD/MM/YYYY HH:mm:ss')
-          let transf = new Array;
+          // let transf = new Array;
           // this.DataTableQ.push(element)
+
+          // console.log(element);  
+
+
           switch (transBf.tp) {
             case 'trk':
               transBf.tp = 'Tarik Tunai';
@@ -97,6 +98,10 @@ export class DashboardComponent implements OnInit {
           _data[alreadyExistsAt].transbuff += ', ' + data[i].transbuff;
         } else {
           _data.push(data[i]);
+          console.log(data[i]);
+          dataQ = data[i];
+
+
         }
       }
 
@@ -122,7 +127,10 @@ export class DashboardComponent implements OnInit {
     })
 
     setTimeout(() => {
-      console.log(this.DataTableQ);
+      // console.log(this.DataTableQ);
+      let dataQ: any = this.DataTableQ;
+
+
     }, 1000)
   }
 
@@ -160,7 +168,7 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  private serverUrl = 'https://10.62.10.28:8444/socket';
+  private serverUrl = 'https://192.168.137.1:8444/socket';
 
   private stompClient;
 
@@ -202,19 +210,13 @@ export class DashboardComponent implements OnInit {
 
 
 
-export interface PeriodicElement {
-  queue: string;
-  time: string;
-  type: string;
-}
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  { queue: '01', time: ' 09:45:32', type: 'STR' },
-  { queue: '02', time: ' 09:45:32', type: 'TTN' },
-  { queue: '03', time: ' 09:45:32', type: 'TRX' },
-  { queue: '04', time: ' 09:45:32', type: 'TRX' },
-  { queue: '06', time: ' 09:45:32', type: 'STR' },
-  { queue: '07', time: ' 09:45:32', type: 'TTN' },
-  { queue: '08', time: ' 09:45:32', type: 'TRX' },
-  { queue: '09', time: ' 09:45:32', type: 'TTN' },
-];
+export interface dataQueueNo {
+  branchcode: string;
+  queuecode: string;
+  queuedate: string;
+  queueno: string;
+  timestampentry: string;
+  trntype: any[];
+
+}
