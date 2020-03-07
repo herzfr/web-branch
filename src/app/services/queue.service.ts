@@ -6,7 +6,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 })
 export class QueueService {
 
-  private apiUrl = 'https://192.168.137.1:8444/'
+  private apiUrl = 'https://192.168.137.1:8444'
   // private apiUrl = 'https://10.62.10.28:8443'
 
 
