@@ -24,6 +24,7 @@ export class DashboardComponent implements OnInit {
   waitingStatusY: string = '000';
 
   DataTableQ: QTable[];
+  branchCode;
   // ELEMENT_DATA: QTable[];
 
   displayedColumns = ['queue', 'time', 'type'];
@@ -46,9 +47,9 @@ export class DashboardComponent implements OnInit {
     let dataQ;
 
     let branch = JSON.parse(localStorage.getItem('terminal'))
-    let branchCode = branch.branchCode;
+    this.branchCode = branch.branchCode;
 
-    this.queueServ.getDataQue(branchCode, this.waitingStatusX).subscribe(res => {
+    this.queueServ.getDataQue(this.branchCode, this.waitingStatusX).subscribe(res => {
       // console.log(res);
       let data = new Array;
       for (const key in res) {
@@ -98,7 +99,7 @@ export class DashboardComponent implements OnInit {
           _data[alreadyExistsAt].transbuff += ', ' + data[i].transbuff;
         } else {
           _data.push(data[i]);
-          console.log(data[i]);
+          // console.log(data[i]);
           dataQ = data[i];
 
 
@@ -112,7 +113,7 @@ export class DashboardComponent implements OnInit {
       for (const key in _data) {
         if (_data.hasOwnProperty(key)) {
           const element = _data[key];
-          console.log(element.transbuff);
+          // console.log(element.transbuff);
           _data[key].transbuff = "[" + element.transbuff + "]";
           let parse = JSON.parse(_data[key].transbuff)
           _data[key].transbuff = parse;
@@ -120,7 +121,7 @@ export class DashboardComponent implements OnInit {
       }
 
 
-      console.log(_data);
+      // console.log(_data);
       this.DataTableQ = _data;
       this.dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
 
@@ -148,9 +149,14 @@ export class DashboardComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  nextQueue() {
+  nextQueue(event: Event) {
+
+
+
     this.dialog.transactionDialog("Test", "uhuy")
   }
+
+
 
   connect() {
 
