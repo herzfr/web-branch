@@ -7,7 +7,8 @@ import * as SockJS from 'sockjs-client';
 })
 export class WebsocketService {
 
-  private serverUrl = 'https://10.62.10.28:8444/socket';
+  private serverUrl = 'https://192.168.137.1:8443/socket';
+  // private serverUrl = 'https://10.62.10.28:8444/socket';
   private stompClient;
 
 
@@ -22,7 +23,7 @@ export class WebsocketService {
       that.stompClient.subscribe("/" + socket, (message) => {
 
         console.log(message);
-        
+
 
         if (message.body) {
 

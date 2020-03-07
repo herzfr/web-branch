@@ -6,7 +6,8 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 })
 export class QueueService {
 
-  private apiUrl = 'https://10.62.10.28:8443'
+  private apiUrl = 'https://192.168.137.1:8444/'
+  // private apiUrl = 'https://10.62.10.28:8443'
 
 
   headers_object = new HttpHeaders()
@@ -29,7 +30,7 @@ export class QueueService {
     // let body = "?branchcode=" + brch + "&status=" + stus;
 
     return this.http.get(this.apiUrl + '/api/queue/getqueue?' + params, this.httpOptions)
-    
+
   }
 
   getDataQueByNo(brch: string, stus: number, que: number) {

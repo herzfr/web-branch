@@ -1,5 +1,5 @@
 {
-  "ipServer": "https://10.62.10.28:8443/",
-  "ipSocketServer": "http://10.62.10.28:8080/",
+  "ipServer": "https://192.168.137.1:8443/",
+  "ipSocketServer": "https://192.168.137.1:8444/",
   "requestTimeout": 30000
 }
