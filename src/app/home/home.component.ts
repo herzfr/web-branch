@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavItem } from '../models/nav-item';
 import * as moment from 'moment';
 declare var $: any;
@@ -7,6 +7,7 @@ import * as securels from 'secure-ls';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { DialogService } from '../services/dialog.service';
+import { WebsocketService } from '../services/websocket.service';
 
 
 @Component({
@@ -14,7 +15,8 @@ import { DialogService } from '../services/dialog.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
+
 
   private iPAdd;
   private lastLog;
@@ -109,7 +111,7 @@ export class HomeComponent implements OnInit {
   ];
 
 
-  constructor(private dialog: DialogService) {
+  constructor(private dialog: DialogService, private websocket: WebsocketService) {
     this.setInfoNavbar();
   }
 
@@ -122,10 +124,6 @@ export class HomeComponent implements OnInit {
     });
 
     this.userVoid();
-
-
-  
-
   }
 
 
@@ -133,10 +131,10 @@ export class HomeComponent implements OnInit {
     const data = JSON.parse(this.secureLs.get("data"));
     this.userName = data.username;
     this.branchCode = data.branchcode;
-    const socketDestination = "usr"+ this.userName;
+    const socketDestination = "usr" + this.userName;
 
-    this.initializeWebSocketConnection(socketDestination);
-    
+    // this.initializeWebSocketConnection(socketDestination);
+    this.websocket.initializeWebSocketConnection(socketDestination)
   }
 
   setInfoNavbar() {
@@ -147,6 +145,9 @@ export class HomeComponent implements OnInit {
     this.loginDate = moment(last).format('DD/MM/YYYY');
   }
 
+  ngOnDestroy(): void {
+    this.websocket.disconnect();
+  }
 
   initializeWebSocketConnection(socket) {
     let ws = new SockJS(this.serverUrl);
