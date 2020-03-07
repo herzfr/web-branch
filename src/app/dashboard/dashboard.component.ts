@@ -149,11 +149,54 @@ export class DashboardComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  nextQueue(event: Event) {
+  nextQueue() {
+    this.queueServ.getLatestQue('034', 998).subscribe(res => {
+
+      if (res['success'] == true) {
+        let datares = res['record']
+        console.log(datares);
+
+        res['record'].forEach(element => {
+          element.transbuff = '[' + element.transbuff + ']'
+          let parse = JSON.parse(element.transbuff)
+          element.transbuff = parse;
+        });
+
+        this.dialog.transactionDialog(res['record'])
+
+      } else if (res['success'] == false) {
+
+        this.queueServ.getLatestQue('034', 999).subscribe(res => {
+
+          if (res['success'] == true) {
+            let datares = res['record']
+            console.log(datares);
+
+            res['record'].forEach(element => {
+              element.transbuff = '[' + element.transbuff + ']'
+              let parse = JSON.parse(element.transbuff)
+              element.transbuff = parse;
+            });
+
+            this.dialog.transactionDialog(res['record'])
+          } else {
+            console.log('data tidak ada');
+          }
+
+        })
+
+      } else {
+        console.log('DATA TIDAK ADA');
+
+      }
 
 
 
-    this.dialog.transactionDialog("Test", "uhuy")
+
+
+
+    })
+
   }
 
 

@@ -59,70 +59,23 @@
 
   <hr class="m-3">
 
-  <mat-horizontal-stepper labelPosition="bottom" #stepper>
-    <mat-step [stepControl]="firstFormGroup">
-      <form [formGroup]="firstFormGroup">
+  <mat-horizontal-stepper *ngFor="let item of data" labelPosition="bottom" #stepper>
+    <mat-step>
+      <form>
         <ng-template matStepLabel>Fill out your name</ng-template>
 
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama
-            <span class="text-right">:</span></label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control-plaintext col-6" id="nameName">
+        <ng-container *ngFor="let list of item.transbuff">
+          <div *ngIf="list.tp === 'trk'" class="form-group row">
+            <label
+              class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama
+              <span class="text-right">:</span></label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control-plaintext col-6" id="nameName">
+            </div>
           </div>
-        </div>
+        </ng-container>
 
       </form>
-    </mat-step>
-    <mat-step [stepControl]="secondFormGroup" optional>
-      <form [formGroup]="secondFormGroup">
-        <ng-template matStepLabel>Fill out your address</ng-template>
-
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama
-            <span class="text-right">:</span></label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control-plaintext col-6" id="nameName">
-          </div>
-        </div>
-
-      </form>
-    </mat-step>
-    <mat-step [stepControl]="secondFormGroup">
-      <ng-template matStepLabel>Done</ng-template>
-
-      <div class="form-group row">
-        <label class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama
-          <span class="text-right">:</span></label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext col-6" id="nameName">
-        </div>
-      </div>
-
-    </mat-step>
-    <mat-step [stepControl]="secondFormGroup">
-      <ng-template matStepLabel>Done</ng-template>
-
-      <div class="form-group row">
-        <label class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama
-          <span class="text-right">:</span></label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext col-6" id="nameName">
-        </div>
-      </div>
-
-    </mat-step>
-    <mat-step [stepControl]="secondFormGroup">
-      <ng-template matStepLabel>Done</ng-template>
-
-      <div class="form-group row">
-        <label class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama
-          <span class="text-right">:</span></label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control-plaintext col-6" id="nameName">
-        </div>
-      </div>
-
     </mat-step>
   </mat-horizontal-stepper>
 

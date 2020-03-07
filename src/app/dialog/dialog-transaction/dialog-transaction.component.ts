@@ -9,16 +9,15 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class DialogTransactionComponent implements OnInit {
 
-  message1: string;
-  message2: string;
+  data: any;
+
 
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
 
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder) {
-    this.message1 = data.message;
-    this.message2 = data.message2;
+    this.data = data.data;
   }
 
   ngOnInit() {
@@ -28,6 +27,7 @@ export class DialogTransactionComponent implements OnInit {
     this.secondFormGroup = this._formBuilder.group({
       secondCtrl: ['', Validators.required]
     });
+    console.log(this.data);
 
   }
 

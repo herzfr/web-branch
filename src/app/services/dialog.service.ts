@@ -21,12 +21,11 @@ export class DialogService {
   }
 
 
-  transactionDialog(message, message2) {
+  transactionDialog(datas) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
       id: 1,
-      message: message,
-      message2: message2
+      data: datas,
     }
     dialogConfig.backdropClass = 'backdropBackground';
     dialogConfig.disableClose = true;

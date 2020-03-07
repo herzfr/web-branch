@@ -6,7 +6,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 })
 export class QueueService {
 
-  private apiUrl = 'https://192.168.137.1:8444'
+  private apiUrl = 'https://192.168.137.1:8443'
   // private apiUrl = 'https://10.62.10.28:8443'
 
 
@@ -42,5 +42,11 @@ export class QueueService {
       .pipe(
 
       )
+  }
+
+  getLatestQue(brch: string, stus: number) {
+    // https://192.168.137.1:8443/api/queue/latestqueue?status=998&branchcode=034
+    let body = "?status=" + stus + "&branchcode=" + brch;
+    return this.http.get(this.apiUrl + '/api/queue/latestqueue' + body, this.httpOptions)
   }
 }
