@@ -8,8 +8,7 @@ import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { DialogService } from '../services/dialog.service';
 import { WebsocketService } from '../services/websocket.service';
-
-
+  
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
