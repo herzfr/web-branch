@@ -59,25 +59,23 @@
 
   <hr class="m-3">
 
-  <mat-horizontal-stepper *ngFor="let item of data" labelPosition="bottom" #stepper>
-    <mat-step>
-      <form>
-        <ng-template matStepLabel>Fill out your name</ng-template>
-
-        <ng-container *ngFor="let list of item.transbuff">
-          <div *ngIf="list.tp === 'trk'" class="form-group row">
-            <label
-              class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama
-              <span class="text-right">:</span></label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control-plaintext col-6" id="nameName">
-            </div>
+  <form [formGroup]="formGroup">
+    <mat-horizontal-stepper formArrayName="form">
+      <ng-container>
+        <mat-step [formGroupName]="i" *ngFor="let customerGroup of formGroup.controls.form.controls; let i = index">
+          <ng-template matStepLabel>Step {{i + 1}}</ng-template>
+          <mat-form-field>
+            <input matInput placeholder="Address" formControlName="i" required>
+            {{item}}
+          </mat-form-field>
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext>Next</button>
           </div>
-        </ng-container>
-
-      </form>
-    </mat-step>
-  </mat-horizontal-stepper>
+        </mat-step>
+      </ng-container>
+    </mat-horizontal-stepper>
+  </form>
 
 
 
