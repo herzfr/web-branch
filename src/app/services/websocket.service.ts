@@ -8,8 +8,8 @@ import { DialogService } from './dialog.service';
 })
 export class WebsocketService {
 
-  private serverUrl = 'https://192.168.137.1:8443/socket';
-  // private serverUrl = 'https://10.62.10.28:8444/socket';
+  // private serverUrl = 'https://192.168.137.1:8443/socket';
+  private serverUrl = 'https://10.62.10.28:8444/socket';
   private stompClient;
 
   constructor(private dialog: DialogService) { }
