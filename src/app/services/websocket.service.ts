@@ -12,7 +12,7 @@ export class WebsocketService {
   private serverUrl;
   private stompClient;
 
-  constructor(private dialog: DialogService, private appConfig : AppConfiguration) { 
+  constructor(private dialog: DialogService, private appConfig: AppConfiguration) {
     this.serverUrl = appConfig.ipSocketServer + "socket";
   }
 
