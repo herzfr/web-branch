@@ -12,6 +12,7 @@ import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { QueueService } from '../services/queue.service';
 import { QTable } from '../models/queue-table';
+import { AppConfiguration } from '../models/app.configuration';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,12 +28,19 @@ export class DashboardComponent implements OnInit {
   branchCode;
   // ELEMENT_DATA: QTable[];
 
+  private serverUrl;
+  private stompClient;
+
+
   displayedColumns = ['queue', 'time', 'type'];
   dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private dialog: DialogService, public dlg: MatDialog, private websocket: WebsocketService, private queueServ: QueueService) {
+  constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService, private appConfig : AppConfiguration) {
+    this.serverUrl = appConfig.ipSocketServer + "socket";
+    console.log("dashboar socket : ", this.serverUrl);
+    
   }
 
   ngOnInit() {
@@ -101,8 +109,6 @@ export class DashboardComponent implements OnInit {
           _data.push(data[i]);
           // console.log(data[i]);
           dataQ = data[i];
-
-
         }
       }
 
@@ -190,16 +196,9 @@ export class DashboardComponent implements OnInit {
 
       }
 
-
-
-
-
-
     })
 
   }
-
-
 
   connect() {
 
@@ -214,14 +213,8 @@ export class DashboardComponent implements OnInit {
     // console.log(a.split("-").join(""));
 
     this.initializeWebSocketConnection(socketChannel);
+
   }
-
-
-  private serverUrl = 'https://192.168.137.1:8444/socket';
-
-  private stompClient;
-
-
 
   initializeWebSocketConnection(socket) {
     let ws = new SockJS(this.serverUrl);

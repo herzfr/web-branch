@@ -2,17 +2,19 @@ import { Injectable } from '@angular/core';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { DialogService } from './dialog.service';
+import { AppConfiguration } from '../models/app.configuration';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebsocketService {
 
-  // private serverUrl = 'https://192.168.137.1:8443/socket';
-  private serverUrl = 'https://10.62.10.28:8444/socket';
+  private serverUrl;
   private stompClient;
 
-  constructor(private dialog: DialogService) { }
+  constructor(private dialog: DialogService, private appConfig: AppConfiguration) {
+    this.serverUrl = appConfig.ipSocketServer + "socket";
+  }
 
   initializeWebSocketConnection(socket) {
     let ws = new SockJS(this.serverUrl);
