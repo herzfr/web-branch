@@ -142,7 +142,4 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.websocket.disconnect();
   }
 
-
-
-
 }
