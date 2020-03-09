@@ -107,8 +107,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   constructor(private dialog: DialogService, private websocket: WebsocketService) {
-    console.log("home server : ", this.serverUrl);
-    
     this.setInfoNavbar();
   }
 
