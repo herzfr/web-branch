@@ -21,7 +21,7 @@ declare var $: any;
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  private serverUrl = 'https://10.62.10.28:8444/socket'
+  private serverUrl = 'https://localhost:8444/socket'
   private stompClient;
 
   private branch;
