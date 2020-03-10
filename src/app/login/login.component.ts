@@ -10,6 +10,7 @@ import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 
 import { LoginModel } from '../models/login-model';
+import { AppConfiguration } from '../models/app.configuration';
 
 declare var $: any;
 
@@ -37,10 +38,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   secureLs = new securels({ encodingType: 'aes' });
   isRequired: boolean = true;
 
-  constructor(private auth: AuthenticateService, private router: Router, private dataBranch: DataBranchServices, private dialog: DialogService) {
+  constructor(private auth: AuthenticateService, private router: Router, private dataBranch: DataBranchServices, private dialog: DialogService, private appConfig : AppConfiguration) {
     this.loginForm = new FormGroup({
       username: new FormControl('', Validators.required)
     });
+
+    this.serverUrl = appConfig.ipSocketServer + "socket";
   }
 
   ngOnInit() {
