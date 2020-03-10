@@ -19,6 +19,11 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
   },
   {
+    path: 'account', component: HomeComponent,
+    // canActivate: [AuthGuard]
+    loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
+  },
+  {
     path: '404', component: Page404Component,
     // canActivate: [AuthGuard]
   },
