@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatGridTileHeaderCssMatStyler } from '@angular/material';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl, AbstractControl } from '@angular/forms';
 
 @Component({
@@ -16,6 +16,13 @@ export class DialogTransactionComponent implements OnInit {
   isLinear = false;
   form: FormArray;
   formGroup: FormGroup;
+
+
+  GForm1: FormGroup;
+  GForm2: FormGroup;
+  GForm3: FormGroup;
+  GForm4: FormGroup;
+  GForm5: FormGroup;
 
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder) {
@@ -36,107 +43,73 @@ export class DialogTransactionComponent implements OnInit {
 
   ngOnInit() {
 
-    this.formGroup = new FormGroup({})
-    let formitem = new FormGroup({})
+    this.formGroup = this._formBuilder.group({
+      form: this._formBuilder.array([this.init('')])
+    })
 
     for (const key in this.dataForm) {
       if (this.dataForm.hasOwnProperty(key)) {
         const element = this.dataForm[key];
-        console.log(element.transid);
+        console.log();
 
-        let group = {}
-
-        let ad = element.transid
-        let tr: any = element.transbuff
-
-        console.log(tr);
-
-        for (const key in tr) {
-          if (tr.hasOwnProperty(key)) {
-            const el = tr[key];
-            console.log(el);
-            group[key] = new FormControl(el, Validators.required)
-          }
-        }
-
-        formitem = new FormGroup(group)
-
-        this.formGroup.addControl(tr, formitem)
+        this.addItem(element.transbuff);
       }
-
-      console.log(this.formGroup);
-      console.log(this.form);
     }
 
+    this.form.removeAt(0)
 
 
-    // this.formGroup = this._formBuilder.group({
-    //   form: this._formBuilder.array([this.setForm()])
-    // })
-
-    // this.form = this.formGroup.get('form') as FormArray;
-    // this.form.push(this.formGroup)
-
-    // group[el] = new FormControl(null, Validators.required)
-
-    // this.formGroup = this._formBuilder.group({
-    //   ad: this._formBuilder.array([])
-    // })
-
-
+    console.log(this.formGroup);
+    console.log(this.form);
 
   }
 
-  setForm() {
+  init(event) {
+
+    console.log(event);
+    const jobGroup: FormGroup = new FormGroup({});
+
     let group = {}
+    for (const key in event) {
+      if (event.hasOwnProperty(key)) {
+        const el = event[key];
+        console.log(key);
 
-    for (const key in this.dataForm) {
-      if (this.dataForm.hasOwnProperty(key)) {
-        const element = this.dataForm[key];
-        console.log(element.transid);
-        let ad = element.transid
-        let tr: any = element.transbuff
+        // const control: FormControl = new FormControl(event[key], Validators.required);
+        // jobGroup.addControl(key, control)
 
-        for (const key in tr) {
-          if (tr.hasOwnProperty(key)) {
-            const el = tr[key];
-            console.log(el);
-            group[key] = new FormControl(el, Validators.required)
-          }
-        }
-        // this.formGroup = new FormGroup(group)
-        return new FormGroup(group)
+        group[key] = new FormControl(el, Validators.required)
       }
-
-
-
-      // this.formGroup = this._formBuilder.group({
-      //   form: this._formBuilder.array([this.init(element)])
-      // })
-
-
-      console.log(this.formGroup);
-      console.log(this.form);
-
-
-      // this.addItem();
     }
+
+    console.log(group);
+    // return this._formBuilder.group({
+    //   group,
+    // })
+
+    return this._formBuilder.group({
+      group
+    })
+
+
+
+
+
+
+    // return this._formBuilder.group({
+    //   cont: new FormControl('', [Validators.required]),
+    // })
   }
 
-  // init(element) {
-  //   return this._formBuilder.group({
-  //     element: new FormControl('', [Validators.required]),
-  //   })
-  // }
+  addItem(event) {
 
-  // addItem() {
+    console.log(event);
 
-  //   this.form = this.formGroup.get('form') as FormArray;
-  //   this.form.push(this.init(elem));
+    this.form = this.formGroup.get('form') as FormArray;
+    this.form.push(this.init(event));
 
-  //   console.log(this.form);
+  }
 
-  // }
 
 
 }
