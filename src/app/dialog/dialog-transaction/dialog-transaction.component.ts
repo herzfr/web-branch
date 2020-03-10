@@ -14,8 +14,8 @@ export class DialogTransactionComponent implements OnInit {
 
 
   isLinear = false;
-  formGroup: FormGroup;
   form: FormArray;
+  formGroup: FormGroup;
 
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder) {
@@ -36,32 +36,107 @@ export class DialogTransactionComponent implements OnInit {
 
   ngOnInit() {
 
-    this.dataForm.forEach(element => {
-      console.log(element.transid);
-      var el = element.transid
+    this.formGroup = new FormGroup({})
+    let formitem = new FormGroup({})
+
+    for (const key in this.dataForm) {
+      if (this.dataForm.hasOwnProperty(key)) {
+        const element = this.dataForm[key];
+        console.log(element.transid);
+
+        let group = {}
+
+        let ad = element.transid
+        let tr: any = element.transbuff
+
+        console.log(tr);
+
+        for (const key in tr) {
+          if (tr.hasOwnProperty(key)) {
+            const el = tr[key];
+            console.log(el);
+            group[key] = new FormControl(el, Validators.required)
+          }
+        }
+
+        formitem = new FormGroup(group)
+
+        this.formGroup.addControl(tr, formitem)
+      }
+
+      console.log(this.formGroup);
+      console.log(this.form);
+    }
 
 
-      this.formGroup = this._formBuilder.group({
-        el: this._formBuilder.array([this.init(element.transbuff)])
-      })
 
-      this.addItem(el);
-    });
+    // this.formGroup = this._formBuilder.group({
+    //   form: this._formBuilder.array([this.setForm()])
+    // })
+
+    // this.form = this.formGroup.get('form') as FormArray;
+    // this.form.push(this.formGroup)
+
+    // group[el] = new FormControl(null, Validators.required)
+
+    // this.formGroup = this._formBuilder.group({
+    //   ad: this._formBuilder.array([])
+    // })
 
 
 
   }
 
-  init(cont) {
-    return this._formBuilder.group({
-      cont: new FormControl('', [Validators.required]),
-    })
+  setForm() {
+    let group = {}
+
+    for (const key in this.dataForm) {
+      if (this.dataForm.hasOwnProperty(key)) {
+        const element = this.dataForm[key];
+        console.log(element.transid);
+        let ad = element.transid
+        let tr: any = element.transbuff
+
+        for (const key in tr) {
+          if (tr.hasOwnProperty(key)) {
+            const el = tr[key];
+            console.log(el);
+            group[key] = new FormControl(el, Validators.required)
+          }
+        }
+        // this.formGroup = new FormGroup(group)
+        return new FormGroup(group)
+      }
+
+
+
+      // this.formGroup = this._formBuilder.group({
+      //   form: this._formBuilder.array([this.init(element)])
+      // })
+
+
+      console.log(this.formGroup);
+      console.log(this.form);
+
+
+      // this.addItem();
+    }
   }
 
-  addItem(id) {
-    this.form = this.formGroup.get(id) as FormArray;
-    this.form.push(this.init(id));
-  }
+  // init(element) {
+  //   return this._formBuilder.group({
+  //     element: new FormControl('', [Validators.required]),
+  //   })
+  // }
+
+  // addItem() {
+
+  //   this.form = this.formGroup.get('form') as FormArray;
+  //   this.form.push(this.init(elem));
+
+  //   console.log(this.form);
+
+  // }
 
 
 }

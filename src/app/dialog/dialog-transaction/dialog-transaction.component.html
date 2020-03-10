@@ -65,8 +65,7 @@
         <mat-step [formGroupName]="i" *ngFor="let customerGroup of formGroup.controls.form.controls; let i = index">
           <ng-template matStepLabel>Step {{i + 1}}</ng-template>
           <mat-form-field>
-            <input matInput placeholder="Address" formControlName="i" required>
-            {{item}}
+            <input matInput placeholder="Address" formControlName="cont" required>
           </mat-form-field>
           <div>
             <button mat-button matStepperPrevious>Back</button>
