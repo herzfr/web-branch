@@ -14,5 +14,5 @@ export class UserData {
     islogin: number;
     imageid : string;
     userterminal: number;
-    roles:any;
+    roles:any[];
 }

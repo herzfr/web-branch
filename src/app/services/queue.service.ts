@@ -9,8 +9,6 @@ export class QueueService {
 
   private apiUrl;
 
-  // private apiUrl = 'https://10.62.10.28:8443'
-
   headers_object = new HttpHeaders()
     .set('Content-Type', 'application/json')
   // .set('Authorization', 'Bearer ' + this.token);
