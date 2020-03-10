@@ -31,7 +31,6 @@ export class DashboardComponent implements OnInit {
   private serverUrl;
   private stompClient;
 
-
   displayedColumns = ['queue', 'time', 'type'];
   dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
 

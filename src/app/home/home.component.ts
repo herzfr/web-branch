@@ -102,6 +102,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       disabled: true,
       iconName: 'cash-drawer.svg',
       children: []
+    },
+    {
+      displayName: 'Setting',
+      iconName: 'passbook.svg',
+      children: [
+        {
+          displayName: 'User Table',
+          iconName: 'chevron_right',
+          route:"/account",
+          children: []
+        }
+      ]
     }
   ];
 
