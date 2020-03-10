@@ -21,7 +21,7 @@ declare var $: any;
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  private serverUrl = 'https://localhost:8444/socket'
+  private serverUrl = 'https://192.168.56.1:8444/socket'
   private stompClient;
 
   private branch;
@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   secureLs = new securels({ encodingType: 'aes' });
   isRequired: boolean = true;
 
-  constructor(private auth: AuthenticateService, private router: Router, private dataBranch: DataBranchServices, private dialog: DialogService, private appConfig : AppConfiguration) {
+  constructor(private auth: AuthenticateService, private router: Router, private dataBranch: DataBranchServices, private dialog: DialogService, private appConfig: AppConfiguration) {
     this.loginForm = new FormGroup({
       username: new FormControl('', Validators.required)
     });
