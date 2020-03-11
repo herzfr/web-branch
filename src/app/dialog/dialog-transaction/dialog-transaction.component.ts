@@ -180,7 +180,20 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   prosesQ() {
-    console.log('prosses');
+    let postStat = new Array;
+    this.dataForm.forEach(e => {
+      console.log(e.transid);
+      let obj: any = new Object();
+      obj.transId = e.transid;
+      obj.status = '000';
+      obj.hold = true;
+      postStat.push(obj)
+    });
+
+    this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
+      console.log(res);
+      this.dialogRef.close(res);
+    })
   }
 
 
