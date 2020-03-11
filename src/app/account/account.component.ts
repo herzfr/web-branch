@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { UserData } from '../models/UserData';
 import { HttpClient } from '@angular/common/http';
-import { Observable, merge } from 'rxjs';
+import { Observable, merge, Subscription } from 'rxjs';
 import { startWith, switchMap, map, catchError } from 'rxjs/operators';
 
 
@@ -12,84 +12,76 @@ import { startWith, switchMap, map, catchError } from 'rxjs/operators';
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.css']
 })
-export class AccountComponent implements OnInit, AfterViewInit {
+export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  displayedColumns: string[] = ['created', 'state', 'number', 'title'];
-  exampleDatabase: ExampleHttpDatabase | null;
-  data: GithubIssue[] = [];
 
-  resultsLength = 0;
-  isLoadingResults = true;
-  isRateLimitReached = false;
+  displayedColumns: string[] = ['username', 'branchcode', 'firstname', 'lastname', "action"];
+  dataSource = new MatTableDataSource<UserData>();
 
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
 
-  constructor(private usersService: UserService, private _httpClient: HttpClient) { }
+  pageIndex: number;
+  pageSize: number;
+  length: number;
+  searchValue: string;
+
+  subUserService: Subscription;
+
+
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+
+  constructor(private usersService: UserService, private _httpClient: HttpClient) {
+  }
 
   ngOnInit() {
-    // this.getAllUsersData();
-
-
+    this.getAllUsersData("", 5, 0);
+    this.dataSource.paginator = this.paginator;
   }
 
 
-  getAllUsersData() {
-    this.usersService.getAllUsers("", 10, 0).subscribe((data) => {
-      // console.log("response :", data['content']);
+  getAllUsersData(search: string, size, page) {
+    var userSearch = "";
+    if (search.length < 1) {
+      userSearch = "";
+    } else {
+      userSearch = search;
+    }
 
-
+    this.usersService.getAllUsers(search, size, page).subscribe((data) => {
+      this.pageSize = data['pageable'].pageSize;
+      this.pageIndex = data['pageable'].pageNumber;
+      this.length = data['totalElements'];
+      this.dataSource = data['content'];
     });
   }
 
   ngAfterViewInit() {
-    this.exampleDatabase = new ExampleHttpDatabase(this._httpClient);
 
-    // If the user changes the sort order, reset back to the first page.
-    // this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+  }
 
-    merge(this.sort.sortChange, this.paginator.page)
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoadingResults = true;
-          return this.exampleDatabase!.getRepoIssues(
-            this.sort.active, this.sort.direction, this.paginator.pageIndex);
-        }),
-        map(data => {
-          // Flip flag to show that loading has finished.
-          this.isLoadingResults = false;
-          this.isRateLimitReached = false;
-          this.resultsLength = data.total_count;
+  getServerData(event) {
+    const pageIndex = event.pageIndex;
+    const pageSize = event.pageSize;
+    this.getAllUsersData("", pageSize, pageIndex);
+  }
 
-          return data.items;
-        })
-      ).subscribe(data => this.data = data);
+  ngOnDestroy(): void {
+    if (this.subUserService) {
+      this.subUserService.unsubscribe();
+    }
+  }
+
+  userSearch(event) {
+    console.log(event);
+    console.log(this.searchValue);
+
+    console.log(this.paginator);
+
+    this.getAllUsersData(this.searchValue, 5, 0);
+
+
+
   }
 
 }
 
-export interface GithubApi {
-  items: GithubIssue[];
-  total_count: number;
-}
 
-export interface GithubIssue {
-  created_at: string;
-  number: string;
-  state: string;
-  title: string;
-}
-
-/** An example database that the data source uses to retrieve data for the table. */
-export class ExampleHttpDatabase {
-  constructor(private _httpClient: HttpClient) { }
-
-  getRepoIssues(sort: string, order: string, page: number): Observable<GithubApi> {
-    const href = 'https://api.github.com/search/issues';
-    const requestUrl =
-      `${href}?q=repo:angular/components&sort=${sort}&order=${order}&page=${page + 1}`;
-
-    return this._httpClient.get<GithubApi>(requestUrl);
-  }
-}
