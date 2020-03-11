@@ -12,17 +12,9 @@ export class DialogTransactionComponent implements OnInit {
   data: any;
   dataForm: any;
 
-
   isLinear = false;
   form: FormArray;
   formGroup: FormGroup;
-
-
-  GForm1: FormGroup;
-  GForm2: FormGroup;
-  GForm3: FormGroup;
-  GForm4: FormGroup;
-  GForm5: FormGroup;
 
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder) {
@@ -32,8 +24,64 @@ export class DialogTransactionComponent implements OnInit {
     for (const key in data.data) {
       if (data.data.hasOwnProperty(key)) {
         const element = data.data[key];
-        let asyiap = { "transid": element.transid, "transbuff": element.transbuff[0] };
-        forms.push(asyiap)
+        // console.log(element.transbuff[0]);
+        let changeKey = element.transbuff[0]
+
+        for (const key in changeKey) {
+          if (changeKey.hasOwnProperty(key)) {
+            const e = changeKey[key];
+            // console.log(key);
+
+            switch (key) {
+              case 'nm':
+                changeKey.Nominal = e
+                break;
+              case 'tn':
+                changeKey.Tunai = e
+                break;
+              case 'tp':
+                changeKey.Tipe = e
+                break;
+              case 'fr':
+                changeKey.Dari = e
+                break;
+              case 'to':
+                changeKey.Ke = e
+                break;
+              case 'br':
+                changeKey.Berita = e
+                break;
+              case 'bc':
+                changeKey.Bank = e
+                break;
+              default:
+                break;
+            }
+
+          }
+        }
+
+        delete changeKey.nm
+        delete changeKey.tn
+        delete changeKey.tp
+        delete changeKey.fr
+        delete changeKey.to
+        delete changeKey.br
+        delete changeKey.bc
+
+        if (changeKey.Tipe === 'trk') {
+          changeKey.Tipe = 'Tarik Tunai'
+        } else if (changeKey.Tipe === 'str') {
+          changeKey.Tipe = 'Setor Tunai'
+        } else if (changeKey.Tipe === 'tar') {
+          changeKey.Tipe = 'Transaksi Antar Rekening'
+        } else if (changeKey.Tipe === 'tab') {
+          changeKey.Tipe = 'Transaksi Antar Bank'
+        }
+        // console.log();
+        // console.log(changeKey.Tipe);
+        let dataForm = { "transid": element.transid, "transbuff": element.transbuff[0] };
+        forms.push(dataForm)
       }
     }
     this.dataForm = forms;
@@ -50,64 +98,36 @@ export class DialogTransactionComponent implements OnInit {
     for (const key in this.dataForm) {
       if (this.dataForm.hasOwnProperty(key)) {
         const element = this.dataForm[key];
-        console.log();
-
+        // console.log();
         this.addItem(element.transbuff);
       }
     }
-
     this.form.removeAt(0)
-
-
-    console.log(this.formGroup);
-    console.log(this.form);
-
+    // console.log(this.formGroup);
+    // console.log(this.form);
   }
 
   init(event) {
-
-    console.log(event);
-    const jobGroup: FormGroup = new FormGroup({});
-
-    let group = {}
+    // console.log(event);
+    const orderFormGroup: FormGroup = new FormGroup({});
     for (const key in event) {
       if (event.hasOwnProperty(key)) {
         const el = event[key];
-        console.log(key);
+        // console.log(key);
 
-        // const control: FormControl = new FormControl(event[key], Validators.required);
-        // jobGroup.addControl(key, control)
-
-        group[key] = new FormControl(el, Validators.required)
+        const control: FormControl = new FormControl(el, Validators.required);
+        orderFormGroup.addControl(key, control)
+        // group[key] = new FormControl(el, Validators.required)
       }
     }
-
-    console.log(group);
-    // return this._formBuilder.group({
-    //   group,
-    // })
-
-    return this._formBuilder.group({
-      group
-    })
-
-
-
-
-
-
-    // return this._formBuilder.group({
-    //   cont: new FormControl('', [Validators.required]),
-    // })
+    console.log(orderFormGroup);
+    return orderFormGroup;
   }
 
   addItem(event) {
-
-    console.log(event);
-
+    // console.log(event);
     this.form = this.formGroup.get('form') as FormArray;
     this.form.push(this.init(event));
-
   }
 
 
