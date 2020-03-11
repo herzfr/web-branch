@@ -48,7 +48,7 @@ export class QueueService {
     return this.http.get(this.apiUrl + 'api/queue/latestqueue' + body, this.httpOptions)
   }
 
-  cancelTransactionQ(body) {
+  changeStatusTransactionQ(body) {
     return this.http.post(this.apiUrl + 'api/queue/updateStatus', body, this.httpOptions)
   }
 }

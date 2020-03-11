@@ -12,6 +12,7 @@ export class DialogTransactionComponent implements OnInit {
 
   data: any;
   dataForm: any;
+  noQ: any;
 
   isLinear = false;
   form: FormArray;
@@ -27,6 +28,7 @@ export class DialogTransactionComponent implements OnInit {
       if (data.data.hasOwnProperty(key)) {
         const element = data.data[key];
         // console.log(element.transbuff[0]);
+        this.noQ = element.queueno;
         let changeKey = element.transbuff[0]
 
         for (const key in changeKey) {
@@ -151,15 +153,31 @@ export class DialogTransactionComponent implements OnInit {
 
     console.log(postStat);
 
-    this.queueServ.cancelTransactionQ(postStat).subscribe(res => {
+    this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
       console.log(res);
-
       this.dialogRef.close(res);
     })
-
-
-
   }
+
+  skipQ() {
+    let postStat = new Array;
+    this.dataForm.forEach(e => {
+      console.log(e.transid);
+      let obj: any = new Object();
+      obj.transId = e.transid;
+      obj.status = '998';
+
+      postStat.push(obj)
+    });
+
+    console.log(postStat);
+  }
+
+  prosesQ() {
+    console.log('prosses');
+  }
+
+
 
 
 
