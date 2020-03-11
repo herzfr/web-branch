@@ -83,7 +83,7 @@ input[type="text"] {
   border: 1px solid #133764;
   box-sizing: border-box;
   border-radius: 20px;
-  outline: none;
+  /* outline: none; */
   padding-left: 10px;
   padding-right: 10px;
   transition: all 0.3s ease;
@@ -104,4 +104,29 @@ input[type="text"]:focus {
   border-radius: 50px;
   outline: none;
   transition: all 0.3s ease;
+}
+
+::ng-deep .mat-step-header .mat-step-icon-selected {
+  background-color: #3b4e76 !important;
+  color: white !important;
+}
+
+::ng-deep .mat-step-header .mat-step-icon-state-edit {
+  background-color: #3b4e76 !important;
+  color: white !important;
+}
+
+.batal {
+  background: linear-gradient(265.14deg, #5f2c82 -4.48%, #ec008c 53.7%, #fc6767 125.93%);
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
+}
+
+.skip {
+  background: linear-gradient(265.14deg, #16A085 -4.48%, #02AAB0 53.7%, #00CDAC 125.93%);
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
+}
+
+.proses {
+  background: linear-gradient(265.14deg, #007991 -4.48%, #2E5676 53.7%, #78ffd6 125.93%);
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
 }

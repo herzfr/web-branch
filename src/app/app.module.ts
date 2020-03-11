@@ -25,6 +25,10 @@ import { DialogService } from './services/dialog.service';
 import { DialogTransactionComponent } from './dialog/dialog-transaction/dialog-transaction.component';
 import { MatTableModule } from '@angular/material';
 import { WebsocketService } from './services/websocket.service';
+import { UtilityService } from './services/utility.service';
+import { NgxCurrencyModule } from 'ngx-currency';
+import { CurrencySetting } from './config/currency-setting';
+ 
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -41,7 +45,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     NavigationComponent,
     NavsComponent,
     DialogErrorComponent,
-    DialogTransactionComponent
+    DialogTransactionComponent,
   ],
   entryComponents: [DialogErrorComponent, DialogTransactionComponent],
   imports: [
@@ -57,10 +61,11 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     NgxBootstrapModule,
     MaterialModule,
     MatTableModule,
+    NgxCurrencyModule.forRoot(CurrencySetting),
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
   ],
   providers: [
-    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService,
+    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService,UtilityService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],

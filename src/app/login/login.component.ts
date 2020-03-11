@@ -20,7 +20,7 @@ declare var $: any;
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  private serverUrl = 'https://localhost:8444/socket'
+  private serverUrl = 'https://192.168.56.1:8444/socket'
   private stompClient;
 
   ls = new securels({ encodingType: 'aes' });

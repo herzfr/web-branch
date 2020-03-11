@@ -5,6 +5,7 @@ import { AccountRoutingModule } from './account-routing.module';
 import { AccountComponent } from './account.component';
 import { MaterialModule } from '../material.modul';
 import { UserService } from '../services/user.service';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { UserService } from '../services/user.service';
   imports: [
     CommonModule,
     AccountRoutingModule,
-    MaterialModule
+    MaterialModule,
+    FormsModule 
   ], 
   providers: [UserService]
 })
