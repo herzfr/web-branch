@@ -21,17 +21,4 @@ export class DialogService {
   }
 
 
-  transactionDialog(datas) {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {
-      id: 1,
-      data: datas,
-    }
-    dialogConfig.backdropClass = 'backdropBackground';
-    dialogConfig.disableClose = true;
-    dialogConfig.width = '1000px';
-    // dialogConfig.height = '500px';
-    this.dialog.open(DialogTransactionComponent, dialogConfig)
-  }
-
 }

@@ -71,7 +71,8 @@ import { PlatformModule } from '@angular/cdk/platform';
         MatFormFieldModule,
         MatTableModule,
         MatPaginatorModule,
-        MatStepperModule
+        MatStepperModule,
+
     ]
 })
 export class MaterialModule { }

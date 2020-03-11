@@ -8,6 +8,7 @@ import { AppConfiguration } from '../models/app.configuration';
 export class QueueService {
 
   private apiUrl;
+  private apiSocket;
 
   headers_object = new HttpHeaders()
     .set('Content-Type', 'application/json')
@@ -20,17 +21,15 @@ export class QueueService {
 
   constructor(private appConfiguration: AppConfiguration, private http: HttpClient) {
     this.apiUrl = this.appConfiguration.ipServer;
+    this.apiSocket = this.appConfiguration.ipSocketServer;
   }
 
-  getDataQue(brch: string, stus: string) {
-
+  getNewQueue(brch: string, status1: string, status2) {
     const params = new HttpParams()
       .set('branchcode', brch)
-      .set('status', stus);
-    // let body = "?branchcode=" + brch + "&status=" + stus;
-
-    return this.http.get(this.apiUrl + 'api/queue/getqueue?' + params, this.httpOptions)
-
+      .set('status1', status1)
+      .set('status2', status2);
+    return this.http.get(this.apiUrl + 'api/queue/newqueue?' + params, this.httpOptions)
   }
 
   getDataQueByNo(brch: string, stus: number, que: number) {
@@ -44,8 +43,15 @@ export class QueueService {
   }
 
   getLatestQue(brch: string, stus: number) {
-    // https://192.168.137.1:8443/api/queue/latestqueue?status=998&branchcode=034
     let body = "?status=" + stus + "&branchcode=" + brch;
     return this.http.get(this.apiUrl + 'api/queue/latestqueue' + body, this.httpOptions)
+  }
+
+  changeStatusTransactionQ(body) {
+    return this.http.post(this.apiUrl + 'api/queue/updateStatus', body, this.httpOptions)
+  }
+
+  refreshQ(brch) {
+    return this.http.get(this.apiSocket + 'api/queue/refresh?branchcode=' + brch, this.httpOptions)
   }
 }

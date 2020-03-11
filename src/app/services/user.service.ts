@@ -28,6 +28,10 @@ export class UserService {
       .set('size', size)
       .set('page', page);
 
+      console.log("http params : ", params);
+      
+      
+
 
     return this.http.get(this.apiUrl + 'api/users?' + params, this.httpOptions)
 

@@ -1,7 +1,7 @@
 html,
 body {
   background-size: cover;
-  background-image: url('../src/assets/svgs/main-background.svg');
+  background-image: url('/assets/svgs/main-background.svg');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
