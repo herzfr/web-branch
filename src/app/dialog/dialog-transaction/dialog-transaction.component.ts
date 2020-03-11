@@ -171,6 +171,10 @@ export class DialogTransactionComponent implements OnInit {
     });
 
     console.log(postStat);
+    this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
+      console.log(res);
+      this.dialogRef.close(res);
+    })
   }
 
   prosesQ() {

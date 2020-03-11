@@ -51,4 +51,8 @@ export class QueueService {
   changeStatusTransactionQ(body) {
     return this.http.post(this.apiUrl + 'api/queue/updateStatus', body, this.httpOptions)
   }
+
+  refreshQ(brch) {
+    return this.http.post(this.apiUrl + 'api/queue/refresh?branchcode=' + brch, this.httpOptions)
+  }
 }
