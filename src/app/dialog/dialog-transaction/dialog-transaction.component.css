@@ -105,3 +105,13 @@ input[type="text"]:focus {
   outline: none;
   transition: all 0.3s ease;
 }
+
+::ng-deep .mat-step-header .mat-step-icon-selected {
+  background-color: #3b4e76 !important;
+  color: white !important;
+}
+
+::ng-deep .mat-step-header .mat-step-icon-state-edit {
+  background-color: #3b4e76 !important;
+  color: white !important;
+}

@@ -44,8 +44,11 @@ export class QueueService {
   }
 
   getLatestQue(brch: string, stus: number) {
-    // https://192.168.137.1:8443/api/queue/latestqueue?status=998&branchcode=034
     let body = "?status=" + stus + "&branchcode=" + brch;
     return this.http.get(this.apiUrl + 'api/queue/latestqueue' + body, this.httpOptions)
+  }
+
+  cancelTransactionQ(body) {
+    return this.http.post(this.apiUrl + 'api/queue/updateStatus', body, this.httpOptions)
   }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { NavItem } from '../models/nav-item';
-import { MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatDialog, MatDialogConfig } from '@angular/material';
 import { DialogService } from '../services/dialog.service';
 import { WebsocketService } from '../services/websocket.service';
 import * as moment from 'moment';
@@ -13,6 +13,7 @@ import * as SockJS from 'sockjs-client';
 import { QueueService } from '../services/queue.service';
 import { QTable } from '../models/queue-table';
 import { AppConfiguration } from '../models/app.configuration';
+import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,6 +28,7 @@ export class DashboardComponent implements OnInit {
   DataTableQ: QTable[];
   branchCode;
   // ELEMENT_DATA: QTable[];
+  isQEmpty: boolean = false;
 
   private serverUrl;
   private stompClient;
@@ -36,10 +38,10 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService, private appConfig : AppConfiguration) {
+  constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService, private appConfig: AppConfiguration) {
     this.serverUrl = appConfig.ipSocketServer + "socket";
     console.log("dashboar socket : ", this.serverUrl);
-    
+
   }
 
   ngOnInit() {
@@ -47,6 +49,7 @@ export class DashboardComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.connect();
   }
+
 
   getDataTableQ() {
 
@@ -57,7 +60,7 @@ export class DashboardComponent implements OnInit {
     this.branchCode = branch.branchCode;
 
     this.queueServ.getDataQue(this.branchCode, this.waitingStatusX).subscribe(res => {
-      // console.log(res);
+      console.log(res);
       let data = new Array;
       for (const key in res) {
         if (res.hasOwnProperty(key)) {
@@ -94,50 +97,50 @@ export class DashboardComponent implements OnInit {
         }
       }
 
+      console.log(data);
 
+      if (data.length > 0) {
+        console.log('data ada');
 
-      var _data = [];
-      _data.push(data[0]);
+        var _data = [];
+        _data.push(data[0]);
 
-      for (var i = 1; i < data.length; i++) {
-        var alreadyExistsAt = this.existsAt(_data, 'queueno', data[i].queueno);
-        // console.log(alreadyExistsAt);
-        if (alreadyExistsAt !== false) {
-          _data[alreadyExistsAt].transbuff += ', ' + data[i].transbuff;
-        } else {
-          _data.push(data[i]);
-          // console.log(data[i]);
-          dataQ = data[i];
+        for (var i = 1; i < data.length; i++) {
+          var alreadyExistsAt = this.existsAt(_data, 'queueno', data[i].queueno);
+          // console.log(alreadyExistsAt);
+          if (alreadyExistsAt !== false) {
+            _data[alreadyExistsAt].transbuff += ', ' + data[i].transbuff;
+          } else {
+            _data.push(data[i]);
+            // console.log(data[i]);
+            dataQ = data[i];
+          }
         }
-      }
 
-      // console.log(_data);
+        // console.log(_data);
 
-
-
-      for (const key in _data) {
-        if (_data.hasOwnProperty(key)) {
-          const element = _data[key];
-          // console.log(element.transbuff);
-          _data[key].transbuff = "[" + element.transbuff + "]";
-          let parse = JSON.parse(_data[key].transbuff)
-          _data[key].transbuff = parse;
+        for (const key in _data) {
+          if (_data.hasOwnProperty(key)) {
+            const element = _data[key];
+            // console.log(element.transbuff);
+            _data[key].transbuff = "[" + element.transbuff + "]";
+            let parse = JSON.parse(_data[key].transbuff)
+            _data[key].transbuff = parse;
+          }
         }
+
+        // console.log(_data);
+        this.DataTableQ = _data;
+        this.dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
+
+        this.isQEmpty = false;
+      } else {
+        console.log('data gak ada');
+        this.isQEmpty = true;
+        this.DataTableQ = _data;
+        this.dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
       }
-
-
-      // console.log(_data);
-      this.DataTableQ = _data;
-      this.dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
-
     })
-
-    setTimeout(() => {
-      // console.log(this.DataTableQ);
-      let dataQ: any = this.DataTableQ;
-
-
-    }, 1000)
   }
 
   existsAt(array, key, value) {
@@ -167,7 +170,7 @@ export class DashboardComponent implements OnInit {
           element.transbuff = parse;
         });
 
-        this.dialog.transactionDialog(res['record'])
+        this.transactionDialog(res['record'])
 
       } else if (res['success'] == false) {
 
@@ -183,21 +186,45 @@ export class DashboardComponent implements OnInit {
               element.transbuff = parse;
             });
 
-            this.dialog.transactionDialog(res['record'])
+            this.transactionDialog(res['record'])
           } else {
             console.log('data tidak ada');
           }
-
         })
 
       } else {
         console.log('DATA TIDAK ADA');
-
       }
 
     })
 
   }
+
+
+  transactionDialog(datas) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      id: 1,
+      data: datas,
+    }
+    dialogConfig.backdropClass = 'backdropBackground';
+    dialogConfig.disableClose = true;
+    dialogConfig.width = '1000px';
+    // dialogConfig.height = '500px';
+    this.dlg.open(DialogTransactionComponent, dialogConfig).afterClosed().subscribe(resBack => {
+      console.log(resBack);
+
+      if (resBack.successId0) {
+        this.getDataTableQ()
+      }
+
+    })
+
+
+  }
+
+
+
 
   connect() {
 

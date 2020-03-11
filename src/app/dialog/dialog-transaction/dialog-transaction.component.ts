@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatGridTileHeaderCssMatStyler } from '@angular/material';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl, AbstractControl } from '@angular/forms';
+import { QueueService } from 'src/app/services/queue.service';
 
 @Component({
   selector: 'app-dialog-transaction',
@@ -17,7 +18,8 @@ export class DialogTransactionComponent implements OnInit {
   formGroup: FormGroup;
 
 
-  constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder) {
+  constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
+    private queueServ: QueueService) {
     this.data = data.data;
 
     let forms = new Array;
@@ -78,8 +80,14 @@ export class DialogTransactionComponent implements OnInit {
         } else if (changeKey.Tipe === 'tab') {
           changeKey.Tipe = 'Transaksi Antar Bank'
         }
-        // console.log();
-        // console.log(changeKey.Tipe);
+
+        if (changeKey.Tunai === '1') {
+          changeKey.Tunai = 'Ya'
+        } else if (changeKey.Tunai === '0') {
+          changeKey.Tunai = 'Tidak'
+        }
+
+        // console.log(changeKey.Tunai);
         let dataForm = { "transid": element.transid, "transbuff": element.transbuff[0] };
         forms.push(dataForm)
       }
@@ -120,7 +128,7 @@ export class DialogTransactionComponent implements OnInit {
         // group[key] = new FormControl(el, Validators.required)
       }
     }
-    console.log(orderFormGroup);
+    // console.log(orderFormGroup);
     return orderFormGroup;
   }
 
@@ -128,6 +136,29 @@ export class DialogTransactionComponent implements OnInit {
     // console.log(event);
     this.form = this.formGroup.get('form') as FormArray;
     this.form.push(this.init(event));
+  }
+
+  cancelQ() {
+    let postStat = new Array;
+    this.dataForm.forEach(e => {
+      console.log(e.transid);
+      let obj: any = new Object();
+      obj.transId = e.transid;
+      obj.status = '100';
+
+      postStat.push(obj)
+    });
+
+    console.log(postStat);
+
+    this.queueServ.cancelTransactionQ(postStat).subscribe(res => {
+      console.log(res);
+
+      this.dialogRef.close(res);
+    })
+
+
+
   }
 
 
