@@ -8,6 +8,7 @@ import { AppConfiguration } from '../models/app.configuration';
 export class QueueService {
 
   private apiUrl;
+  private apiSocket;
 
   headers_object = new HttpHeaders()
     .set('Content-Type', 'application/json')
@@ -20,6 +21,7 @@ export class QueueService {
 
   constructor(private appConfiguration: AppConfiguration, private http: HttpClient) {
     this.apiUrl = this.appConfiguration.ipServer;
+    this.apiSocket = this.appConfiguration.ipSocketServer;
   }
 
   getNewQueue(brch: string, status1: string, status2) {
@@ -47,5 +49,9 @@ export class QueueService {
 
   changeStatusTransactionQ(body) {
     return this.http.post(this.apiUrl + 'api/queue/updateStatus', body, this.httpOptions)
+  }
+
+  refreshQ(brch) {
+    return this.http.get(this.apiSocket + 'api/queue/refresh?branchcode=' + brch, this.httpOptions)
   }
 }

@@ -22,9 +22,13 @@ import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-
 })
 export class DashboardComponent implements OnInit {
 
-  waitingStatusX: string = '999';
-  skipStatus: string = '998';
-  waitingStatusY: string = '000';
+  // waitingStatusX: string = '999';
+  // waitingStatusY: string = '000';
+
+  private waitingCall: string = '999';
+  private outCall: string = '998';
+  private inCall: string = '997';
+  private reject: string = '900';
 
   DataTableQ: QTable[];
   branchCode;
@@ -60,7 +64,7 @@ export class DashboardComponent implements OnInit {
     let branch = JSON.parse(localStorage.getItem('terminal'))
     this.branchCode = branch.branchCode;
 
-    this.queueServ.getNewQueue(this.branchCode, this.waitingStatusX, this.skipStatus).subscribe(res => {
+    this.queueServ.getNewQueue(this.branchCode, this.waitingCall, this.outCall).subscribe(res => {
       console.log(res);
       let data = new Array;
       for (const key in res) {
@@ -119,6 +123,7 @@ export class DashboardComponent implements OnInit {
         }
 
         // console.log(_data);
+
         for (const key in _data) {
           if (_data.hasOwnProperty(key)) {
             const element = _data[key];
@@ -128,6 +133,7 @@ export class DashboardComponent implements OnInit {
             _data[key].transbuff = parse;
           }
         }
+
         // console.log(_data);
         this.DataTableQ = _data;
         this.dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
@@ -200,12 +206,94 @@ export class DashboardComponent implements OnInit {
   }
 
 
+  nextQueue2(event) {
+
+    this.queueServ.getLatestQue('034', 998).subscribe(res => {
+
+      if (res['success'] == true) {
+        let datares = res['record']
+        console.log(datares);
+
+        res['record'].forEach(element => {
+          element.transbuff = '[' + element.transbuff + ']'
+          let parse = JSON.parse(element.transbuff)
+          element.transbuff = parse;
+        });
+
+        this.transactionDialog(res['record'])
+
+        event.forEach(el => {
+          delete el.hold
+        });
+
+        this.queueServ.changeStatusTransactionQ(event).subscribe(e => {
+          console.log(e);
+          this.queueServ.refreshQ(this.branchCode).subscribe()
+        })
+
+      } else if (res['success'] == false) {
+
+        this.queueServ.getLatestQue('034', 999).subscribe(res => {
+
+          if (res['success'] == true) {
+            let datares = res['record']
+            console.log(datares);
+
+            res['record'].forEach(element => {
+              element.transbuff = '[' + element.transbuff + ']'
+              let parse = JSON.parse(element.transbuff)
+              element.transbuff = parse;
+            });
+
+            this.transactionDialog(res['record'])
+          } else {
+            console.log('data tidak ada');
+          }
+        })
+
+      } else {
+        console.log('DATA TIDAK ADA');
+      }
+
+    })
+
+  }
+
+
+
   transactionDialog(datas) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
       id: 1,
       data: datas,
     }
+
+    let postStat = new Array;
+    for (const key in datas) {
+      if (datas.hasOwnProperty(key)) {
+        const element = datas[key];
+        console.log(element.transid);
+
+        let transid = element.transid;
+
+        let obj: any = new Object();
+        obj.transId = transid;
+        obj.status = this.inCall;
+
+        postStat.push(obj)
+      }
+    }
+    console.log(postStat);
+
+    this.queueServ.changeStatusTransactionQ(postStat).subscribe(e => {
+      console.log(e);
+      if (e['successId0']) {
+        this.queueServ.refreshQ(this.branchCode).subscribe(e => {
+
+        })
+      }
+    })
+
     dialogConfig.backdropClass = 'backdropBackground';
     dialogConfig.disableClose = true;
     dialogConfig.width = '1000px';
@@ -215,6 +303,10 @@ export class DashboardComponent implements OnInit {
 
       if (resBack.successId0) {
         this.getDataTableQ()
+        this.queueServ.refreshQ(this.branchCode).subscribe()
+      } else if (resBack[0].hold) {
+        // console.log('hold dipanggil');
+        this.nextQueue2(resBack)
       }
 
     })
