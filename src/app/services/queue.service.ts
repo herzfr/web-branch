@@ -30,7 +30,6 @@ export class QueueService {
       .set('status1', status1)
       .set('status2', status2);
     return this.http.get(this.apiUrl + 'api/queue/newqueue?' + params, this.httpOptions)
-
   }
 
   getDataQueByNo(brch: string, stus: number, que: number) {
