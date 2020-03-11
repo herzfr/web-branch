@@ -53,7 +53,7 @@
     <label class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama <span
         class="text-right">:</span></label>
     <div class="col-sm-10">
-      <input type="text" class="form-control-plaintext col-6" id="nameName">
+      <input type="text" class="form-control-plaintext col-6" id="nameName" value="John Lennon">
     </div>
   </div>
 
@@ -62,14 +62,27 @@
   <form [formGroup]="formGroup">
     <mat-horizontal-stepper formArrayName="form">
       <ng-container>
-        <mat-step [formGroupName]="i" *ngFor="let customerGroup of formGroup.controls.form.controls; let i = index">
-          <ng-template matStepLabel>Step {{i + 1}}</ng-template>
-          <mat-form-field>
-            <input matInput placeholder="Address" formControlName="cont" required>
-          </mat-form-field>
+        <mat-step [formGroupName]="i" *ngFor="let env of formGroup.controls.form.controls; let i = index">
+          <ng-template matStepLabel>Transaction {{i + 1}}
+            <!-- <ng-container *ngFor="let a of env.controls | keyvalue"></ng-container> -->
+          </ng-template>
+          <!-- 
+          <mat-form-field *ngFor="let a of env.controls | keyvalue">
+            <input matInput placeholder="Address" formControlName="{{ a.key }}" required>
+          </mat-form-field> -->
+
+          <div *ngFor="let a of env.controls | keyvalue" class="form-group row">
+            <label
+              class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ a.key }}
+              <span class="text-right">:</span></label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control-plaintext col-6" formControlName="{{ a.key }}">
+            </div>
+          </div>
+
           <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
+            <!-- <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext>Next</button> -->
           </div>
         </mat-step>
       </ng-container>
@@ -79,7 +92,8 @@
 
 
 </mat-dialog-content>
-<mat-dialog-actions align="center">
-  <button mat-button mat-dialog-close>Prosses</button>
+<mat-dialog-actions class="justify-content-between">
+  <button (click)="cancelQ()" mat-button mat-dialog-close>Batal</button>
+  <button mat-button mat-dialog-close>Proses</button>
   <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
 </mat-dialog-actions>
