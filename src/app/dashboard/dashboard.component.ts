@@ -23,6 +23,7 @@ import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-
 export class DashboardComponent implements OnInit {
 
   waitingStatusX: string = '999';
+  skipStatus: string = '998';
   waitingStatusY: string = '000';
 
   DataTableQ: QTable[];
@@ -59,7 +60,7 @@ export class DashboardComponent implements OnInit {
     let branch = JSON.parse(localStorage.getItem('terminal'))
     this.branchCode = branch.branchCode;
 
-    this.queueServ.getDataQue(this.branchCode, this.waitingStatusX).subscribe(res => {
+    this.queueServ.getNewQueue(this.branchCode, this.waitingStatusX, this.skipStatus).subscribe(res => {
       console.log(res);
       let data = new Array;
       for (const key in res) {
@@ -118,7 +119,6 @@ export class DashboardComponent implements OnInit {
         }
 
         // console.log(_data);
-
         for (const key in _data) {
           if (_data.hasOwnProperty(key)) {
             const element = _data[key];
@@ -128,7 +128,6 @@ export class DashboardComponent implements OnInit {
             _data[key].transbuff = parse;
           }
         }
-
         // console.log(_data);
         this.DataTableQ = _data;
         this.dataSource = new MatTableDataSource<QTable>(this.DataTableQ);

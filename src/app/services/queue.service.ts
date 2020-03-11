@@ -22,14 +22,12 @@ export class QueueService {
     this.apiUrl = this.appConfiguration.ipServer;
   }
 
-  getDataQue(brch: string, stus: string) {
-
+  getNewQueue(brch: string, status1: string, status2) {
     const params = new HttpParams()
       .set('branchcode', brch)
-      .set('status', stus);
-    // let body = "?branchcode=" + brch + "&status=" + stus;
-
-    return this.http.get(this.apiUrl + 'api/queue/getqueue?' + params, this.httpOptions)
+      .set('status1', status1)
+      .set('status2', status2);
+    return this.http.get(this.apiUrl + 'api/queue/newqueue?' + params, this.httpOptions)
 
   }
 
