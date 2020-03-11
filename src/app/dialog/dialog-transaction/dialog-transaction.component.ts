@@ -166,15 +166,17 @@ export class DialogTransactionComponent implements OnInit {
       let obj: any = new Object();
       obj.transId = e.transid;
       obj.status = '998';
-
+      obj.hold = true;
       postStat.push(obj)
     });
 
-    console.log(postStat);
-    this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
-      console.log(res);
-      this.dialogRef.close(res);
-    })
+    this.dialogRef.close(postStat)
+
+    // console.log(postStat);
+    // this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
+    //   console.log(res);
+    //   this.dialogRef.close(res);
+    // })
   }
 
   prosesQ() {
