@@ -22,20 +22,14 @@ export class UserService {
 
 
   getAllUsers(search, size, page) {
-
     const params = new HttpParams()
       .set('search', search)
       .set('size', size)
       .set('page', page);
-
-      console.log("http params : ", params);
-      
-      
-
-
     return this.http.get(this.apiUrl + 'api/users?' + params, this.httpOptions)
-
   }
+
+
 
 
 }

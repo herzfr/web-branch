@@ -1,5 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, OnInit, Inject, ViewChild,  } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatStepper } from '@angular/material';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-user-dialog',
@@ -11,16 +12,42 @@ export class AddUserDialogComponent implements OnInit {
   message: string;
   message2: string;
 
-  constructor(private dialogRef: MatDialogRef<AddUserDialogComponent>, @Inject(MAT_DIALOG_DATA) data) {
-    this.message = data.message;
-    this.message2 = data.message2;
-   }
+  private isLinear: boolean = true;
+  firstFormGroup: FormGroup;
+  secondFormGroup: FormGroup;
 
-  ngOnInit() {
-  }
+  isCompleted: boolean = false;
+  isFirstStepDone : boolean = true;
+  userNameControl: boolean = false;
 
-  close() {
-    this.dialogRef.close();
-  }
+  @ViewChild('stepper', {static : false}) private myStepper: MatStepper;
+
+
+constructor(private dialogRef: MatDialogRef < AddUserDialogComponent >, @Inject(MAT_DIALOG_DATA) data, private _formBuilder: FormBuilder) {
+  this.message = data.message;
+  this.message2 = data.message2;
+}
+
+ngOnInit() {
+
+  this.firstFormGroup = this._formBuilder.group({
+    userName: ['', Validators.required]
+  });
+  this.secondFormGroup = this._formBuilder.group({
+    secondCtrl: ['', Validators.required]
+  });
+
+
+
+
+
+}
+
+
+
+
+close() {
+  this.dialogRef.close();
+}
 
 }
