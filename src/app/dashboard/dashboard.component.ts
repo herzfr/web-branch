@@ -214,6 +214,30 @@ export class DashboardComponent implements OnInit {
     dialogConfig.backdropClass = 'backdropBackground';
     dialogConfig.disableClose = true;
     dialogConfig.width = '1000px';
+
+    let postStat = new Array;
+
+    for (const key in datas) {
+      if (datas.hasOwnProperty(key)) {
+        const element = datas[key];
+
+        let transid = element.transid;
+
+        let obj: any = new Object();
+        obj.transId = transid;
+        obj.status = this.inCall;
+
+        postStat.push(obj)
+
+      }
+    }
+
+    this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
+      console.log(res);
+      if (res['successId0']) {
+        this.queueServ.refreshQ(this.branchCode).subscribe()
+      }
+    })
     // dialogConfig.height = '500px';
     this.dlg.open(DialogTransactionComponent, dialogConfig).afterClosed().subscribe(resBack => {
       console.log(resBack);

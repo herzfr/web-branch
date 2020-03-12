@@ -199,6 +199,11 @@ export class DialogTransactionComponent implements OnInit {
   }
 
 
+  transactionProcess(event) {
+    console.log(event);
+
+  }
+
 
 
 
