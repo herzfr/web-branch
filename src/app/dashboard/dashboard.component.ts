@@ -205,95 +205,12 @@ export class DashboardComponent implements OnInit {
 
   }
 
-
-  nextQueue2(event) {
-
-    this.queueServ.getLatestQue('034', 998).subscribe(res => {
-
-      if (res['success'] == true) {
-        let datares = res['record']
-        console.log(datares);
-
-        res['record'].forEach(element => {
-          element.transbuff = '[' + element.transbuff + ']'
-          let parse = JSON.parse(element.transbuff)
-          element.transbuff = parse;
-        });
-
-        this.transactionDialog(res['record'])
-
-        event.forEach(el => {
-          delete el.hold
-        });
-
-        this.queueServ.changeStatusTransactionQ(event).subscribe(e => {
-          console.log(e);
-          this.queueServ.refreshQ(this.branchCode).subscribe()
-        })
-
-      } else if (res['success'] == false) {
-
-        this.queueServ.getLatestQue('034', 999).subscribe(res => {
-
-          if (res['success'] == true) {
-            let datares = res['record']
-            console.log(datares);
-
-            res['record'].forEach(element => {
-              element.transbuff = '[' + element.transbuff + ']'
-              let parse = JSON.parse(element.transbuff)
-              element.transbuff = parse;
-            });
-
-            this.transactionDialog(res['record'])
-          } else {
-            console.log('data tidak ada');
-          }
-        })
-
-      } else {
-        console.log('DATA TIDAK ADA');
-      }
-
-    })
-
-  }
-
-
-
   transactionDialog(datas) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
       id: 1,
       data: datas,
     }
-
-    let postStat = new Array;
-    for (const key in datas) {
-      if (datas.hasOwnProperty(key)) {
-        const element = datas[key];
-        console.log(element.transid);
-
-        let transid = element.transid;
-
-        let obj: any = new Object();
-        obj.transId = transid;
-        obj.status = this.inCall;
-
-        postStat.push(obj)
-      }
-    }
-    console.log(postStat);
-
-    this.queueServ.changeStatusTransactionQ(postStat).subscribe(e => {
-      console.log(e);
-      if (e['successId0']) {
-        this.queueServ.refreshQ(this.branchCode).subscribe(e => {
-
-        })
-      }
-    })
-
     dialogConfig.backdropClass = 'backdropBackground';
     dialogConfig.disableClose = true;
     dialogConfig.width = '1000px';
@@ -301,12 +218,26 @@ export class DashboardComponent implements OnInit {
     this.dlg.open(DialogTransactionComponent, dialogConfig).afterClosed().subscribe(resBack => {
       console.log(resBack);
 
-      if (resBack.successId0) {
-        this.getDataTableQ()
-        this.queueServ.refreshQ(this.branchCode).subscribe()
-      } else if (resBack[0].hold) {
-        // console.log('hold dipanggil');
-        this.nextQueue2(resBack)
+      if (resBack[0].skip) {
+        console.log('skip jalan');
+
+        this.nextQueue()
+
+        resBack.forEach(el => {
+          delete el.skip
+          // console.log(el);
+        });
+
+        this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
+          console.log(res);
+          this.queueServ.refreshQ(this.branchCode).subscribe()
+        })
+
+      } else if (resBack[0].batal) {
+        console.log('batal jalan');
+
+      } else if (resBack[0].proses) {
+        console.log('proses jalan');
       }
 
     })
