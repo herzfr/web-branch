@@ -147,16 +147,16 @@ export class DialogTransactionComponent implements OnInit {
       let obj: any = new Object();
       obj.transId = e.transid;
       obj.status = '100';
-
+      obj.batal = true;
       postStat.push(obj)
     });
 
-    console.log(postStat);
+    this.dialogRef.close(postStat);
 
-    this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
-      console.log(res);
-      this.dialogRef.close(res);
-    })
+    // this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
+    //   console.log(res);
+    //   this.dialogRef.close(res);
+    // })
   }
 
   skipQ() {
@@ -166,7 +166,7 @@ export class DialogTransactionComponent implements OnInit {
       let obj: any = new Object();
       obj.transId = e.transid;
       obj.status = '998';
-      obj.hold = true;
+      obj.skip = true;
       postStat.push(obj)
     });
 
@@ -186,14 +186,16 @@ export class DialogTransactionComponent implements OnInit {
       let obj: any = new Object();
       obj.transId = e.transid;
       obj.status = '000';
-      obj.hold = true;
+      obj.proses = true;
       postStat.push(obj)
     });
 
-    this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
-      console.log(res);
-      this.dialogRef.close(res);
-    })
+    this.dialogRef.close(postStat);
+
+    // this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
+    //   console.log(res);
+    //   this.dialogRef.close(res);
+    // })
   }
 
 
