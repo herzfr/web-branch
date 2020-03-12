@@ -5,7 +5,7 @@ import { AccountRoutingModule } from './account-routing.module';
 import { AccountComponent } from './account.component';
 import { MaterialModule } from '../material.modul';
 import { UserService } from '../services/user.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddUserDialogComponent } from '../dialog/add-user-dialog/add-user-dialog.component';
 
 @NgModule({
@@ -17,7 +17,8 @@ import { AddUserDialogComponent } from '../dialog/add-user-dialog/add-user-dialo
     CommonModule,
     AccountRoutingModule,
     MaterialModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   entryComponents: [AddUserDialogComponent],
   providers: [UserService]
