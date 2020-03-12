@@ -236,8 +236,28 @@ export class DashboardComponent implements OnInit {
       } else if (resBack[0].batal) {
         console.log('batal jalan');
 
+        resBack.forEach(el => {
+          delete el.batal
+          // console.log(el);
+        });
+
+        this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
+          console.log(res);
+          this.queueServ.refreshQ(this.branchCode).subscribe()
+        })
+
       } else if (resBack[0].proses) {
         console.log('proses jalan');
+
+        resBack.forEach(el => {
+          delete el.proses
+          // console.log(el);
+        });
+
+        this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
+          console.log(res);
+          this.queueServ.refreshQ(this.branchCode).subscribe()
+        })
       }
 
     })
