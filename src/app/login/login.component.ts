@@ -11,7 +11,6 @@ import * as SockJS from 'sockjs-client';
 
 import { LoginModel } from '../models/login-model';
 import { AppConfiguration } from '../models/app.configuration';
-
 declare var $: any;
 
 @Component({
@@ -21,8 +20,10 @@ declare var $: any;
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  private serverUrl = 'https://localhost:8444/socket'
+  private serverUrl = 'https://192.168.56.1:8444/socket'
   private stompClient;
+
+  ls = new securels({ encodingType: 'aes' });
 
   private branch;
   private terminal;
@@ -38,7 +39,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   secureLs = new securels({ encodingType: 'aes' });
   isRequired: boolean = true;
 
-  constructor(private auth: AuthenticateService, private router: Router, private dataBranch: DataBranchServices, private dialog: DialogService, private appConfig : AppConfiguration) {
+  constructor(private auth: AuthenticateService, private router: Router, private dataBranch: DataBranchServices, private dialog: DialogService, private appConfig: AppConfiguration) {
+
+    try {
+      let user = JSON.parse(this.ls.get('data'));
+      if (user) {
+        this.router.navigate(['/home']);
+      }
+    } catch (error) {
+      // console.log("no user data ");
+    }
+
     this.loginForm = new FormGroup({
       username: new FormControl('', Validators.required)
     });

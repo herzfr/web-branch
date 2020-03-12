@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { Page404Component } from './page404/page404.component';
+import { AuthGuard } from './services/auth.guard';
 
 const routes: Routes = [
   {
@@ -15,12 +16,12 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
     path: 'home', component: HomeComponent,
-    // canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
     loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
   },
   {
     path: 'account', component: HomeComponent,
-    // canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
     loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
   },
   {

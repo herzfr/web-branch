@@ -83,7 +83,7 @@ input[type="text"] {
   border: 1px solid #133764;
   box-sizing: border-box;
   border-radius: 20px;
-  outline: none;
+  /* outline: none; */
   padding-left: 10px;
   padding-right: 10px;
   transition: all 0.3s ease;
