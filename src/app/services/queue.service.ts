@@ -54,4 +54,10 @@ export class QueueService {
   refreshQ(brch) {
     return this.http.get(this.apiSocket + 'api/queue/refresh?branchcode=' + brch, this.httpOptions)
   }
+
+  processTransactionDataQ(body) {
+    return this.http.post(this.apiUrl + 'api/wbtrans/process', body, this.httpOptions)
+  }
+
+
 }
