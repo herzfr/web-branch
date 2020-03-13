@@ -23,9 +23,15 @@ export class DialogTransactionComponent implements OnInit {
   private isBack = false;
   private isNext = false;
 
+  // Main Button
+  private isCancelBtn: boolean = true;
+  private isSkipBtn: boolean = true;
+  private isDoneBtn: boolean = false;
+
 
   private form: FormArray;
   private formGroup: FormGroup;
+  private dataSuccess = new Array;
 
   stepDisabled: boolean = true;
 
@@ -108,8 +114,6 @@ export class DialogTransactionComponent implements OnInit {
       }
     }
     this.dataForm = forms;
-
-
   }
 
   ngOnInit() {
@@ -123,15 +127,12 @@ export class DialogTransactionComponent implements OnInit {
         const element = this.dataForm[key];
         // console.log(element.transid);
         console.log(element);
-
-
-
         this.addItem(element.transbuff, element.transid);
       }
     }
     this.form.removeAt(0)
-    console.log(this.formGroup);
-    console.log(this.form);
+    // console.log(this.formGroup);
+    // console.log(this.form);
   }
 
   init(event) {
@@ -235,7 +236,6 @@ export class DialogTransactionComponent implements OnInit {
     console.log(obj);
     arr.push(obj)
 
-
     this.queueServ.changeStatusTransactionQ(arr).subscribe(e => {
       console.log(e);
       if (e['successId0']) {
@@ -280,13 +280,15 @@ export class DialogTransactionComponent implements OnInit {
     this.queueServ.processTransactionDataQ(dataProsesApi).subscribe(res => {
       console.log(res);
       if (res['success']) {
-        console.log('sucess');
+        // console.log('sucess');
+        this.dataSuccess.push(res)
         setTimeout(() => {
           this.isProsses = false;
           this.isSuccess = true;
           $(".check-icon").show();
           this.isNext = true;
-          this.setDataPrint(dataProsesApi)
+          this.isCancelBtn = false;
+          this.isSkipBtn = false;
         }, 500)
       } else {
         console.log('gagal');
@@ -298,6 +300,7 @@ export class DialogTransactionComponent implements OnInit {
       }
     })
 
+    console.log(this.dataSuccess);
   }
 
   findDataByTransactionId(key, object) {
@@ -318,10 +321,10 @@ export class DialogTransactionComponent implements OnInit {
     }
   }
 
-  setDataPrint(event) {
-    this._printData = JSON.parse(event.transbuff)
-    console.log(this._printData);
-  }
+  // setDataPrint(event) {
+  //   this._printData = JSON.parse(event.transbuff)
+  //   console.log(this._printData);
+  // }
 
   isDoor(event: number, event2: number, stepper: MatStepper): void {
     console.log(event);
@@ -402,7 +405,13 @@ export class DialogTransactionComponent implements OnInit {
     stepper.selected.interacted = false;
   }
 
-
-
+  done() {
+    if (this.dataSuccess.length === this.form.length) {
+      console.log('suses di isi semua');
+      this.isDoneBtn = true;
+    } else {
+      console.log('masih belum');
+    }
+  }
 
 }

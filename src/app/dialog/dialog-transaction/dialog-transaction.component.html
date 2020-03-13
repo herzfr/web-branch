@@ -154,7 +154,7 @@
               <div class="d-flex justify-content-between align-items-center">
                 <!-- <button  mat-button><i class="fad fa-print fa-2x"></i> Print</button> -->
                 <button (click)="print()" class="print-button"><span class="print-icon"></span></button>
-                <button mat-button matStepperNext>Next</button>
+                <button (click)="done()" mat-button matStepperNext>Next</button>
               </div>
             </mat-step>
 
@@ -176,9 +176,11 @@
 
 
 </mat-dialog-content>
-<mat-dialog-actions class="justify-content-between">
-  <button class="batal" (click)="cancelQ()" mat-button mat-dialog-close>Batal</button>
-  <button class="skip" (click)="skipQ()" mat-button mat-dialog-close>Skip</button>
-  <button class="proses" (click)="prosesQ()" mat-button mat-dialog-close>Selesai</button>
+<mat-dialog-actions class="justify-content-center">
+  <div class="container-fluid justify-content-between d-flex m-0">
+    <button *ngIf="isCancelBtn" class="batal" (click)="cancelQ()" mat-button mat-dialog-close>Batal</button>
+    <button *ngIf="isSkipBtn" class="skip" (click)="skipQ()" mat-button mat-dialog-close>Skip</button>
+  </div>
+  <button *ngIf="isDoneBtn" class="proses" (click)="prosesQ()" mat-button mat-dialog-close>Selesai</button>
   <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
 </mat-dialog-actions>
