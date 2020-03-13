@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, merge, Subscription } from 'rxjs';
 import { startWith, switchMap, map, catchError } from 'rxjs/operators';
 import { AddUserDialogComponent } from '../dialog/add-user-dialog/add-user-dialog.component';
+import { DeleteUserDialogComponent } from '../dialog/delete-user-dialog/delete-user-dialog.component';
 
 
 @Component({
@@ -26,11 +27,12 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private subUserService: Subscription;
   private subDialog: Subscription;
-
+  private subUserDelete: Subscription;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private usersService: UserService, private dialog: MatDialog) {
+
   }
 
   ngOnInit() {
@@ -90,7 +92,6 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log("run add user ");
     const dialogConfig = new MatDialogConfig();
 
-
     dialogConfig.backdropClass = 'backdropBackground';
     dialogConfig.disableClose = true;
     dialogConfig.width = '1000px';
@@ -105,6 +106,50 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
     });
+
+  }
+
+
+  deleteUser(value) {
+
+    var pageIndex = this.paginator.pageIndex;
+    var pageSize = this.paginator.pageSize;
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.backdropClass = 'backdropBackground';
+    dialogConfig.disableClose = true;
+    dialogConfig.width = '400px';
+    dialogConfig.data = {
+      id: 1,
+      value: value
+    };
+
+    this.subDialog = this.dialog.open(DeleteUserDialogComponent, dialogConfig).afterClosed().subscribe(resBack => {
+      console.log(resBack.delete);
+      if (resBack.delete) {
+        this.confirmDelete(resBack)
+      }
+
+    });
+
+
+
+  }
+
+  confirmDelete(value) {
+    var pageIndex = this.paginator.pageIndex;
+    var pageSize = this.paginator.pageSize;
+
+    this.subUserDelete = this.usersService.deleteUser(value).subscribe(res => {
+      console.log(res);
+
+      if (res['success']) {
+        this.getAllUsersData("", pageSize, 0);
+      } else {
+        this.getAllUsersData("", pageSize, 0);
+      }
+    })
 
   }
 

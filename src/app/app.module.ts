@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, APP_INITIALIZER, LOCALE_ID } from '@angular/core';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CryptoService } from './services/crypto.service';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -26,8 +26,7 @@ import { DialogTransactionComponent } from './dialog/dialog-transaction/dialog-t
 import { MatTableModule } from '@angular/material';
 import { WebsocketService } from './services/websocket.service';
 import { UtilityService } from './services/utility.service';
-import { CurrencySetting } from './config/currency-setting';
- 
+
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {

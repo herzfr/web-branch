@@ -59,17 +59,23 @@
 
       <mat-horizontal-stepper [linear]="isLinear" #stepper>
         <mat-step [stepControl]="userNameControl" [completed]="false">
-          <form [formGroup]="firstFormGroup" >
+          <form [formGroup]="firstFormGroup">
             <ng-template matStepLabel>Isi Username </ng-template>
             <mat-form-field>
               <mat-label>UserName</mat-label>
               <input matInput placeholder="userName" formControlName="userName" required>
-              <mat-error>
-               Input Username
+              <mat-error *ngIf="firstFormGroup.controls.userName.invalid">
+                Minimal 5 Karakter
               </mat-error>
+              <mat-error *ngIf="notMatched">
+                Username sudah terpakai
+              </mat-error>
+              <!-- <mat-error *ngIf="userNameValidation"> 
+               Username Not Valid
+              </mat-error> -->
             </mat-form-field>
             <div class="mt-2">
-                <button mat-raised-button color="primary">Selanjutnya</button>
+              <button mat-raised-button color="primary" (click)="userNameCheck()">Selanjutnya</button>
               <!-- <button mat-button matStepperNext>Next</button> -->
             </div>
           </form>
@@ -79,8 +85,7 @@
             <ng-template matStepLabel>Fill out your address</ng-template>
             <mat-form-field>
               <mat-label>Address</mat-label>
-              <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
-                     required>
+              <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY" required>
             </mat-form-field>
             <div>
               <button mat-button matStepperPrevious>Back</button>

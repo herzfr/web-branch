@@ -76,14 +76,27 @@ export class LoginComponent implements OnInit, OnDestroy {
       })
     }
 
-    const term = localStorage.getItem('terminal');
-    if (term == null) {
+    // const term = localStorage.getItem('terminal');
+    try {
+      JSON.parse(this.secureLs.get("terminal"));
+    } catch (error) {
       $('#modalTerm').modal('show')
       $('.container-fluid').addClass('modalBlur');
       this.subData = this.dataBranch.getBranchAll().subscribe((res) => {
         this.branch = res;
       })
     }
+
+
+
+
+    // if (term === null ) {
+    //   $('#modalTerm').modal('show')
+    //   $('.container-fluid').addClass('modalBlur');
+    //   this.subData = this.dataBranch.getBranchAll().subscribe((res) => {
+    //     this.branch = res;
+    //   })
+    // }
   }
 
   verify() {
@@ -128,9 +141,9 @@ export class LoginComponent implements OnInit, OnDestroy {
       that.stompClient.subscribe("/" + socket, (message) => {
 
         if (message.body) {
-
           const body = JSON.parse(message.body);
           that.secureLs.set("data", JSON.stringify(body.record));
+          that.secureLs.set("termdata", JSON.stringify(body.userterminal));
           if (body.success) {
             $('#verify').modal('hide')
             $('.container-fluid').removeClass('modalBlur');
@@ -168,7 +181,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       "terminalID": this.selectedTerm,
       "branchCode": this.selectedBranch,
     }
-    localStorage.setItem('terminal', JSON.stringify(term))
+    this.secureLs.set("terminal", JSON.stringify(term));
+    // localStorage.setItem('terminal', JSON.stringify(term))
     $('#modalTerm').modal('hide');
     $('.container-fluid').removeClass('modalBlur');
   }

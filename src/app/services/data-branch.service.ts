@@ -29,5 +29,4 @@ export class DataBranchServices {
     return this.http.get(this.apiUrl + 'api/wbbrch/bycode/' + branchCode);
   }
 
-
 }

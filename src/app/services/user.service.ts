@@ -29,6 +29,15 @@ export class UserService {
     return this.http.get(this.apiUrl + 'api/users?' + params, this.httpOptions)
   }
 
+  userNameCheck(userName: string) {
+    return this.http.get(this.apiUrl + 'api/users/check?user=' + userName);
+  }
+
+  deleteUser(value) {
+    var userId = value.userid;
+    return this.http.delete(this.apiUrl + 'api/users?userId=' + userId)
+  }
+
 
 
 

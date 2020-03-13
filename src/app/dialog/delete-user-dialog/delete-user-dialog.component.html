@@ -1,0 +1,20 @@
+<mat-dialog-content>
+    
+    <ng-lottie [options]="options" 
+    (animationCreated)="animationCreated($event)"
+    >
+    </ng-lottie>
+  
+    <p class="text-center"><strong> Konfirmasi Hapus</strong></p>
+    <p class="text-center"><strong> Hapus Akun Ini...?</strong></p>
+  
+  </mat-dialog-content>
+  
+  <mat-dialog-actions class="justify-content-center">
+    <div class="button_cont">
+      <!-- <Button class="btnClose" [mat-dialog-close]="true" (click)="close()">Close</Button> -->
+      <button mat-raised-button color="warn" (click)="delete()">Ya</button>
+      <button mat-raised-button color="primary" (click)="close()">Tidak</button>
+    </div>
+  </mat-dialog-actions>
+  

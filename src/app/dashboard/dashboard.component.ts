@@ -14,6 +14,7 @@ import { QueueService } from '../services/queue.service';
 import { QTable } from '../models/queue-table';
 import { AppConfiguration } from '../models/app.configuration';
 import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
+import * as SecureLS from 'secure-ls';
 
 @Component({
   selector: 'app-dashboard',
@@ -41,6 +42,8 @@ export class DashboardComponent implements OnInit {
   displayedColumns = ['queue', 'time', 'type'];
   dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
 
+  secureLs = new SecureLS({ encodingType: 'aes' });
+
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService, private appConfig: AppConfiguration) {
@@ -61,7 +64,7 @@ export class DashboardComponent implements OnInit {
     console.log('jalan');
     let dataQ;
 
-    let branch = JSON.parse(localStorage.getItem('terminal'))
+    let branch = JSON.parse(this.secureLs.get("terminal"));
     this.branchCode = branch.branchCode;
 
     this.queueServ.getNewQueue(this.branchCode, this.waitingCall, this.outCall).subscribe(res => {
@@ -238,7 +241,6 @@ export class DashboardComponent implements OnInit {
         this.queueServ.refreshQ(this.branchCode).subscribe()
       }
     })
-    // dialogConfig.height = '500px';
     this.dlg.open(DialogTransactionComponent, dialogConfig).afterClosed().subscribe(resBack => {
       console.log(resBack);
 
@@ -249,7 +251,6 @@ export class DashboardComponent implements OnInit {
 
         resBack.forEach(el => {
           delete el.skip
-          // console.log(el);
         });
 
         this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
@@ -262,7 +263,6 @@ export class DashboardComponent implements OnInit {
 
         resBack.forEach(el => {
           delete el.batal
-          // console.log(el);
         });
 
         this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
@@ -275,7 +275,6 @@ export class DashboardComponent implements OnInit {
 
         resBack.forEach(el => {
           delete el.proses
-          // console.log(el);
         });
 
         this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
@@ -286,26 +285,13 @@ export class DashboardComponent implements OnInit {
 
     })
 
-
   }
 
-
-
-
   connect() {
-
-    let ls = JSON.parse(localStorage.getItem("terminal"));
+    let ls = JSON.parse(this.secureLs.get("terminal"));
     const branchCode = ls.branchCode;
-    // const branchWord = converter.toWords(branchCode).split("-").join("");
     const socketChannel = "/tlrx" + branchCode;
-
-    console.log(socketChannel);
-    // this.websocket.initializeWebSocketConnection(socketChannel);
-    // console.log("branch code ", branchCode.replace(/^0+/, ''));
-    // console.log(a.split("-").join(""));
-
     this.initializeWebSocketConnection(socketChannel);
-
   }
 
   initializeWebSocketConnection(socket) {
