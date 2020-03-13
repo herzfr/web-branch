@@ -108,7 +108,7 @@ input[type="text"]:focus {
 }
 
 ::ng-deep .mat-step-header .mat-step-icon-selected {
-  background-color: #3b4e76 !important;
+  background-color: #44baa7 !important;
   color: white !important;
 }
 

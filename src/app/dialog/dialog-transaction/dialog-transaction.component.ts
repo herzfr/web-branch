@@ -240,6 +240,7 @@ export class DialogTransactionComponent implements OnInit {
       console.log(e);
       if (e['successId0']) {
         this.form.removeAt(i)
+        this.done()
       } else {
         console.log('data tidak sukses');
       }

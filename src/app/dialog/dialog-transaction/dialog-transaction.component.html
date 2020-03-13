@@ -64,9 +64,9 @@
       <ng-container>
         <mat-step [completed]="true" [formGroupName]="i"
           *ngFor="let env of formGroup.controls.form.controls; let i = index">
-          <ng-template matStepLabel>Transaction {{i + 1}}
-            <!-- <ng-container *ngFor="let a of env.controls | keyvalue"></ng-container> -->
-          </ng-template>
+          <ng-container *ngFor="let a of env.controls | keyvalue">
+            <ng-template *ngIf="a.key === 'Tipe'" matStepLabel>{{a.value.value }} </ng-template>
+          </ng-container>
 
           <mat-vertical-stepper [linear]="isLinear" #stepper>
             <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null" [stepControl]="1">
