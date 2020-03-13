@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators, FormArray, FormControl, AbstractCon
 import { QueueService } from 'src/app/services/queue.service';
 declare var $: any;
 
+
 @Component({
   selector: 'app-dialog-transaction',
   templateUrl: './dialog-transaction.component.html',
@@ -39,7 +40,7 @@ export class DialogTransactionComponent implements OnInit {
     for (const key in data.data) {
       if (data.data.hasOwnProperty(key)) {
         const element = data.data[key];
-        // console.log(element.transbuff[0]);
+        // console.log(element.trntype);
         this.noQ = element.queueno;
         let changeKey = element.transbuff[0]
 
@@ -102,12 +103,12 @@ export class DialogTransactionComponent implements OnInit {
         }
 
         // console.log(changeKey.Tunai);
-        let dataForm = { "transid": element.transid, "transbuff": element.transbuff[0] };
+        let dataForm = { "transid": element.transid, "transbuff": element.transbuff[0], "trntype": element.trntype };
         forms.push(dataForm)
       }
     }
     this.dataForm = forms;
-    // console.log(this.dataForm);
+
 
   }
 
@@ -129,8 +130,8 @@ export class DialogTransactionComponent implements OnInit {
       }
     }
     this.form.removeAt(0)
-    // console.log(this.formGroup);
-    // console.log(this.form);
+    console.log(this.formGroup);
+    console.log(this.form);
   }
 
   init(event) {
@@ -223,6 +224,28 @@ export class DialogTransactionComponent implements OnInit {
   }
 
 
+  transactionCancel(i, event) {
+    console.log(i, event)
+
+    let arr = new Array;
+    let obj: any = new Object();
+    obj.transId = event.TransaksiId.value;
+    obj.status = '100';
+
+    console.log(obj);
+    arr.push(obj)
+
+
+    this.queueServ.changeStatusTransactionQ(arr).subscribe(e => {
+      console.log(e);
+      if (e['successId0']) {
+        this.form.removeAt(i)
+      } else {
+        console.log('data tidak sukses');
+      }
+    })
+  }
+
   transactionProcess(event) {
     console.log(event);
     let transId = event.TransaksiId.value
@@ -286,6 +309,15 @@ export class DialogTransactionComponent implements OnInit {
     }
   }
 
+  removeForm(key, object) {
+    for (let index = 0; index < object.length; index++) {
+      const el = object[index];
+      if (object[index].transid === key) {
+        return delete object[index]
+      }
+    }
+  }
+
   setDataPrint(event) {
     this._printData = JSON.parse(event.transbuff)
     console.log(this._printData);
@@ -311,13 +343,39 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   print() {
-    const toShow = this.hideParentSiblings($('#print-section'));
-    $('#form-sibling').hide();
-    window.print();
-    for (const e of toShow) {
-      e.show();
-    }
-    $('#main-page').show();
+    // $('#print-section').printThis();
+    $('#print-section').printThis({
+      debug: false,               // show the iframe for debugging
+      importCSS: true,            // import parent page css
+      importStyle: true,         // import style tags
+      printContainer: true,       // print outer container/$.selector
+      loadCSS: "./dialog-transaction.component.css",                // path to additional css file - use an array [] for multiple
+      pageTitle: "",              // add title to print page
+      removeInline: false,        // remove inline styles from print elements
+      removeInlineSelector: false,  // custom selectors to filter inline styles. removeInline must be true
+      printDelay: 333,            // variable print delay
+      header: null,               // prefix to html
+      footer: null,               // postfix to html
+      base: false,                // preserve the BASE tag or accept a string for the URL
+      formValues: true,           // preserve input/form values
+      canvas: true,              // copy canvas content
+      doctypeString: '...',       // enter a different doctype for older markup
+      removeScripts: false,       // remove script tags from print content
+      copyTagClasses: false,      // copy classes from the html & body tag
+      beforePrintEvent: null,     // function for printEvent in iframe
+      beforePrint: null,          // function called before iframe is filled
+      afterPrint: null            // function called before iframe is removed
+    });
+
+
+
+    // const toShow = this.hideParentSiblings($('#print-section'));
+    // $('#print-section').hide();
+    // window.print();
+    // for (const e of toShow) {
+    //   e.show();
+    // }
+    // $('#form-sibling').show();
 
     // setTimeout(() => {
     //   $('#print').modal('hide')
@@ -336,6 +394,12 @@ export class DialogTransactionComponent implements OnInit {
     }
 
     return toShow;
+  }
+
+  stepChanged(event, stepper) {
+    console.log(event, stepper.selected.interacted);
+
+    stepper.selected.interacted = false;
   }
 
 

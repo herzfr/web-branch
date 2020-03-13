@@ -150,6 +150,7 @@ input[type="text"]:focus {
 button.print-button {
   width: 100px;
   height: 100px;
+  outline: none;
 }
 
 span.print-icon,
@@ -239,3 +240,14 @@ button.print-button:hover .print-icon::after {
   height: 120%;
   transition: height .2s .15s, border-width 0s .16s;
 }
+
+/* 
+@media print {
+  #btn-print, {
+    display: none !important;
+  }
+
+  #btn-print, {
+    display: none !important;
+  }
+} */

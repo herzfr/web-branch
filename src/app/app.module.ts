@@ -27,7 +27,8 @@ import { MatTableModule } from '@angular/material';
 import { WebsocketService } from './services/websocket.service';
 import { UtilityService } from './services/utility.service';
 import { CurrencySetting } from './config/currency-setting';
- 
+
+
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -63,7 +64,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
   ],
   providers: [
-    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService,UtilityService,
+    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],
