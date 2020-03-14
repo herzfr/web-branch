@@ -7,6 +7,7 @@ import { DialogService } from '../services/dialog.service';
 import { WebsocketService } from '../services/websocket.service';
 import { DataBranchServices } from '../services/data-branch.service';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 declare var $: any;
 
@@ -125,7 +126,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   ];
 
 
-  constructor(private dialog: DialogService, private websocket: WebsocketService, private branchService: DataBranchServices) {
+  constructor(private dialog: DialogService, private websocket: WebsocketService, private branchService: DataBranchServices, 
+    private route : Router) {
     this.setInfoNavbar();
   }
 
@@ -153,11 +155,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.firstName = data.firstname;
     this.lastName = data.lastname;
 
-    const date =  moment(data.lastlogindate).locale('ID').format('Do MMMM  YYYY')
+    const date = moment(data.lastlogindate).locale('ID').format('Do MMMM  YYYY')
     console.log("raw : ", data.lastlogindate);
-    
-    console.log("date :", date );
-    
+
+    console.log("date :", date);
+
     this.lastLog = data.lastlogindate
     // this.lastLoghour = data.lastlogindate
 
@@ -181,6 +183,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.websocket.disconnect();
+  }
+
+  logout() {
+    localStorage.removeItem('data');
+    localStorage.removeItem('termdata');
+    this.route.navigate(['/login']);
   }
 
 }

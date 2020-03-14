@@ -15,15 +15,16 @@ export class AddUserDialogComponent implements OnInit {
   message2: string;
 
   private isLinear: boolean = true;
-  firstFormGroup: FormGroup;
-  secondFormGroup: FormGroup;
+  private firstFormGroup: FormGroup;
+  private secondFormGroup: FormGroup;
 
-  isCompleted: boolean = false;
-  isFirstStepDone: boolean = true;
-  userNameControl: boolean = false;
-  userNameValidation: boolean = true;
+  private isCompleted: boolean = false;
+  private isFirstStepDone: boolean = true;
+  private userNameControl: boolean = false;
+  private userNameValidation: boolean = true;
+  private errorMessage: string = "";
   private isUsed: boolean = false;
-  notMatched : boolean = false;
+
 
   @ViewChild('stepper', { static: false }) private myStepper: MatStepper;
 
@@ -54,7 +55,7 @@ export class AddUserDialogComponent implements OnInit {
 
     if (this.firstFormGroup.valid) {
       this.userNameValidation = true;
-      console.log("lebih dari 2");
+
 
       this.userService.userNameCheck(this.firstFormGroup.value.userName).subscribe(res => {
         console.log(res);
@@ -63,10 +64,20 @@ export class AddUserDialogComponent implements OnInit {
           console.log();
 
           this.isUsed = false;
+          this.userNameValidation = false;
+          console.log("is Used : ", this.isUsed);
         } else if (!res['success']) {
           console.log("sudah terpakai");
+
+          this.errorMessage = "username sudah terpakai";
+
           // this.firstFormGroup.controls.userName.setErrors({"Error"});
           this.isUsed = true;
+          this.userNameValidation = true;
+          console.log("is Used : ", this.isUsed);
+          console.log("test : ", this.isUsed);
+
+
         }
 
       }, error => {

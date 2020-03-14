@@ -85,7 +85,7 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getAllUsersData(this.searchValue, 5, 0);
 
 
-
+ 
   }
 
   addUser() {

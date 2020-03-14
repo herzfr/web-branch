@@ -67,12 +67,9 @@
               <mat-error *ngIf="firstFormGroup.controls.userName.invalid">
                 Minimal 5 Karakter
               </mat-error>
-              <mat-error *ngIf="notMatched">
-                Username sudah terpakai
+              <mat-error *ngIf="userNameValidation">
+                {{errorMessage}}
               </mat-error>
-              <!-- <mat-error *ngIf="userNameValidation"> 
-               Username Not Valid
-              </mat-error> -->
             </mat-form-field>
             <div class="mt-2">
               <button mat-raised-button color="primary" (click)="userNameCheck()">Selanjutnya</button>
