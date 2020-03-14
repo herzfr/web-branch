@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddUserDialogComponent } from '../dialog/add-user-dialog/add-user-dialog.component';
 import { DeleteUserDialogComponent } from '../dialog/delete-user-dialog/delete-user-dialog.component';
 import { LottieModule } from 'ngx-lottie';
+import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,9 @@ import { LottieModule } from 'ngx-lottie';
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
   ],
   entryComponents: [AddUserDialogComponent, DeleteUserDialogComponent],
-  providers: [UserService]
+  providers: [UserService, {
+    provide: STEPPER_GLOBAL_OPTIONS, useValue: {displayDefaultIndicatorType: false}
+  }]
 })
 export class AccountModule { }
 export function playerFactory() {

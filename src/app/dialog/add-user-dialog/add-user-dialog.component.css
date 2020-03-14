@@ -19,3 +19,17 @@
   box-sizing: border-box;
   border-radius: 20px;
 }
+
+.textError {
+  padding: 0px;
+  font-size: 14px;
+}
+
+
+.mat-horizontal-stepper-header{
+  pointer-events: none;
+}
+
+.fullWidth{
+  width: 100%;
+}

@@ -1,13 +1,24 @@
 import { Component, OnInit, Inject, ViewChild, } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatStepper, MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatStepper, MatDialog, MatDialogConfig, DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from 'src/app/services/user.service';
 import { DialogErrorComponent } from '../dialog-error/dialog-error.component';
+import * as _moment from 'moment';
+import { AppDateAdapter, APP_DATE_FORMATS } from 'src/app/services/AppDateAdapter ';
+import { DataBranchServices } from 'src/app/services/data-branch.service';
+import { Subscription } from 'rxjs';
+const moment = _moment;
+
 
 @Component({
   selector: 'app-add-user-dialog',
   templateUrl: './add-user-dialog.component.html',
-  styleUrls: ['./add-user-dialog.component.css']
+  styleUrls: ['./add-user-dialog.component.css'],
+  providers: [
+    { provide: DateAdapter, useClass: AppDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS }
+  ]
+
 })
 export class AddUserDialogComponent implements OnInit {
 
@@ -16,21 +27,31 @@ export class AddUserDialogComponent implements OnInit {
 
   private isLinear: boolean = true;
   private firstFormGroup: FormGroup;
-  private secondFormGroup: FormGroup;
+  private userDataForm: FormGroup;
 
   private isCompleted: boolean = false;
   private isFirstStepDone: boolean = true;
   private userNameControl: boolean = false;
-  private userNameValidation: boolean = true;
-  private errorMessage: string = "";
+  private userDataControl : boolean = false;
+  private userProfileControl: boolean = false;
+
   private isUsed: boolean = false;
+  private isUserNameDone: boolean = true;
+ private  isUserDataDone : boolean = true;
+  private isPasswordSame: boolean = true;
+  private isFirstGroupValid : boolean = false;
+
+  private subDataBranch: Subscription;
+  private branchData: any;
+
+  private roles: any = [{ role: "Admin", value: "admin" }, { role: "Teller", value: "teller" }, { role: "Customer Service", value: "cs" }];
+
+  @ViewChild('stepper', {static : false}) stepper: MatStepper;
 
 
-  @ViewChild('stepper', { static: false }) private myStepper: MatStepper;
 
-
-  constructor(private dialogRef: MatDialogRef<AddUserDialogComponent>, @Inject(MAT_DIALOG_DATA) data, private _formBuilder: FormBuilder, private userService: UserService,
-    private dialog: MatDialog
+  constructor(private dialogRef: MatDialogRef<AddUserDialogComponent>, @Inject(MAT_DIALOG_DATA) data, private _formBuilder: FormBuilder,
+    private userService: UserService, private dialog: MatDialog, private branchService: DataBranchServices
   ) {
     this.message = data.message;
     this.message2 = data.message2;
@@ -39,71 +60,91 @@ export class AddUserDialogComponent implements OnInit {
   ngOnInit() {
 
     this.firstFormGroup = this._formBuilder.group({
-      userName: ['', [Validators.required, Validators.minLength(4)]]
+      userName: ['', [Validators.required, Validators.minLength(5)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      password2: ['', [Validators.required, Validators.minLength(8)]],
+      roles: ['', [Validators.required]],
+
     });
-    this.secondFormGroup = this._formBuilder.group({
-      secondCtrl: ['', Validators.required]
+    this.userDataForm = this._formBuilder.group({
+      firstName: ['', [Validators.required, Validators.minLength(3)]],
+      lastName: ['', [Validators.required, Validators.minLength(3)]],
+      branchCode: ['', [Validators.required]],
+      email: ['', [Validators.email]],
+      birthDay: ['', Validators.required],
+      enabled: [],
     });
 
   }
 
   userNameCheck() {
-    console.log(this.firstFormGroup);
-
-
     var userName = this.firstFormGroup.value.userName;
+    console.log("value : ", userName);
+    console.log("user same : ", this.isPasswordSame);
+    
 
-    if (this.firstFormGroup.valid) {
-      this.userNameValidation = true;
-
-
+    if (this.firstFormGroup.valid && this.isPasswordSame) {
       this.userService.userNameCheck(this.firstFormGroup.value.userName).subscribe(res => {
-        console.log(res);
-
         if (res['success']) {
-          console.log();
-
           this.isUsed = false;
-          this.userNameValidation = false;
-          console.log("is Used : ", this.isUsed);
+          this.userNameControl = true;
+          this.isFirstGroupValid = true;
         } else if (!res['success']) {
-          console.log("sudah terpakai");
-
-          this.errorMessage = "username sudah terpakai";
-
-          // this.firstFormGroup.controls.userName.setErrors({"Error"});
           this.isUsed = true;
-          this.userNameValidation = true;
-          console.log("is Used : ", this.isUsed);
-          console.log("test : ", this.isUsed);
-
-
+          this.userNameControl = false;
+          this.isFirstGroupValid = false;
         }
-
       }, error => {
+        this.userNameControl = false;
         this.openDialog("Error", "Check User Error");
       });
-
     } else {
-
-      this.userNameValidation = false;
-
-      console.log("kosong");
-
+      this.userNameControl = false;
     }
-
-
-
-
   }
-
-
 
   close() {
     this.dialogRef.close();
   }
 
+  next(stepper: MatStepper) {
+    console.log(this.firstFormGroup.value);
+    this.isUserNameDone = false
+    this.userNameControl = false;
 
+    stepper.next();
+
+    this.subDataBranch = this.branchService.getBranchAll().subscribe(res => {
+      this.branchData = res;
+    }, error => {
+      this.openDialog("Error", "Error Get Branch Data");
+    });
+
+    setTimeout(() => {
+      if (this.subDataBranch) {
+        this.subDataBranch.unsubscribe()
+      }
+    }, 2000);
+  }
+
+  userDataFormNext(stepper: MatStepper) {
+ 
+    // console.log("user data valid", this.userDataForm.valid);
+    // console.log("user data value ", this.userDataForm.value);
+    // console.log("username  valid", this.firstFormGroup.valid);
+    // console.log("username data value ", this.firstFormGroup.value);
+
+    if(this.userDataForm.valid && this.firstFormGroup.valid){
+      this.userDataControl = true;
+    
+      this.isUserDataDone = false;
+      console.log("valid OK");
+      stepper.next();
+      this.stepper.selectedIndex = 2; 
+      
+    }
+
+  }
 
   openDialog(message, message2) {
     const dialogConfig = new MatDialogConfig();
@@ -114,5 +155,24 @@ export class AddUserDialogComponent implements OnInit {
     };
     this.dialog.open(DialogErrorComponent, dialogConfig);
   }
+
+  passwordChange() {
+    console.log(this.firstFormGroup.value);
+    let formData = this.firstFormGroup.value;
+    console.log("password 1 : ", formData['password']);
+    console.log("password 2 : ", formData['password2']);
+
+    if (formData['password'] === formData['password2']) {
+      console.log("sama ");
+      this.isPasswordSame = true;
+    } else {
+      console.log("tidak sama ");
+      this.isPasswordSame = false;
+    }
+  }
+
+  move(index: number) {
+    this.stepper.selectedIndex = index;
+  } 
 
 }
