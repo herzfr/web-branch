@@ -1,12 +1,14 @@
 import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { UserService } from '../services/user.service';
-import { MatTableDataSource, MatPaginator, MatSort, MatDialog, MatDialogConfig } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, MatDialog, MatDialogConfig, MatSidenav } from '@angular/material';
 import { UserData } from '../models/UserData';
-import {  merge, Subscription } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
 import { startWith, switchMap, map, catchError } from 'rxjs/operators';
 import { AddUserDialogComponent } from '../dialog/add-user-dialog/add-user-dialog.component';
 import { DeleteUserDialogComponent } from '../dialog/delete-user-dialog/delete-user-dialog.component';
 import { DialogErrorComponent } from '../dialog/dialog-error/dialog-error.component';
+import { ChangeUserDialogComponent } from '../dialog/change-user-dialog/change-user-dialog.component';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 // created by Dwi S
 
@@ -29,9 +31,26 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   private subDialog: Subscription;
   private subUserDelete: Subscription;
 
+  private passwordModel: any = {};
+  private userNameOption: any = { standalone: true };
+  private isPassMatch: boolean = true;
+
+  private formPassword: FormGroup;
+  private formEditUser: FormGroup;
+  private userIDChange: string;
+  // private sidenav: MatSidenav;
+  date = new FormControl(new Date());
+  serializedDate = new FormControl((new Date()).toISOString());
+
+  @ViewChild('sidenavEdit', { static: true }) sidenavEdit: MatSidenav;
+  @ViewChild('sidenavChange', { static: true }) sidenavChange: MatSidenav;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private usersService: UserService, private dialog: MatDialog) {
+    this.formPassword = new FormGroup({
+      password: new FormControl(null, Validators.required),
+      password2: new FormControl(null, Validators.required)
+    })
   }
 
   ngOnInit() {
@@ -51,12 +70,13 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       this.pageIndex = data['pageable'].pageNumber;
       this.length = data['totalElements'];
       this.dataSource = data['content'];
-    }, error=>{
+    }, error => {
       this.errorDialog("Error", "Gagal Mendapatkan Data Tabel User");
     });
   }
 
   ngAfterViewInit() {
+
   }
 
   getServerData(event) {
@@ -93,8 +113,8 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.subDialog = this.dialog.open(AddUserDialogComponent, dialogConfig).afterClosed().subscribe(resBack => {
       console.log(resBack);
-      if(resBack.reload){
-        this.getAllUsersData("",5,0 );
+      if (resBack.reload) {
+        this.getAllUsersData("", 5, 0);
       }
     });
   }
@@ -122,18 +142,27 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     var pageSize = this.paginator.pageSize;
     this.subUserDelete = this.usersService.deleteUser(value).subscribe(res => {
       console.log("back ", res);
-      
+
       if (res['success']) {
         this.getAllUsersData("", pageSize, 0);
       } else {
         this.getAllUsersData("", pageSize, 0);
         this.errorDialog("Error", "Gagal Menghapus User");
       }
-    }, error=>{
+    }, error => {
       this.errorDialog("Error", "Gagal Menghapus User, Kesalahan Jaringan")
     })
 
   }
+
+  onPassInput() {
+    if (this.formPassword.value.password === this.formPassword.value.password2) {
+      this.isPassMatch = true;
+    } else {
+      this.isPassMatch = false;
+    }
+  }
+
 
   errorDialog(message, message2) {
     const dialogConfig = new MatDialogConfig();
@@ -143,6 +172,83 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       message2: message2
     };
     this.dialog.open(DialogErrorComponent, dialogConfig);
+  }
+
+  getIdUser(event) {
+    this.userIDChange = event.userid;
+  }
+
+  openSideNav(event: string) {
+    switch (event) {
+      case 'edit':
+        this.sidenavEdit.open();
+        break;
+      case 'change':
+        this.sidenavChange.open();
+        break;
+      default:
+        break;
+    }
+
+  }
+
+  close(event) {
+    switch (event) {
+      case 'edit':
+        this.sidenavEdit.close();
+        break;
+      case 'change':
+        this.sidenavChange.close();
+        break;
+      default:
+        break;
+    }
+  }
+
+  changePass() {
+    if (this.formPassword.valid && this.isPassMatch == true) {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = {
+        id: 1,
+        message: 'Klik "YA" jika anda sudah yakin dengan pembaruan password anda',
+        buttonConfirm: true
+      };
+      dialogConfig.backdropClass = 'backdropBackground';
+      this.dialog.open(ChangeUserDialogComponent, dialogConfig).afterClosed().subscribe(res => {
+        console.log(res);
+        if (res) {
+          let obj: any = new Object();
+          obj.password = this.formPassword.value.password;
+          obj.userId = this.userIDChange;
+          console.log(obj);
+          // this.sidenav.close()
+
+          this.usersService.changePass(obj).subscribe(e => {
+            console.log(e);
+            if (e['success']) {
+              const dialogConfig = new MatDialogConfig();
+              dialogConfig.data = {
+                id: 1,
+                message: 'Password anda telah diganti',
+                buttonSuccess: true
+              };
+              dialogConfig.backdropClass = 'backdropBackground';
+              this.dialog.open(ChangeUserDialogComponent, dialogConfig).afterClosed().subscribe(res => {
+                // console.log(res);
+                if (res === 'exit') {
+                  // this.sidenav.close()
+                  this.formPassword.reset()
+                }
+              })
+            }
+          })
+        } else {
+          console.log('password Batal');
+        }
+      })
+    } else {
+      alert('password belum valid')
+    }
   }
 
 }

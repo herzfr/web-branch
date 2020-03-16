@@ -1,0 +1,14 @@
+<h1 *ngIf="btnConfirm" mat-dialog-title>Make Sure!</h1>
+<h1 *ngIf="btnSuccess" mat-dialog-title>Selamat.</h1>
+<div mat-dialog-content>
+  <p>{{ message }}</p>
+</div>
+<div *ngIf="btnConfirm" class="justify-content-between" mat-dialog-actions>
+  <button mat-button (click)="onNoClick(false)">Batal</button>
+  <button mat-button (click)="onNoClick(true)">Ya</button>
+</div>
+
+
+<div *ngIf="btnSuccess" class="justify-content-center" mat-dialog-actions>
+  <button mat-button (click)="onNoClick('exit')">Keluar</button>
+</div>
