@@ -4,6 +4,8 @@ import { FormGroup, FormBuilder, Validators, FormArray, FormControl, AbstractCon
 import { QueueService } from 'src/app/services/queue.service';
 declare var $: any;
 
+import * as SecureLS from 'secure-ls';
+
 
 @Component({
   selector: 'app-dialog-transaction',
@@ -36,6 +38,8 @@ export class DialogTransactionComponent implements OnInit {
   stepDisabled: boolean = true;
 
   _printData: any;
+
+  secureLs = new SecureLS({ encodingType: 'aes' });
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
     private queueServ: QueueService) {
@@ -251,7 +255,8 @@ export class DialogTransactionComponent implements OnInit {
     console.log(event);
     let transId = event.TransaksiId.value
     let dataObj = this.findDataByTransactionId(transId, this.data)
-    let terminal = JSON.parse(localStorage.getItem('terminal'))
+    // let terminal = JSON.parse(localStorage.getItem('terminal'))
+    let terminal = JSON.parse(this.secureLs.get("terminal"))
     let branchCode = terminal.branchCode;
     let term = terminal.terminalID;
 
