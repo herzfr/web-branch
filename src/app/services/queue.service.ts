@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AppConfiguration } from '../models/app.configuration';
+import * as securels from 'secure-ls';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +11,12 @@ export class QueueService {
   private apiUrl;
   private apiSocket;
 
+  ls = new securels({ encodingType: 'aes' });
+  token = this.ls.get('token')
+
   headers_object = new HttpHeaders()
     .set('Content-Type', 'application/json')
-  // .set('Authorization', 'Bearer ' + this.token);
+    .set('Authorization', 'Bearer ' + this.token);
 
   httpOptions = {
     headers: this.headers_object
@@ -22,6 +26,8 @@ export class QueueService {
   constructor(private appConfiguration: AppConfiguration, private http: HttpClient) {
     this.apiUrl = this.appConfiguration.ipServer;
     this.apiSocket = this.appConfiguration.ipSocketServer;
+    console.log(this.ls.get('token'));
+
   }
 
   getNewQueue(brch: string, status1: string, status2) {

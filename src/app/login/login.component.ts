@@ -144,11 +144,14 @@ export class LoginComponent implements OnInit, OnDestroy {
           const body = JSON.parse(message.body);
           that.secureLs.set("data", JSON.stringify(body.record));
           that.secureLs.set("termdata", JSON.stringify(body.userterminal));
+          that.secureLs.set("token", body.token);
           if (body.success) {
             $('#verify').modal('hide')
             $('.container-fluid').removeClass('modalBlur');
             that.router.navigate(['/home']);
             that.stompClient.disconnect();
+            // console.log(body.token);
+
           }
         }
 
