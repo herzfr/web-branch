@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient, HttpParams } from '@angular/common/http';
 import { AppConfiguration } from '../models/app.configuration';
+import * as securels from 'secure-ls';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +10,12 @@ export class UserService {
 
   private apiUrl;
 
+  ls = new securels({ encodingType: 'aes' });
+  token = this.ls.get('token')
+
   headers_object = new HttpHeaders()
     .set('Content-Type', 'application/json')
+    .set('Authorization', 'Bearer ' + this.token);
 
   httpOptions = {
     headers: this.headers_object
