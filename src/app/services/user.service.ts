@@ -20,7 +20,6 @@ export class UserService {
     this.apiUrl = this.appConfiguration.ipServer;
   }
 
-
   getAllUsers(search, size, page) {
     const params = new HttpParams()
       .set('search', search)
@@ -38,7 +37,9 @@ export class UserService {
     return this.http.delete(this.apiUrl + 'api/users?userId=' + userId)
   }
 
-
+  addUser(user: any) {
+    return this.http.post(this.apiUrl + 'api/users/', user, this.httpOptions);
+  }
 
 
 }

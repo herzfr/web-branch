@@ -2,12 +2,13 @@ import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular
 import { UserService } from '../services/user.service';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog, MatDialogConfig } from '@angular/material';
 import { UserData } from '../models/UserData';
-import { HttpClient } from '@angular/common/http';
-import { Observable, merge, Subscription } from 'rxjs';
+import {  merge, Subscription } from 'rxjs';
 import { startWith, switchMap, map, catchError } from 'rxjs/operators';
 import { AddUserDialogComponent } from '../dialog/add-user-dialog/add-user-dialog.component';
 import { DeleteUserDialogComponent } from '../dialog/delete-user-dialog/delete-user-dialog.component';
+import { DialogErrorComponent } from '../dialog/dialog-error/dialog-error.component';
 
+// created by Dwi S
 
 @Component({
   selector: 'app-account',
@@ -15,7 +16,6 @@ import { DeleteUserDialogComponent } from '../dialog/delete-user-dialog/delete-u
   styleUrls: ['./account.component.css']
 })
 export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
-
 
   private displayedColumns: string[] = ['username', 'branchcode', 'firstname', 'lastname', "action"];
   private dataSource = new MatTableDataSource<UserData>();
@@ -32,14 +32,12 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private usersService: UserService, private dialog: MatDialog) {
-
   }
 
   ngOnInit() {
     this.getAllUsersData("", 5, 0);
     this.dataSource.paginator = this.paginator;
   }
-
 
   getAllUsersData(search: string, size, page) {
     var userSearch = "";
@@ -48,17 +46,17 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       userSearch = search;
     }
-
     this.usersService.getAllUsers(search, size, page).subscribe((data) => {
       this.pageSize = data['pageable'].pageSize;
       this.pageIndex = data['pageable'].pageNumber;
       this.length = data['totalElements'];
       this.dataSource = data['content'];
+    }, error=>{
+      this.errorDialog("Error", "Gagal Mendapatkan Data Tabel User");
     });
   }
 
   ngAfterViewInit() {
-
   }
 
   getServerData(event) {
@@ -77,15 +75,7 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   userSearch(event) {
-    console.log(event);
-    console.log(this.searchValue);
-
-    console.log(this.paginator);
-
     this.getAllUsersData(this.searchValue, 5, 0);
-
-
- 
   }
 
   addUser() {
@@ -103,20 +93,15 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.subDialog = this.dialog.open(AddUserDialogComponent, dialogConfig).afterClosed().subscribe(resBack => {
       console.log(resBack);
-
-
+      if(resBack.reload){
+        this.getAllUsersData("",5,0 );
+      }
     });
-
   }
 
 
   deleteUser(value) {
-
-    var pageIndex = this.paginator.pageIndex;
-    var pageSize = this.paginator.pageSize;
-
     const dialogConfig = new MatDialogConfig();
-
     dialogConfig.backdropClass = 'backdropBackground';
     dialogConfig.disableClose = true;
     dialogConfig.width = '400px';
@@ -124,33 +109,40 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       id: 1,
       value: value
     };
-
     this.subDialog = this.dialog.open(DeleteUserDialogComponent, dialogConfig).afterClosed().subscribe(resBack => {
       console.log(resBack.delete);
       if (resBack.delete) {
         this.confirmDelete(resBack)
       }
-
     });
-
-
-
   }
 
   confirmDelete(value) {
-    var pageIndex = this.paginator.pageIndex;
+    // var pageIndex = this.paginator.pageIndex;
     var pageSize = this.paginator.pageSize;
-
     this.subUserDelete = this.usersService.deleteUser(value).subscribe(res => {
-      console.log(res);
-
+      console.log("back ", res);
+      
       if (res['success']) {
         this.getAllUsersData("", pageSize, 0);
       } else {
         this.getAllUsersData("", pageSize, 0);
+        this.errorDialog("Error", "Gagal Menghapus User");
       }
+    }, error=>{
+      this.errorDialog("Error", "Gagal Menghapus User, Kesalahan Jaringan")
     })
 
+  }
+
+  errorDialog(message, message2) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      id: 1,
+      message: message,
+      message2: message2
+    };
+    this.dialog.open(DialogErrorComponent, dialogConfig);
   }
 
 }

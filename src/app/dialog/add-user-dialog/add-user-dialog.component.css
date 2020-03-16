@@ -7,8 +7,9 @@
   font-size: 16px;
   line-height: 25px;
   /* identical to box height */
-
-
+  color: #234A7B;
+}
+h1{
   color: #234A7B;
 }
 
@@ -32,4 +33,12 @@
 
 .fullWidth{
   width: 100%;
+}
+
+.green-icon {
+  color: #9ccc65;
+}
+
+.red-icon{
+  color: red;
 }

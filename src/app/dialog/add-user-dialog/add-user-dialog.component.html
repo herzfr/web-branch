@@ -5,149 +5,177 @@
       <h3 class="mb-0 p-0 labelText">Add New User</h3>
     </div>
     <div class="card-body">
-
       <mat-horizontal-stepper [linear]="isLinear" #stepper>
-
-
-        <mat-step [completed]="userNameControl" [editable]="isUserNameDone" state="done">
-          <form [formGroup]="firstFormGroup">
-            <ng-template matStepLabel>Check UserName </ng-template>
-            <!-- username input -->
+        <!-- username step -->
+        <mat-step label="User Name Data" state="done" [completed]="step1Completed" [editable]="step1Editable">
+          <!-- form -->
+          <form name="userNameForm" #UserNameForm="ngForm">
+            <!-- username  -->
             <mat-form-field class="fullWidth">
               <mat-label>UserName</mat-label>
-              <input matInput placeholder="userName" formControlName="userName" maxlength="10" required [readonly]="isFirstGroupValid" cdkFocusInitial>
-              <mat-error *ngIf="firstFormGroup.controls.userName.invalid">
+              <input matInput placeholder="User Name" #userName="ngModel" [(ngModel)]="userNameModel.userName"
+                [ngModelOptions]="userNameOption" minlength="5" maxlength="10" required [readonly]="isUserNameReadOnly"
+                cdkFocusInitial>
+              <mat-icon matSuffix class="green-icon" *ngIf="isShowUserNameInputIcon">{{userNameInputIcon}}</mat-icon>
+              <mat-error *ngIf="userName.invalid">
                 Minimal 5 Karakter
               </mat-error>
             </mat-form-field>
             <p class="text-danger textError" *ngIf="isUsed">Username Sudah Terpakai</p>
-            <!-- username input -->
-
-            <!-- password 1 -->
+            <!-- username  -->
+            <!-- password -->
             <mat-form-field class="fullWidth">
               <mat-label>Password</mat-label>
-              <input matInput placeholder="userName" maxlength="15" formControlName="password"
-                [type]="hide ? 'text' : 'password'" [readonly]="isFirstGroupValid" required>
+              <input matInput placeholder="Password" minlength="8" maxlength="15" #password="ngModel"
+                [(ngModel)]="userNameModel.password" [ngModelOptions]="userNameOption"
+                [type]="hide ? 'text' : 'password'" required>
               <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-              <mat-error *ngIf="firstFormGroup.controls.userName.invalid">
+              <mat-error *ngIf="password.invalid">
                 Minimal 8 Karakter
               </mat-error>
             </mat-form-field>
-            <!-- password 1 -->
-
-            <!-- password 2 -->
+            <!-- password -->
+            <!-- 2n password -->
             <mat-form-field class="fullWidth">
               <mat-label>Konfirmasi Ulang Password</mat-label>
-              <input matInput placeholder="userName" maxlength="15" formControlName="password2"
-                [type]="hide1 ? 'text' : 'password'" (keyup)="passwordChange()" [readonly]="isFirstGroupValid" required>
-              <mat-icon matSuffix (click)="hide1 = !hide1">{{hide1 ? 'visibility_off' : 'visibility'}}</mat-icon>
-              <mat-error *ngIf="firstFormGroup.controls.userName.invalid">
+              <input matInput placeholder="Konfirmasi Password" minlength="8" maxlength="15" #password2="ngModel"
+                [(ngModel)]="userNameModel.password2" [ngModelOptions]="userNameOption" (keyup)="onPassInput()"
+                [type]="hide2 ? 'text' : 'password'" required>
+              <mat-icon matSuffix (click)="hide2 = !hide2">{{hide2 ? 'visibility_off' : 'visibility'}}</mat-icon>
+              <mat-error *ngIf="password2.invalid">
                 Minimal 8 Karakter
               </mat-error>
             </mat-form-field>
-            <mat-error class="textError mt-0 p-0" *ngIf="!isPasswordSame">
+            <p class="textError mt-0 p-0 text-danger" *ngIf="!isPassMatch">
               Password Tidak Sama
-            </mat-error>
-            <!-- password 2 -->
-
+            </p>
+            <!-- 2nd password -->
+            <!-- role -->
             <mat-form-field class="fullWidth">
               <mat-label>Role</mat-label>
-              <mat-select formControlName="roles" placeholder="Pilih Roles">
+              <mat-select placeholder="Pilih Roles" #role="ngModel" [(ngModel)]="userNameModel.role"
+                [ngModelOptions]="userNameOption" required>
                 <mat-option>None</mat-option>
                 <mat-option *ngFor="let item of roles" value="{{item.value}}">{{item.role}}</mat-option>
               </mat-select>
-
-              <mat-error *ngIf="firstFormGroup.controls.roles.invalid">
+              <mat-error *ngIf="role.invalid">
                 Pilih Cabang
               </mat-error>
             </mat-form-field>
-
-
-
-
-            <!--button-->
-            <div class="mt-2">
-              <button mat-raised-button color="primary" (click)="userNameCheck()"
-                *ngIf="!userNameControl">Check</button>
-              <button mat-raised-button color="primary" (click)="next(stepper)"
-                *ngIf="userNameControl">Selanjutnya</button>
-            </div>
+            <!-- role -->
+            <!-- button -->
+            <button mat-raised-button color="primary" (click)="userNameCheck()"
+              *ngIf="userName.valid && password.valid && password2.valid && role.valid && isPassMatch && !isNextStep2">Check</button>
+            <button mat-raised-button color="primary" (click)="nextStep2()" *ngIf="isNextStep2">Selanjutnya</button>
             <!-- button -->
           </form>
+          <!-- form -->
         </mat-step>
-
-
-
-        <!-- <mat-step [completed]="userDataControl" [editable]="isUserDataDone"> -->
-          <!-- <mat-step [completed]="userDataControl" [editable]="isUserDataDone" state="done">
-          <form [formGroup]="userDataForm">
+        <!-- username step -->
+        <!-- data user step -->
+        <mat-step [editable]="step2Editable" [completed]="step2Completed">
+          <!-- form -->
+          <form name="UserDataForm" #UserDataForm="ngForm">
             <ng-template matStepLabel>Data User</ng-template>
+            <!-- nama depan -->
             <mat-form-field class="fullWidth">
               <mat-label>Nama Depan</mat-label>
-              <input matInput placeholder="Nama Depan" formControlName="firstName" maxlength="25" required>
-              <mat-error *ngIf="userDataForm.controls.firstName.invalid">
+              <input matInput placeholder="Nama Depan" minlength="3" maxlength="25" #firstName="ngModel"
+                [(ngModel)]="userDataModel.firstName" [ngModelOptions]="userNameOption" required>
+              <mat-error *ngIf="firstName.invalid">
                 Nama Depan Invalid, Input Minimal 3 Karakter
               </mat-error>
             </mat-form-field>
+            <!-- nama depan -->
+            <!-- nama belakang  -->
             <mat-form-field class="fullWidth">
               <mat-label>Nama Belakang</mat-label>
-              <input matInput placeholder="Nama Belakang" formControlName="lastName" maxlength="25" required>
-              <mat-error *ngIf="userDataForm.controls.lastName.invalid">
+              <input matInput placeholder="Nama Belakang" maxlength="25" #lastName="ngModel"
+                [(ngModel)]="userDataModel.lastName" [ngModelOptions]="userNameOption" required>
+              <mat-error *ngIf="lastName.invalid">
                 Nama Belakang Invalid, Input Minimal 3 Karakter
               </mat-error>
             </mat-form-field>
+            <!-- nama belakang  -->
+            <!-- tanggal lahir -->
             <mat-form-field class="fullWidth">
               <mat-label>Tanggal Lahir</mat-label>
               <input matInput placeholder="Select Date" (focus)="datepickerRef.open()" [matDatepicker]="datepickerRef"
-                formControlName="birthDay" required readonly />
+                #birthDay="ngModel" [(ngModel)]="userDataModel.birthDay" [ngModelOptions]="userNameOption" required
+                readonly />
               <mat-datepicker-toggle [for]="datepickerRef" matSuffix></mat-datepicker-toggle>
               <mat-datepicker #datepickerRef></mat-datepicker>
-              <mat-error *ngIf="userDataForm.controls.birthDay.invalid">
+              <mat-error *ngIf="birthDay.invalid">
                 Inputkan Tanggal Lahir
               </mat-error>
             </mat-form-field>
+            <!-- tanggal lahir -->
+            <!-- email -->
             <mat-form-field class="fullWidth">
               <mat-label>Email</mat-label>
-              <input matInput placeholder="Email" formControlName="email" maxlength="50">
-              <mat-error *ngIf="userDataForm.controls.email.invalid">
-                Email Invalid
+              <input matInput placeholder="Email" type="email" minlength="3" maxlength="50" #email="ngModel"
+                [(ngModel)]="userDataModel.email" [ngModelOptions]="userNameOption" required>
+              <mat-error *ngIf="email.invalid">
+                Email Tidak Valid
               </mat-error>
             </mat-form-field>
-
+            <!-- email -->
+            <!-- cabang -->
             <mat-form-field class="fullWidth">
               <mat-label>Cabang</mat-label>
-              <mat-select [(value)]="selected" formControlName="branchCode">
+              <mat-select [(value)]="selected" #branchCode="ngModel" [(ngModel)]="userDataModel.branchCode"
+                [ngModelOptions]="userNameOption">
                 <mat-option>None</mat-option>
                 <mat-option *ngFor="let item of branchData" value="{{item.branchcode}}">{{item.branchcode}} -
                   {{item.description}}</mat-option>
               </mat-select>
-              <mat-error *ngIf="userDataForm.controls.branchCode.invalid">
+              <mat-error *ngIf="branchCode.invalid">
                 Pilih Cabang
               </mat-error>
             </mat-form-field>
-
-            <mat-checkbox class="mt-2" formControlName="enabled">Enabled</mat-checkbox>
-
+            <!-- cabang -->
+            <!-- enabled -->
+            <mat-checkbox class="mt-2" #enabled="ngModel" [(ngModel)]="userDataModel.enabled"
+              [ngModelOptions]="userNameOption">Enabled</mat-checkbox>
+            <!-- enabled -->
+            <!-- next button -->
             <div class="mt-3">
-              <button mat-raised-button color="primary" matStepperNext (click)="userDataFormNext(stepper)"
-                *ngIf="userDataForm.valid">Selanjutnya</button>
-                <button mat-raised-button color="accent" (click)="move(2)">4th</button>
+              <button mat-raised-button color="primary" (click)="nextStep3()"
+                *ngIf="firstName.valid && lastName.valid && branchCode.valid && email.valid ">Selanjutnya</button>
             </div>
+            <!-- next button -->
           </form>
-        </mat-step> -->
-
-        <mat-step label="Step 4">
-          Step 4
-          </mat-step>
-
-
+          <!-- form -->
+        </mat-step>
+        <!-- data user step -->
+        <!-- confirmation step -->
+        <mat-step label="Konfirmasi">
+          <div *ngIf="!isSuccess">
+            <h1 mat-dialog-title>Buat Akun Ini?</h1>
+            <hr class="fullWidth">
+            <p class="labelText">Username : {{userNameModel.userName}}</p>
+            <p class="labelText">Nama Depan : {{userDataModel.firstName}}</p>
+            <p class="labelText">Nama Belakang : {{userDataModel.lastName}}</p>
+            <p class="labelText">Role : {{userNameModel.role}}</p>
+            <button mat-raised-button color="primary" (click)="saveUser()" class="mt-1 mr-2">Ya</button>
+            <button mat-raised-button color="warn" [mat-dialog-close]="true" class="mt-1">Tidak</button>
+          </div>
+          <div *ngIf="isSuccess">
+            <h1 mat-dialog-title>Buat Akun Sukses</h1>
+            <hr class="fullWidth">
+            <ng-lottie [options]="options" width="250px">
+            </ng-lottie>
+            <p class="labelText green-icon" >Proses Akun Sukses</p>
+          </div>
+          
+        </mat-step>
+        <!-- confirmation step -->
+        <!-- stepper icon -->
         <ng-template matStepperIcon="done">
           <mat-icon>done</mat-icon>
         </ng-template>
-
-
+        <!-- stepper icon -->
       </mat-horizontal-stepper>
-
 
     </div>
   </div>
@@ -156,9 +184,6 @@
 
 <mat-dialog-actions class="justify-content-center">
   <div class="button_cont">
-    <button mat-raised-button [mat-dialog-close]="true" (click)="close()" color="warn">Batal</button>
+    <button mat-raised-button [mat-dialog-close]="true" (click)="close()" color="warn">{{btnCancel}}</button>
   </div>
 </mat-dialog-actions>
-
-
-<!-- https://stackblitz.com/edit/angular-demo-matstepper-move -->
