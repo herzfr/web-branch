@@ -291,18 +291,26 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     const date = moment(event['birthday'], 'DD-MM-YYYY').toISOString();
     console.log(date);
 
-    this.formEditUser.get('firstname').setValue(event['firstname']);
-    this.formEditUser.get('lastname').setValue(event['lastname']);
+    this.formEditUser.get('firstname').setValue(event['firstname'], [Validators.required, Validators.pattern('[a-zA-Z ]*')]);
+    this.formEditUser.get('lastname').setValue(event['lastname'], [Validators.required, Validators.pattern('[a-zA-Z ]*')]);
     this.formEditUser.get('birthday').setValue(date);
-    this.formEditUser.get('email').setValue(event['email']);
-    this.formEditUser.get('branchcode').setValue(event['branchcode']);
-    this.formEditUser.get('roles').setValue(event['roles']);
+    this.formEditUser.get('email').setValue(event['email'], [Validators.required, Validators.email]);
+    this.formEditUser.get('branchcode').setValue(event['branchcode'], Validators.required);
+    this.formEditUser.get('roles').setValue(event['roles'], Validators.required);
     this.formEditUser.get('enabledF').setValue(event['enabled']);
 
 
     console.log(this.formEditUser);
 
   }
+
+  get fname() { return this.formEditUser.get('firstname'); }
+  get lname() { return this.formEditUser.get('lastname'); }
+  get bday() { return this.formEditUser.get('birthday'); }
+  get eml() { return this.formEditUser.get('email'); }
+  get brch() { return this.formEditUser.get('branchcode'); }
+  get role() { return this.formEditUser.get('roles'); }
+  get enb() { return this.formEditUser.get('enabledF'); }
 
   saveEdit() {
     console.log(this.formEditUser.value);
