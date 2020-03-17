@@ -9,6 +9,8 @@ import { DeleteUserDialogComponent } from '../dialog/delete-user-dialog/delete-u
 import { DialogErrorComponent } from '../dialog/dialog-error/dialog-error.component';
 import { ChangeUserDialogComponent } from '../dialog/change-user-dialog/change-user-dialog.component';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { DataBranchServices } from '../services/data-branch.service';
+import * as moment from 'moment';
 
 // created by Dwi S
 
@@ -38,19 +40,45 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   private formPassword: FormGroup;
   private formEditUser: FormGroup;
   private userIDChange: string;
+  private dataAllBrch: any;
   // private sidenav: MatSidenav;
-  date = new FormControl(new Date());
+  // dates = new FormControl(new Date());
   serializedDate = new FormControl((new Date()).toISOString());
+
+  private roles: any = [
+    { role: "Admin", value: "admin" },
+    { role: "Teller", value: "teller" },
+    { role: "Customer Service", value: "cs" },
+    { role: "Head Teller", value: "headteller" },
+    { role: "Head CS", value: "headcs" },
+  ];
+
+  favoriteSeason: string = 'Winter';
+
+  seasons = [
+    1,
+    0,
+  ];
 
   @ViewChild('sidenavEdit', { static: true }) sidenavEdit: MatSidenav;
   @ViewChild('sidenavChange', { static: true }) sidenavChange: MatSidenav;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private usersService: UserService, private dialog: MatDialog) {
+  constructor(private usersService: UserService, private dialog: MatDialog, private dataBrch: DataBranchServices) {
     this.formPassword = new FormGroup({
       password: new FormControl(null, Validators.required),
       password2: new FormControl(null, Validators.required)
     })
+
+    this.formEditUser = new FormGroup({
+      firstname: new FormControl(null, Validators.required),
+      lastname: new FormControl(null, Validators.required),
+      birthday: new FormControl((new Date()).toISOString(), Validators.required),
+      email: new FormControl(null, Validators.required),
+      branchcode: new FormControl(null, Validators.required),
+      roles: new FormControl(null, Validators.required),
+      enabledF: new FormControl(null, Validators.required),
+    });
   }
 
   ngOnInit() {
@@ -182,6 +210,10 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     switch (event) {
       case 'edit':
         this.sidenavEdit.open();
+        this.dataBrch.getBranchAll().subscribe(e => {
+          console.log(e);
+          this.dataAllBrch = e;
+        })
         break;
       case 'change':
         this.sidenavChange.open();
@@ -189,6 +221,8 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       default:
         break;
     }
+
+
 
   }
 
@@ -236,7 +270,7 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
               this.dialog.open(ChangeUserDialogComponent, dialogConfig).afterClosed().subscribe(res => {
                 // console.log(res);
                 if (res === 'exit') {
-                  // this.sidenav.close()
+                  this.sidenavChange.close()
                   this.formPassword.reset()
                 }
               })
@@ -249,6 +283,33 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       alert('password belum valid')
     }
+  }
+
+  getUserEdit(event) {
+    console.log(event['birthday']);
+    // var dateValidate = moment(event['birthday']).isValid() || moment(event['birthday'], "DD/MM/YYYY").isValid() ? true : false;
+    const date = moment(event['birthday'], 'DD-MM-YYYY').toISOString();
+    console.log(date);
+
+
+
+    this.formEditUser = new FormGroup({
+      firstname: new FormControl(event['firstname'], Validators.required),
+      lastname: new FormControl(event['lastname'], Validators.required),
+      birthday: new FormControl(date, Validators.required),
+      email: new FormControl(event['email'], Validators.required),
+      branchcode: new FormControl(event['branchcode'], Validators.required),
+      roles: new FormControl(event['roles'], Validators.required),
+      enabledF: new FormControl([event['enabled']], Validators.required),
+    });
+
+    console.log(this.formEditUser);
+
+  }
+
+  saveEdit() {
+    console.log(this.formEditUser.value);
+
   }
 
 }

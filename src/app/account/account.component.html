@@ -64,7 +64,8 @@
               <th mat-header-cell *matHeaderCellDef> Action </th>
               <td mat-cell *matCellDef="let element">
 
-                <button (click)="openSideNav('edit')" mat-icon-button color="primary" matTooltip="Edit User">
+                <button (click)="openSideNav('edit'); getUserEdit(element)" mat-icon-button color="primary"
+                  matTooltip="Edit User">
                   <mat-icon>create</mat-icon>
                 </button>
 
@@ -86,58 +87,63 @@
         </mat-sidenav-content>
         <mat-sidenav position="end" #sidenavEdit (keydown.escape)="close('edit')" disableClose>
           <p><button mat-button (click)="close('edit')"><i class="fad fa-sign-out fa-3x"></i></button></p>
-          <form class="example-form">
+          <form class="example-form" [formGroup]="formEditUser">
 
             <mat-form-field class="example-full-width container-fluid">
               <mat-label>Nama Depan</mat-label>
-              <input matInput placeholder="Isi nama depan..." value="TEST">
+              <input matInput placeholder="Isi nama depan..." formControlName="firstname">
             </mat-form-field>
 
             <mat-form-field class="example-full-width container-fluid">
               <mat-label>Nama Belakang</mat-label>
-              <input matInput placeholder="Isi nama belakang..." value="ASD">
+              <input matInput placeholder="Isi nama belakang..." formControlName="lastname">
             </mat-form-field>
 
             <mat-form-field class="example-full-width container-fluid">
               <mat-label>Angular forms</mat-label>
-              <input matInput [matDatepicker]="picker1" [formControl]="date">
+              <input matInput [matDatepicker]="picker1" formControlName="birthday">
               <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
               <mat-datepicker #picker1></mat-datepicker>
             </mat-form-field>
 
             <mat-form-field class="example-full-width container-fluid">
               <mat-label>Email</mat-label>
-              <input matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
-                value="jksakdha@skjdkfsd.com" placeholder="contoh nama@gmail.com">
+              <input matInput [errorStateMatcher]="matcher" value="jksakdha@skjdkfsd.com"
+                placeholder="contoh nama@gmail.com" formControlName="email">
               <mat-hint>Errors appear instantly!</mat-hint>
-              <!-- <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+              <mat-error *ngIf="formEditUser.hasError('email') && !formEditUser.hasError('required')">
                 Please enter a valid email address
               </mat-error>
-              <mat-error *ngIf="emailFormControl.hasError('required')">
+              <mat-error *ngIf="formEditUser.hasError('required')">
                 Email is <strong>required</strong>
-              </mat-error> -->
+              </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="fill" class="example-full-width container-fluid">
-              <mat-label>Select</mat-label>
-              <mat-select>
-                <mat-option value="option">Option</mat-option>
+            <mat-form-field class="example-full-width container-fluid">
+              <mat-label>Branch Code</mat-label>
+              <mat-select [(value)]="branchcode" (selectionChange)="onSelectValueChange()" formControlName="branchcode">
+                <mat-option *ngFor="let brch of dataAllBrch" [value]="brch.branchcode">
+                  {{ brch.branchcode }}-{{ brch.description }}
+                </mat-option>
               </mat-select>
             </mat-form-field>
 
-            <mat-form-field appearance="fill" class="example-full-width container-fluid">
-              <mat-label>Select</mat-label>
-              <mat-select>
-                <mat-option value="option">Option</mat-option>
+            <mat-form-field class="example-full-width container-fluid">
+              <mat-label>Roles</mat-label>
+              <mat-select formControlName="roles" multiple>
+                <mat-option *ngFor="let rl of roles" [value]="rl.value">{{rl.role}}</mat-option>
               </mat-select>
             </mat-form-field>
 
-            <mat-form-field appearance="fill" class="example-full-width container-fluid">
-              <mat-label>Select</mat-label>
-              <mat-select>
-                <mat-option value="option">Option</mat-option>
-              </mat-select>
-            </mat-form-field>
+            <mat-radio-group class="example-full-width container-fluid" formControlName="enabledF">
+              <mat-radio-button [checked]="1 === enabledF" value="1">Enabled</mat-radio-button>
+              <mat-radio-button [checked]="0 === enabledF" value="0">Disable</mat-radio-button>
+            </mat-radio-group>
+
+            <div class="container-fluid mt-3">
+              <button (click)="saveEdit()" class="mat-save" mat-button>Save</button>
+            </div>
+
           </form>
         </mat-sidenav>
         <mat-sidenav position="start" #sidenavChange (keydown.escape)="close('change')" disableClose>
