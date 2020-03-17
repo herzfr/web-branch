@@ -291,17 +291,14 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     const date = moment(event['birthday'], 'DD-MM-YYYY').toISOString();
     console.log(date);
 
+    this.formEditUser.get('firstname').setValue(event['firstname']);
+    this.formEditUser.get('lastname').setValue(event['lastname']);
+    this.formEditUser.get('birthday').setValue(date);
+    this.formEditUser.get('email').setValue(event['email']);
+    this.formEditUser.get('branchcode').setValue(event['branchcode']);
+    this.formEditUser.get('roles').setValue(event['roles']);
+    this.formEditUser.get('enabledF').setValue(event['enabled']);
 
-
-    this.formEditUser = new FormGroup({
-      firstname: new FormControl(event['firstname'], Validators.required),
-      lastname: new FormControl(event['lastname'], Validators.required),
-      birthday: new FormControl(date, Validators.required),
-      email: new FormControl(event['email'], Validators.required),
-      branchcode: new FormControl(event['branchcode'], Validators.required),
-      roles: new FormControl(event['roles'], Validators.required),
-      enabledF: new FormControl([event['enabled']], Validators.required),
-    });
 
     console.log(this.formEditUser);
 
