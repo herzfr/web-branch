@@ -46,5 +46,9 @@ export class UserService {
     return this.http.post(this.apiUrl + 'api/users/', user, this.httpOptions);
   }
 
+  changePass(user: any) {
+    return this.http.post(this.apiUrl + 'api/users/changepass', user, this.httpOptions)
+  }
+
 
 }
