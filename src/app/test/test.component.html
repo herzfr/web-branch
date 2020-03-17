@@ -1,8 +1,20 @@
-<form class="example-form" >
-  <mat-form-field class="example-full-width" >
+<form class="example-form">
+  <mat-form-field class="example-full-width">
     <mat-label>Test Encrypt </mat-label>
     <input matInput placeholder="Input Plain Text" [formControl]="name">
   </mat-form-field>
 
 </form>
 <button mat-raised-button color="primary" (click)="testing()">Primary</button>
+
+
+<div id="chatControls">
+  <input id="message" placeholder="Type your message">
+  <button id="send">Send</button>
+</div>
+<ul id="userlist">
+  <!-- Built by JS -->
+</ul>
+<div id="chat">
+  <!-- Built by JS -->
+</div>

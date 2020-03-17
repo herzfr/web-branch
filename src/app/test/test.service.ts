@@ -7,7 +7,7 @@ import { AppConfiguration } from '../models/app.configuration';
   providedIn: 'root'
 })
 export class TestService {
-  
+
   private apiUrl;
 
   ls = new SecureLS({ encodingType: 'aes' });
@@ -25,11 +25,14 @@ export class TestService {
     this.apiUrl = this.appConfiguration.ipServer;
   }
 
-  getAllUsers(search, size, page) {
+  testSending(value: string) {
     const params = new HttpParams()
-      .set('search', search)
-      .set('size', size)
-      .set('page', page);
-    return this.http.get(this.apiUrl + 'api/users?' + params, this.httpOptions)
+      .set('encoded', value)
+
+    console.log(params);
+
+    return this.http.post("http://localhost:1111/testing?" + params, "{\"open\" : true }")
+
+
   }
 }
