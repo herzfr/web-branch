@@ -264,8 +264,7 @@ export class DialogTransactionComponent implements OnInit {
     let Form = new FormGroup(event)
     let payLoad = JSON.stringify(Form.value);
     // console.log(payLoad);
-
-
+    
     const dataProsesApi = {
       "transid": transId,
       "branchcode": branchCode,

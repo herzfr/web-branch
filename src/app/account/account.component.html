@@ -147,9 +147,12 @@
               </mat-select>
             </mat-form-field>
 
-            <mat-radio-group class="example-full-width container-fluid" formControlName="enabledF">
-              <mat-radio-button [checked]="1 === enabledF" value="1">Enabled</mat-radio-button>
-              <mat-radio-button [checked]="0 === enabledF" value="0">Disable</mat-radio-button>
+
+            <mat-radio-group formControlName="enabledF">
+              <mat-radio-button class="material-radio ml-2 mr-2" [value]="1" [checked]="enabledValue === 1">Enabled
+              </mat-radio-button>
+              <mat-radio-button class="material-radio" [value]="0" [checked]="enabledValue === 0">Disabled
+              </mat-radio-button>
             </mat-radio-group>
 
             <div class="container-fluid mt-3">
