@@ -53,6 +53,9 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     { role: "Head CS", value: "headcs" },
   ];
 
+
+  private enabledValue = 1;
+
   favoriteSeason: string = 'Winter';
 
   seasons = [
@@ -77,7 +80,7 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       email: new FormControl(null, Validators.required),
       branchcode: new FormControl(null, Validators.required),
       roles: new FormControl(null, Validators.required),
-      enabledF: new FormControl(null, Validators.required),
+      enabledF: new FormControl(),
     });
   }
 
@@ -286,7 +289,10 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getUserEdit(event) {
-    console.log(event['birthday']);
+    console.log("run edit ");
+
+    this.enabledValue = event['enabled'];
+    console.log("data : ", this.enabledValue);
     // var dateValidate = moment(event['birthday']).isValid() || moment(event['birthday'], "DD/MM/YYYY").isValid() ? true : false;
     const date = moment(event['birthday'], 'DD-MM-YYYY').toISOString();
     console.log(date);
