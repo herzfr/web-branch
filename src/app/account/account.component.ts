@@ -74,13 +74,14 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     })
 
     this.formEditUser = new FormGroup({
-      firstname: new FormControl(null, Validators.required),
-      lastname: new FormControl(null, Validators.required),
+      user_ID: new FormControl(null),
+      firstname: new FormControl(null, [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
+      lastname: new FormControl(null, [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
       birthday: new FormControl((new Date()).toISOString(), Validators.required),
-      email: new FormControl(null, Validators.required),
+      email: new FormControl(null, [Validators.required, Validators.email]),
       branchcode: new FormControl(null, Validators.required),
       roles: new FormControl(null, Validators.required),
-      enabledF: new FormControl(),
+      enabledF: new FormControl(null, Validators.required),
     });
   }
 
@@ -224,9 +225,6 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       default:
         break;
     }
-
-
-
   }
 
   close(event) {
@@ -275,6 +273,8 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
                 if (res === 'exit') {
                   this.sidenavChange.close()
                   this.formPassword.reset()
+                  this.getAllUsersData("", 5, 0);
+                  // window.location.reload()
                 }
               })
             }
@@ -297,17 +297,14 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     const date = moment(event['birthday'], 'DD-MM-YYYY').toISOString();
     console.log(date);
 
-    this.formEditUser.get('firstname').setValue(event['firstname'], [Validators.required, Validators.pattern('[a-zA-Z ]*')]);
-    this.formEditUser.get('lastname').setValue(event['lastname'], [Validators.required, Validators.pattern('[a-zA-Z ]*')]);
+    this.formEditUser.get('user_ID').setValue(event['userid']);
+    this.formEditUser.get('firstname').setValue(event['firstname']);
+    this.formEditUser.get('lastname').setValue(event['lastname']);
     this.formEditUser.get('birthday').setValue(date);
-    this.formEditUser.get('email').setValue(event['email'], [Validators.required, Validators.email]);
-    this.formEditUser.get('branchcode').setValue(event['branchcode'], Validators.required);
-    this.formEditUser.get('roles').setValue(event['roles'], Validators.required);
+    this.formEditUser.get('email').setValue(event['email']);
+    this.formEditUser.get('branchcode').setValue(event['branchcode']);
+    this.formEditUser.get('roles').setValue(event['roles']);
     this.formEditUser.get('enabledF').setValue(event['enabled']);
-
-
-    console.log(this.formEditUser);
-
   }
 
   get fname() { return this.formEditUser.get('firstname'); }
@@ -319,7 +316,45 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   get enb() { return this.formEditUser.get('enabledF'); }
 
   saveEdit() {
-    console.log(this.formEditUser.value);
+    // console.log(this.formEditUser.value);
+
+    let obj = {
+      "userid": this.formEditUser.value.user_ID,
+      "branchcode": this.formEditUser.value.branchcode,
+      "firstname": this.formEditUser.value.firstname,
+      "lastname": this.formEditUser.value.lastname,
+      "email": this.formEditUser.value.email,
+      "birthday": moment(this.formEditUser.value.birthday).format('DD-MM-YYYY'),
+      "enabled": this.formEditUser.value.enabledF,
+      "roles":
+        this.formEditUser.value.roles
+    }
+    // console.log(obj);
+    this.usersService.editUser(obj).subscribe(e => {
+      console.log(e);
+      if (e['success']) {
+        console.log(e['message']);
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+          id: 1,
+          message: 'Update User Done.',
+          buttonSuccess: true
+        };
+        dialogConfig.backdropClass = 'backdropBackground';
+        this.dialog.open(ChangeUserDialogComponent, dialogConfig).afterClosed().subscribe(res => {
+          // console.log(res);
+          if (res === 'exit') {
+            this.sidenavEdit.close()
+            this.formEditUser.reset()
+            this.getAllUsersData("", 5, 0);
+            // window.location.reload()
+          }
+        })
+      }
+    })
+
+
+
 
   }
 

@@ -34,7 +34,7 @@ export class UserService {
   }
 
   userNameCheck(userName: string) {
-    return this.http.get(this.apiUrl + 'api/users/check?user=' + userName,this.httpOptions);
+    return this.http.get(this.apiUrl + 'api/users/check?user=' + userName, this.httpOptions);
   }
 
   deleteUser(value) {
@@ -48,6 +48,10 @@ export class UserService {
 
   changePass(user: any) {
     return this.http.post(this.apiUrl + 'api/users/changepass', user, this.httpOptions)
+  }
+
+  editUser(user: any) {
+    return this.http.put(this.apiUrl + 'api/users', user, this.httpOptions)
   }
 
 
