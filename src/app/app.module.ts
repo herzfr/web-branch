@@ -26,6 +26,7 @@ import { DialogTransactionComponent } from './dialog/dialog-transaction/dialog-t
 import { MatTableModule } from '@angular/material';
 import { WebsocketService } from './services/websocket.service';
 import { UtilityService } from './services/utility.service';
+import { TestComponent } from './test/test.component';
 // import { CurrencySetting } from './config/currency-setting';
 
 
@@ -46,6 +47,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     NavsComponent,
     DialogErrorComponent,
     DialogTransactionComponent,
+    TestComponent,
   ],
   entryComponents: [DialogErrorComponent, DialogTransactionComponent],
   imports: [
