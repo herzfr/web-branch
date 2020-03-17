@@ -35,6 +35,9 @@ export class DialogTransactionComponent implements OnInit {
   private formGroup: FormGroup;
   private dataSuccess = new Array;
 
+  private transID_for_while: string;
+  private status_for_while: number;
+
   stepDisabled: boolean = true;
 
   _printData: any;
@@ -53,7 +56,8 @@ export class DialogTransactionComponent implements OnInit {
         // console.log(element.trntype);
         this.noQ = element.queueno;
         let changeKey = element.transbuff[0]
-
+        this.transID_for_while = element.transid
+        this.status_for_while = element.status
         for (const key in changeKey) {
           if (changeKey.hasOwnProperty(key)) {
             const e = changeKey[key];
@@ -264,7 +268,7 @@ export class DialogTransactionComponent implements OnInit {
     let Form = new FormGroup(event)
     let payLoad = JSON.stringify(Form.value);
     // console.log(payLoad);
-    
+
     const dataProsesApi = {
       "transid": transId,
       "branchcode": branchCode,
@@ -417,6 +421,55 @@ export class DialogTransactionComponent implements OnInit {
     } else {
       console.log('masih belum');
     }
+  }
+
+  closeQDialog() {
+    // this.dialogRef.close();
+
+    if (this.status_for_while === 999) {
+      let arr = new Array;
+      let obj: any = new Object();
+      obj.transId = this.transID_for_while;
+      obj.status = '998';
+
+      console.log(obj);
+      arr.push(obj)
+
+      this.queueServ.changeStatusTransactionQ(arr).subscribe(e => {
+        console.log(e);
+        if (e['successId0']) {
+          this.form.reset()
+          this.formGroup.reset()
+          this.queueServ.refreshQ('034').subscribe()
+          this.dialogRef.close();
+        } else {
+          console.log('data tidak ada');
+        }
+      })
+    } else if (this.status_for_while === 998) {
+      let arr = new Array;
+      let obj: any = new Object();
+      obj.transId = this.transID_for_while;
+      obj.status = '998';
+
+      console.log(obj);
+      arr.push(obj)
+
+      this.queueServ.changeStatusTransactionQ(arr).subscribe(e => {
+        console.log(e);
+        if (e['successId0']) {
+          this.form.reset()
+          this.formGroup.reset()
+          this.queueServ.refreshQ('034').subscribe()
+          this.dialogRef.close();
+        } else {
+          console.log('data tidak ada');
+        }
+      })
+    }
+
+
+
   }
 
 }

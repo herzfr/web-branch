@@ -1,3 +1,14 @@
+#mini {
+  color: #277793;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#mini:hover {
+  color: #b2dae9;
+}
+
+
 .mat-dialog-container {
   padding: 10px;
   width: 200px;

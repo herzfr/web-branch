@@ -244,44 +244,54 @@ export class DashboardComponent implements OnInit {
     this.dlg.open(DialogTransactionComponent, dialogConfig).afterClosed().subscribe(resBack => {
       console.log(resBack);
 
-      if (resBack[0].skip) {
-        console.log('skip jalan');
+      if (resBack === undefined) {
+        console.log('data tidak ada');
 
-        this.nextQueue()
+      } else {
 
-        resBack.forEach(el => {
-          delete el.skip
-        });
+        if (resBack[0].skip) {
+          console.log('skip jalan');
 
-        this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
-          console.log(res);
-          this.queueServ.refreshQ(this.branchCode).subscribe()
-        })
+          this.nextQueue()
 
-      } else if (resBack[0].batal) {
-        console.log('batal jalan');
+          resBack.forEach(el => {
+            delete el.skip
+          });
 
-        resBack.forEach(el => {
-          delete el.batal
-        });
+          this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
+            console.log(res);
+            this.queueServ.refreshQ(this.branchCode).subscribe()
+          })
 
-        this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
-          console.log(res);
-          this.queueServ.refreshQ(this.branchCode).subscribe()
-        })
+        } else if (resBack[0].batal) {
+          console.log('batal jalan');
 
-      } else if (resBack[0].proses) {
-        console.log('proses jalan');
+          resBack.forEach(el => {
+            delete el.batal
+          });
 
-        resBack.forEach(el => {
-          delete el.proses
-        });
+          this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
+            console.log(res);
+            this.queueServ.refreshQ(this.branchCode).subscribe()
+          })
 
-        this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
-          console.log(res);
-          this.queueServ.refreshQ(this.branchCode).subscribe()
-        })
+        } else if (resBack[0].proses) {
+          console.log('proses jalan');
+
+          resBack.forEach(el => {
+            delete el.proses
+          });
+
+          this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
+            console.log(res);
+            this.queueServ.refreshQ(this.branchCode).subscribe()
+          })
+        }
       }
+
+
+
+
 
     })
 

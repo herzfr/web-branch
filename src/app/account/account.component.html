@@ -91,16 +91,28 @@
 
             <mat-form-field class="example-full-width container-fluid">
               <mat-label>Nama Depan</mat-label>
-              <input matInput placeholder="Isi nama depan..." formControlName="firstname">
+              <input matInput pattern="[a-zA-Z ]*" placeholder="Isi nama depan..." formControlName="firstname">
+              <mat-error *ngIf="fname.hasError('pattern')">
+                Harus menggunakan karakter
+              </mat-error>
+              <mat-error *ngIf="fname.hasError('required')">
+                Nama depan tidak boleh <strong>kosong</strong>
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field class="example-full-width container-fluid">
               <mat-label>Nama Belakang</mat-label>
-              <input matInput placeholder="Isi nama belakang..." formControlName="lastname">
+              <input matInput pattern="[a-zA-Z ]*" placeholder="Isi nama belakang..." formControlName="lastname">
+              <mat-error *ngIf="fname.hasError('pattern')">
+                Harus menggunakan karakter
+              </mat-error>
+              <mat-error *ngIf="fname.hasError('required')">
+                Nama Belakang tidak boleh <strong>kosong</strong>
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field class="example-full-width container-fluid">
-              <mat-label>Angular forms</mat-label>
+              <mat-label>Tanggal Lahir</mat-label>
               <input matInput [matDatepicker]="picker1" formControlName="birthday">
               <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
               <mat-datepicker #picker1></mat-datepicker>
