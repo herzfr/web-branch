@@ -5,7 +5,9 @@
     </li>
     <li class="list-inline-item row justify-content-center">034 - Cabang Utama</li>
     <li class="list-inline-item row justify-content-end align-items-center">
-      <i (click)="closeQDialog()" id="mini" class="fad fa-compress-alt ml-3 fa-2x"></i> </li>
+      <!-- <P class="text">Maximize</P> -->
+      <i (click)="closeQDialog()" id="mini" class="fad fa-layer-minus fa-2x"></i>
+    </li>
   </ul>
 </div>
 <mat-dialog-content class="mat-typography">
@@ -71,10 +73,11 @@
           </ng-container>
 
           <mat-vertical-stepper [linear]="isLinear" #stepper>
+
+            <!-- STEP 1 -->
             <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null" [stepControl]="1">
               <ng-template matStepLabel>Check Transaction {{i + 1}}</ng-template>
 
-              <!-- Step 1 Check Transaction -->
               <div *ngFor="let a of env.controls | keyvalue" class="form-group row">
                 <ng-container *ngIf="a.key ==='TransaksiId'">
                   <label
@@ -101,6 +104,8 @@
                 <button (click)="transactionProcess(env.controls)" mat-button matStepperNext>Proses</button>
               </div>
             </mat-step>
+
+            <!-- STEP 2 -->
             <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null" [stepControl]="2">
               <ng-template matStepLabel>Prosses Transaction {{i + 1}}</ng-template>
 
@@ -136,6 +141,7 @@
               </div>
             </mat-step>
 
+            <!-- STEP 3 -->
             <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null" [stepControl]="3">
               <ng-template matStepLabel>Print Transaction {{i + 1}}</ng-template>
 
@@ -159,6 +165,7 @@
               </div>
             </mat-step>
 
+            <!-- STEP 4 -->
             <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null">
               <ng-template matStepLabel>Done</ng-template>
               <p>You are now done.</p>
