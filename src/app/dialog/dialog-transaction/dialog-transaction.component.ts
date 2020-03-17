@@ -49,6 +49,9 @@ export class DialogTransactionComponent implements OnInit {
     this.data = data.data;
 
 
+
+
+
     let forms = new Array;
     for (const key in data.data) {
       if (data.data.hasOwnProperty(key)) {
@@ -410,7 +413,6 @@ export class DialogTransactionComponent implements OnInit {
 
   stepChanged(event, stepper) {
     console.log(event, stepper.selected.interacted);
-
     stepper.selected.interacted = false;
   }
 
@@ -467,9 +469,6 @@ export class DialogTransactionComponent implements OnInit {
         }
       })
     }
-
-
-
   }
 
 }
