@@ -207,10 +207,11 @@ export class DashboardComponent implements OnInit {
     })
 
 
-    function disableF5(e) { if ((e.which || e.keyCode) == 116) e.preventDefault(); };
-    $(document).on("keydown", disableF5);
 
-    window.history.pushState(null, null, document.URL);
+    // function disableF5(e) { if ((e.which || e.keyCode) == 116) e.preventDefault(); };
+    // $(document).on("keydown", disableF5);
+
+    // window.history.pushState(null, null, document.URL);
 
 
     // simply visual, let's you know when the correct iframe is selected
