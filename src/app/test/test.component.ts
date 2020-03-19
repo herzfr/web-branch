@@ -10,6 +10,7 @@ import * as SockJS from 'sockjs-client';
 import { Observable } from 'rxjs';
 import { FormCanDeactivate } from '../utility/form-can-deactivate/form-can-deactivate';
 
+
 declare var $: any;
 
 @Component({
@@ -18,6 +19,9 @@ declare var $: any;
   styleUrls: ['./test.component.css']
 })
 export class TestComponent implements OnInit {
+
+  private serverUrl = 'http://localhost:1111/socket';
+  private stompClient;
 
   @ViewChild('form', { static: false }) form: NgForm;
 
@@ -41,6 +45,7 @@ export class TestComponent implements OnInit {
 
   ngOnInit() {
 
+    this.initializeWebSocketConnection("vldnas");
 
   }
 
@@ -64,6 +69,34 @@ export class TestComponent implements OnInit {
   decrypt(word) {
     var decrypt = crypto.AES.decrypt(word, this.secretKey, { mode: crypto.mode.ECB, padding: crypto.pad.Pkcs7 });
     return crypto.enc.Utf8.stringify(decrypt).toString();
+  }
+
+  initializeWebSocketConnection(socket) {
+    let ws = new SockJS(this.serverUrl);
+    this.stompClient = Stomp.over(ws);
+    let that = this;
+    this.stompClient.connect({ "testing": "testaja" }, function (frame) {
+      // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
+
+      that.stompClient.subscribe("/" + socket, (message) => {
+        if (message.body) {
+          return message.body;
+        }
+
+      }, () => {
+        // that.dialog.errorDialog("Error", "Koneksi Terputus");
+        console.log("koneksi terputus");
+
+      });
+    }, err => {
+      console.log("gagal menghubungkan ke server ");
+
+      // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
+    });
+  }
+
+  disconnect() {
+    this.stompClient.disconnect();
   }
 
 }
