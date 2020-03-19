@@ -183,13 +183,27 @@
                 </div>
 
                 <div class="d-flex justify-content-center">
-                  <mat-card align="center" class="m-2 btn-card"><i class="fad fa-trash-undo fa-3x"></i>
+                  <mat-form-field class="container-fluid col-sm-6">
+                    <mat-label>Pilih Head Teller</mat-label>
+                    <mat-select>
+                      <mat-option *ngFor="let nm of namaHead" [value]="nm.value">
+                        {{nm.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                  <mat-card (click)="onOtorisation('reject', stepper)" align="center" class="m-2 btn-card"><i
+                      class="fad fa-trash-undo fa-3x"></i>
                     <p>Reject</p>
                   </mat-card>
-                  <mat-card align="center" class="m-2 btn-card"><i class="fad fa-user-shield fa-3x"></i>
+                  <mat-card (click)="onOtorisation('request', stepper)" align="center" class="m-2 btn-card"><i
+                      class="fad fa-user-shield fa-3x"></i>
                     <p>Req Otorisasi</p>
                   </mat-card>
-                  <mat-card (click)="drawer.toggle()" align="center" class="m-2 btn-card">
+                  <mat-card (click)="drawer.toggle(); onOtorisation('now', stepper)" align="center"
+                    class="m-2 btn-card">
                     <i class="fad fa-fingerprint fa-3x"></i>
                     <p>Override</p>
                   </mat-card>
@@ -198,6 +212,12 @@
                 <mat-drawer #drawer class="example-sidenav" mode="over" position="end">
                   <div class="container-fluid justify-content-end d-flex">
                     <i (click)="drawer.toggle()" class="fad fa-times fa-2x"></i>
+
+                    <div class="container-fluid">
+                      <ng-lottie height="400px" [options]="options" (animationCreated)="animationCreated($event)">
+                      </ng-lottie>
+                      <p class="text-center">Verifikasi Head Teller</p>
+                    </div>
                   </div>
                 </mat-drawer>
 
@@ -237,7 +257,7 @@
 
             <!-- STEP 4 -->
             <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null" [stepControl]="4">
-              <ng-template matStepLabel>Print Transaction {{i + 1}}</ng-template>
+              <ng-template matStepLabel>Hasil Transaksi {{i + 1}}</ng-template>
 
               <div id="print-section" class="container-fluid">
                 <img src="assets/svgs/logo-blue.svg" class="mb-3" alt="img-thumbnail">

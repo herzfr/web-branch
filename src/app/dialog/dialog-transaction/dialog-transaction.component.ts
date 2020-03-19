@@ -5,6 +5,8 @@ import { QueueService } from 'src/app/services/queue.service';
 declare var $: any;
 
 import * as SecureLS from 'secure-ls';
+import { AnimationOptions } from 'ngx-lottie';
+import { AnimationItem } from 'lottie-web';
 
 
 @Component({
@@ -72,6 +74,19 @@ export class DialogTransactionComponent implements OnInit {
   private cardNum: number;
   private pinMessage: string;
   private fingerMessage: string;
+
+  namaHead: any = [
+    { value: '12312213123', viewValue: 'Mamank Racing' },
+    { value: '12312213123', viewValue: 'Kakek Sugiono' },
+    { value: '12312213123', viewValue: 'Tatang Bengkel' }
+  ];
+
+
+  private options: AnimationOptions = {
+    path: '/assets/lottie/fingerprint.json'
+  };
+
+
 
   @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
 
@@ -549,19 +564,45 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   onOtorisationFinger() {
-
   }
 
   openSideNav() {
-    // this.sidenav.toggle()
     console.log(this.sidenav);
   }
 
+  animationCreated(animationItem: AnimationItem): void {
+    // this.animationItem = animationItem;
+    console.log(animationItem);
+
+  }
 
   close(reason: string) {
     console.log(reason);
     this.sidenav.close();
   }
 
+  onOtorisation(event, stepper: MatStepper) {
+    // console.log(event);
+
+    switch (event) {
+      case 'now':
+        console.log('now');
+        break;
+      case 'request':
+        console.log('request');
+        stepper.next()
+        break;
+      case 'reject':
+        console.log('reject');
+        stepper.next()
+        break;
+      default:
+        break;
+
+
+
+    }
+
+  }
 
 }
