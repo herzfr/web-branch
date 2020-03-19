@@ -132,7 +132,7 @@
                       <div id="input-pin" class="card-body justify-content-center align-items-center d-flex">
                         <ng-otp-input id="inpfoc" *ngIf="isInputPin"
                           class="row d-flex align-items-center justify-content-center"
-                          (onInputChange)="onOtpChange($event)" [config]="config" #ngOtpInput>
+                          (onInputChange)="onOtpChange($event, stepper)" [config]="config" #ngOtpInput>
                         </ng-otp-input>
                       </div>
                       <div class="card-footer text-muted">

@@ -552,7 +552,7 @@ export class DialogTransactionComponent implements OnInit {
 
   }
 
-  onOtpChange(event: any) {
+  onOtpChange(event: any, stepper: MatStepper) {
 
     if (event.length == 6) {
       console.log('cukup');
@@ -573,9 +573,10 @@ export class DialogTransactionComponent implements OnInit {
             this.base64Sign = 'data:image/png;base64,' + e['imagesign']
             this.NAME_CUST = e['name']
             this.images64()
-            this.initializeWebSocketConnection('vldnas')
+            this.sign64()
+            this.initializeWebSocketConnection('vldnas', stepper)
             this.transacServ.verifyFingerCust(e['imageid'], this.token).subscribe(eres => {
-              console.log(eres);
+              // console.log(eres);
             })
           })
         } else {
@@ -600,18 +601,16 @@ export class DialogTransactionComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustResourceUrl(this.base64Sign);
   }
 
-  onFingerVerify(stepper: MatStepper) {
+  onFingerVerify(status, stepper: MatStepper) {
 
-
-    let finger = true
-
-    if (finger) {
+    if (status) {
       this.fingerMessage = 'Finger Valid'
       this.isFingerSuccess = true
       this.isFingerError = false
       $('#scan-finger').removeClass('blink')
       setTimeout(() => {
         stepper.next()
+        this.disconnect()
       }, 1000)
     } else {
       this.isFingerError = true
@@ -620,7 +619,10 @@ export class DialogTransactionComponent implements OnInit {
 
   }
 
-  initializeWebSocketConnection(socket) {
+  initializeWebSocketConnection(socket, stepper: MatStepper) {
+
+    console.log(stepper);
+
     let ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(ws);
     let that = this;
@@ -629,7 +631,13 @@ export class DialogTransactionComponent implements OnInit {
 
       that.stompClient.subscribe("/" + socket, (message) => {
         if (message.body) {
-          return message.body;
+
+          let parse = JSON.parse(message.body).success
+
+          if (parse) {
+            that.onFingerVerify(parse, stepper)
+          }
+
         }
 
       }, () => {
