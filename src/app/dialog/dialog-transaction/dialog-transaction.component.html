@@ -37,11 +37,12 @@
       <p class="h6 ml-1 mr-1">Data Nasabah</p>
       <div class="container-fluid d-flex justify-content-between">
         <div class="col text-center">
-          <img src="../../../assets/png/avatar.png" alt="..." class="img-thumbnail rounded">
+          <!-- <img src="../../../assets/png/avatar.png" alt="..." class="img-thumbnail rounded"> -->
+          <img [src]="images64()" alt="..." class="img-thumbnail rounded">
           <p class="text-center font-weight-bold">Foto Nasabah</p>
         </div>
         <div class="col text-center">
-          <img src="../../../assets/png/signature.png" alt="..." class="img-thumbnail retangle">
+          <img [src]="sign64()" alt="..." class="img-thumbnail retangle">
           <p class="text-center font-weight-bold">Tanda Tangan Nasabah</p>
         </div>
       </div>
@@ -57,7 +58,7 @@
     <label class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama <span
         class="text-right">:</span></label>
     <div class="col-sm-10">
-      <input type="text" class="form-control-plaintext col-6" id="nameName" value="John Lennon">
+      <input type="text" class="form-control-plaintext col-6" id="nameName" [(ngModel)]="NAME_CUST">
     </div>
   </div>
 
@@ -131,7 +132,7 @@
                       <div id="input-pin" class="card-body justify-content-center align-items-center d-flex">
                         <ng-otp-input id="inpfoc" *ngIf="isInputPin"
                           class="row d-flex align-items-center justify-content-center"
-                          (onInputChange)="onOtpChange($event)" [config]="config">
+                          (onInputChange)="onOtpChange($event)" [config]="config" #ngOtpInput>
                         </ng-otp-input>
                       </div>
                       <div class="card-footer text-muted">
@@ -202,8 +203,7 @@
                       class="fad fa-user-shield fa-3x"></i>
                     <p>Req Otorisasi</p>
                   </mat-card>
-                  <mat-card (click)="drawer.toggle(); onOtorisation('now', stepper)" align="center"
-                    class="m-2 btn-card">
+                  <mat-card (click)="drawer.toggle()" align="center" class="m-2 btn-card">
                     <i class="fad fa-fingerprint fa-3x"></i>
                     <p>Override</p>
                   </mat-card>
@@ -211,12 +211,14 @@
 
                 <mat-drawer #drawer class="example-sidenav" mode="over" position="end">
                   <div class="container-fluid justify-content-end d-flex">
-                    <i (click)="drawer.toggle()" class="fad fa-times fa-2x"></i>
+                    <i class="fad fa-times fa-2x"></i>
 
                     <div class="container-fluid">
                       <ng-lottie height="400px" [options]="options" (animationCreated)="animationCreated($event)">
                       </ng-lottie>
-                      <p class="text-center">Verifikasi Head Teller</p>
+                      <div (click)="onOtorisation('now', stepper, drawer)" class="d-flex justify-content-center"><button
+                          mat-button>Verifikasi Head
+                          Teller</button></div>
                     </div>
                   </div>
                 </mat-drawer>
@@ -257,9 +259,25 @@
 
             <!-- STEP 4 -->
             <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null" [stepControl]="4">
-              <ng-template matStepLabel>Hasil Transaksi {{i + 1}}</ng-template>
+              <ng-template matStepLabel>Hasil Transaksi</ng-template>
 
-              <div id="print-section" class="container-fluid">
+              <div *ngIf="isRejectConfirmation"
+                class="container-fluid d-flex justify-content-start align-items-center mb-5 mt-5">
+                <p class="h6 text-center pr-5">Data telah di Reject</p>
+                <ng-lottie width="100px" height="100px" [options]="optionReject"
+                  (animationCreated)="animationCreated($event)">
+                </ng-lottie>
+              </div>
+
+              <div *ngIf="isWaitingConfirmation"
+                class="container-fluid d-flex justify-content-start align-items-center mt-3">
+                <p class="h6 text-center mr-5">Menunggu konfirmasi dari Head Teller</p>
+                <ng-lottie width="200px" height="200px" [options]="optionWaiting"
+                  (animationCreated)="animationCreated($event)">
+                </ng-lottie>
+              </div>
+
+              <div *ngIf="isDisplayPrint" id="print-section" class="container-fluid  mt-3">
                 <img src="assets/svgs/logo-blue.svg" class="mb-3" alt="img-thumbnail">
                 <p class="h6 text-center">Bukti Transaksi</p>
                 <div *ngFor="let item of env.controls | keyvalue" class="form-group row mb-0">
@@ -273,9 +291,15 @@
                 </div>
               </div>
 
-              <div class="d-flex justify-content-between align-items-center">
-                <button (click)="print()" class="print-button"><span class="print-icon"></span></button>
-                <button (click)="done()" mat-button matStepperNext>Next</button>
+              <div *ngIf="isDisplayPrint" class="container-fluid align-items-center">
+                <div class="row justify-content-center">
+                  <img src="assets/png/print.png" alt="">
+                </div>
+                <div class="row justify-content-between">
+                  <button mat-button (click)="print()" class="print-button">Print</button>
+                  <button mat-button class="print-button" matStepperNext>Next</button>
+                </div>
+                <!-- <button (click)="done()" mat-button matStepperNext>Next</button> -->
               </div>
             </mat-step>
 

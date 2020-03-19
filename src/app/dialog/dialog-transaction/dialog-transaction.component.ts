@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatGridTileHeaderCssMatStyler, MatStepper, MatSidenav } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatGridTileHeaderCssMatStyler, MatStepper, MatSidenav, MatDrawer } from '@angular/material';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { QueueService } from 'src/app/services/queue.service';
 declare var $: any;
@@ -7,6 +7,8 @@ declare var $: any;
 import * as SecureLS from 'secure-ls';
 import { AnimationOptions } from 'ngx-lottie';
 import { AnimationItem } from 'lottie-web';
+import { TransactionService } from 'src/app/services/transaction.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
@@ -75,6 +77,11 @@ export class DialogTransactionComponent implements OnInit {
   private pinMessage: string;
   private fingerMessage: string;
 
+  // Otorisasi Head Teller
+  private isDisplayPrint: boolean = false;
+  private isWaitingConfirmation: boolean = false;
+  private isRejectConfirmation: boolean = false;
+
   namaHead: any = [
     { value: '12312213123', viewValue: 'Mamank Racing' },
     { value: '12312213123', viewValue: 'Kakek Sugiono' },
@@ -82,16 +89,28 @@ export class DialogTransactionComponent implements OnInit {
   ];
 
 
+  // Otorisasi Head Teller
   private options: AnimationOptions = {
     path: '/assets/lottie/fingerprint.json'
   };
+  private optionWaiting: AnimationOptions = {
+    path: '/assets/lottie/loading-verify.json'
+  };
+  private optionReject: AnimationOptions = {
+    path: '/assets/lottie/reject.json'
+  };
+
+  base64Image = 'assets/png/avatar.png';
+  base64Sign = 'assets/png/signature.png';
+  NAME_CUST = 'John Lennon';
 
 
 
   @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
+  @ViewChild('ngOtpInput', { static: true }) ngOtpInputRef: any;
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
-    private queueServ: QueueService) {
+    private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer) {
     this.data = data.data;
 
 
@@ -515,7 +534,7 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   onSwapCard() {
-    this.cardNum = 1234567890123456;
+    this.cardNum = 1234567890000003;
 
     if (this.cardNum !== null) {
       this.isInputPin = true
@@ -526,23 +545,47 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   onOtpChange(event: any) {
-    console.log(event.length);
-    // let events = parseInt(event)
-    // pinMessage
+
     if (event.length == 6) {
       console.log('cukup');
-      this.isScanFinger = true;
-      $('#scan-finger').addClass('blink')
       $('.otp-input').blur();
       $('.otp-input').prop('readonly', true);
-      this.pinMessage = 'Pin Sukses'
-      this.isPinMessageSuccess = true
-      this.isPinMessageError = false
+      this.transacServ.verifyCard(this.cardNum, event).subscribe(res => {
+        console.log(res);
+        if (res['success']) {
+          console.log(res['message']);
+          this.isScanFinger = true;
+          $('#scan-finger').addClass('blink')
+          this.pinMessage = 'Pin Sukses'
+          this.isPinMessageSuccess = true
+          this.isPinMessageError = false
+          this.transacServ.getInfoCardPerson(res['record']).subscribe(e => {
+            console.log(e);
+            this.base64Image = 'data:image/png;base64,' + e['imagepict']
+            this.base64Sign = 'data:image/png;base64,' + e['imagesign']
+            this.NAME_CUST = e['name']
+            this.images64()
+          })
+        } else {
+          console.log(res['message']);
+          console.log(this.ngOtpInputRef);
+          $('.otp-input').prop('readonly', false);
+          this.pinMessage = 'PIN ' + res['message']
+          this.isPinMessageError = true
+        }
+      })
     } else {
       console.log('belum cukup');
       this.pinMessage = 'Pin Masih Kurang'
       this.isPinMessageError = true
     }
+  }
+
+  images64() {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(this.base64Image);
+  }
+  sign64() {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(this.base64Sign);
   }
 
   onFingerVerify(stepper: MatStepper) {
@@ -581,19 +624,28 @@ export class DialogTransactionComponent implements OnInit {
     this.sidenav.close();
   }
 
-  onOtorisation(event, stepper: MatStepper) {
+  onOtorisation(event, stepper: MatStepper, drawer: MatDrawer) {
     // console.log(event);
 
     switch (event) {
       case 'now':
         console.log('now');
+        setTimeout(() => {
+          drawer.toggle()
+          setTimeout(() => {
+            stepper.next()
+            this.isDisplayPrint = true;
+          }, 500)
+        }, 1000)
         break;
       case 'request':
         console.log('request');
         stepper.next()
+        this.isWaitingConfirmation = true;
         break;
       case 'reject':
         console.log('reject');
+        this.isRejectConfirmation = true;
         stepper.next()
         break;
       default:

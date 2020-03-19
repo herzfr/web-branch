@@ -159,9 +159,14 @@ input[type="text"]:focus {
 /* ======================================================================= */
 
 button.print-button {
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 40px;
   outline: none;
+  position: relative;
+  padding: 0;
+  border: 0;
+  border: none;
+  background: linear-gradient(170.06deg, #2B5876 3.56%, #4E4376 96.21%);
 }
 
 span.print-icon,
@@ -175,15 +180,14 @@ span.print-icon::after {
   border-width: 2px;
 }
 
-button.print-button {
+/* button.print-button {
   position: relative;
   padding: 0;
   border: 0;
-
   border: none;
-  background: transparent;
-}
+} */
 
+/* 
 span.print-icon,
 span.print-icon::before,
 span.print-icon::after,
@@ -250,7 +254,7 @@ button.print-button:hover .print-icon::before {
 button.print-button:hover .print-icon::after {
   height: 120%;
   transition: height .2s .15s, border-width 0s .16s;
-}
+} */
 
 .card {
   min-height: 200px;
