@@ -28,7 +28,7 @@ import { WebsocketService } from './services/websocket.service';
 import { UtilityService } from './services/utility.service';
 import { TestComponent } from './test/test.component';
 import { TestService } from './test/test.service';
-import { CanDeactivateGuard } from './utility/can-deactivate/can-deactivate.guard';
+import { NgOtpInputModule } from 'ng-otp-input';
 // import { CurrencySetting } from './config/currency-setting';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
@@ -48,6 +48,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     DialogErrorComponent,
     DialogTransactionComponent,
     TestComponent,
+
   ],
   entryComponents: [DialogErrorComponent, DialogTransactionComponent],
   imports: [
@@ -63,10 +64,11 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     NgxBootstrapModule,
     MaterialModule,
     MatTableModule,
+    NgOtpInputModule,
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
   ],
   providers: [
-    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService, TestService,CanDeactivateGuard,
+    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService, TestService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],

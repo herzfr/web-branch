@@ -19,7 +19,7 @@ export class QueueService {
     .set('Authorization', 'Bearer ' + this.token);
 
   httpOptions = {
-    headers: this.headers_object
+    headers: this.headers_object 
   };
 
 
@@ -64,6 +64,7 @@ export class QueueService {
   processTransactionDataQ(body) {
     return this.http.post(this.apiUrl + 'api/wbtrans/process', body, this.httpOptions)
   }
+
 
 
 }

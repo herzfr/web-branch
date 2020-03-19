@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatGridTileHeaderCssMatStyler, MatStepper } from '@angular/material';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatGridTileHeaderCssMatStyler, MatStepper, MatSidenav } from '@angular/material';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { QueueService } from 'src/app/services/queue.service';
 declare var $: any;
@@ -31,6 +31,7 @@ export class DialogTransactionComponent implements OnInit {
   private isDoneBtn: boolean = false;
 
 
+
   private form: FormArray;
   private formGroup: FormGroup;
   private dataSuccess = new Array;
@@ -40,9 +41,39 @@ export class DialogTransactionComponent implements OnInit {
 
   stepDisabled: boolean = true;
 
-  _printData: any;
-
   secureLs = new SecureLS({ encodingType: 'aes' });
+  config = {
+    allowNumbersOnly: true,
+    length: 6,
+    isPasswordInput: true,
+    disableAutoFocus: false,
+    placeholder: '',
+    inputStyles: {
+      'width': '30px',
+      'height': '30px',
+      'font-size': '20px',
+      'margin-right': '0px',
+      'border': '1px solid transparent',
+      'border-right-color': '#234A7B',
+      'color': '#234A7B',
+      'border-radius': '0px'
+    }
+  };
+  // otorisasi pin Nasabah true false
+  private isPinMessageSuccess: boolean = false;
+  private isPinMessageError: boolean = false;
+  private isScanFinger: boolean = false;
+  private isSwapCard: boolean = true;
+  private isInputPin: boolean = false;
+  private isCardNumber: boolean = false;
+  private isFingerError: boolean = false;
+  private isFingerSuccess: boolean = false;
+  // otorisasi pin Nasabah data
+  private cardNum: number;
+  private pinMessage: string;
+  private fingerMessage: string;
+
+  @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
     private queueServ: QueueService) {
@@ -410,7 +441,6 @@ export class DialogTransactionComponent implements OnInit {
 
   stepChanged(event, stepper) {
     console.log(event, stepper.selected.interacted);
-
     stepper.selected.interacted = false;
   }
 
@@ -467,9 +497,71 @@ export class DialogTransactionComponent implements OnInit {
         }
       })
     }
+  }
 
+  onSwapCard() {
+    this.cardNum = 1234567890123456;
 
+    if (this.cardNum !== null) {
+      this.isInputPin = true
+      this.isCardNumber = true
+      $('#card-swap').removeClass('blink')
+    }
 
   }
+
+  onOtpChange(event: any) {
+    console.log(event.length);
+    // let events = parseInt(event)
+    // pinMessage
+    if (event.length == 6) {
+      console.log('cukup');
+      this.isScanFinger = true;
+      $('#scan-finger').addClass('blink')
+      $('.otp-input').blur();
+      $('.otp-input').prop('readonly', true);
+      this.pinMessage = 'Pin Sukses'
+      this.isPinMessageSuccess = true
+      this.isPinMessageError = false
+    } else {
+      console.log('belum cukup');
+      this.pinMessage = 'Pin Masih Kurang'
+      this.isPinMessageError = true
+    }
+  }
+
+  onFingerVerify(stepper: MatStepper) {
+    let finger = true
+
+    if (finger) {
+      this.fingerMessage = 'Finger Valid'
+      this.isFingerSuccess = true
+      this.isFingerError = false
+      $('#scan-finger').removeClass('blink')
+      setTimeout(() => {
+        stepper.next()
+      }, 1000)
+    } else {
+      this.isFingerError = true
+      this.fingerMessage = 'Finger Invalid'
+    }
+
+  }
+
+  onOtorisationFinger() {
+
+  }
+
+  openSideNav() {
+    // this.sidenav.toggle()
+    console.log(this.sidenav);
+  }
+
+
+  close(reason: string) {
+    console.log(reason);
+    this.sidenav.close();
+  }
+
 
 }
