@@ -28,9 +28,8 @@ import { WebsocketService } from './services/websocket.service';
 import { UtilityService } from './services/utility.service';
 import { TestComponent } from './test/test.component';
 import { TestService } from './test/test.service';
+import { CanDeactivateGuard } from './utility/can-deactivate/can-deactivate.guard';
 // import { CurrencySetting } from './config/currency-setting';
-
-
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -67,7 +66,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
   ],
   providers: [
-    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService, TestService,
+    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService, TestService,CanDeactivateGuard,
     {
       provide: AppConfiguration,
       deps: [HttpClient],

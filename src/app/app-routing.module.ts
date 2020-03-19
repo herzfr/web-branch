@@ -7,6 +7,7 @@ import { HomeComponent } from './home/home.component';
 import { Page404Component } from './page404/page404.component';
 import { AuthGuard } from './services/auth.guard';
 import { TestComponent } from './test/test.component';
+import { CanDeactivateGuard } from './utility/can-deactivate/can-deactivate.guard';
 
 const routes: Routes = [
   {

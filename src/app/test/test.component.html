@@ -9,8 +9,10 @@
 
 
 <div id="chatControls">
-  <input id="message" placeholder="Type your message">
-  <button id="send">Send</button>
+  <form  #form="ngForm" (ngSubmit)="submit()">
+    <input id="message" placeholder="Type your message" [(ngModel)]="message" name="message">
+    <button id="send" type="submit">Send</button>
+  </form>
 </div>
 <ul id="userlist">
   <!-- Built by JS -->
