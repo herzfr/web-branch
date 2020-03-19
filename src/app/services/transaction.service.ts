@@ -45,4 +45,13 @@ export class TransactionService {
 
     return this.http.get(this.apiUrl + 'api/wbimage/getImage?' + params, this.httpOptions)
   }
+
+  verifyFingerCust(imageid, token) {
+
+    const params = new HttpParams()
+      .set('imageid', imageid)
+      .set('token', token)
+
+    return this.http.get('http://localhost:1111/api/wbservice/validatenasabah?' + params, this.httpOptions)
+  }
 }

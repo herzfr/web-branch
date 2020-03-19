@@ -9,6 +9,12 @@ import { AnimationOptions } from 'ngx-lottie';
 import { AnimationItem } from 'lottie-web';
 import { TransactionService } from 'src/app/services/transaction.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import * as securels from 'secure-ls';
+
+
+import * as Stomp from 'stompjs';
+import * as SockJS from 'sockjs-client';
+
 
 
 @Component({
@@ -33,8 +39,6 @@ export class DialogTransactionComponent implements OnInit {
   private isCancelBtn: boolean = true;
   private isSkipBtn: boolean = true;
   private isDoneBtn: boolean = false;
-
-
 
   private form: FormArray;
   private formGroup: FormGroup;
@@ -104,6 +108,10 @@ export class DialogTransactionComponent implements OnInit {
   base64Sign = 'assets/png/signature.png';
   NAME_CUST = 'John Lennon';
 
+  private serverUrl = 'http://localhost:1111/socket';
+  private stompClient;
+  private ls = new securels({ encodingType: 'aes' });
+  private token = this.ls.get('token')
 
 
   @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
@@ -565,6 +573,10 @@ export class DialogTransactionComponent implements OnInit {
             this.base64Sign = 'data:image/png;base64,' + e['imagesign']
             this.NAME_CUST = e['name']
             this.images64()
+            this.initializeWebSocketConnection('vldnas')
+            this.transacServ.verifyFingerCust(e['imageid'], this.token).subscribe(eres => {
+              console.log(eres);
+            })
           })
         } else {
           console.log(res['message']);
@@ -589,6 +601,8 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   onFingerVerify(stepper: MatStepper) {
+
+
     let finger = true
 
     if (finger) {
@@ -604,6 +618,34 @@ export class DialogTransactionComponent implements OnInit {
       this.fingerMessage = 'Finger Invalid'
     }
 
+  }
+
+  initializeWebSocketConnection(socket) {
+    let ws = new SockJS(this.serverUrl);
+    this.stompClient = Stomp.over(ws);
+    let that = this;
+    this.stompClient.connect({ "testing": "testaja" }, function (frame) {
+      // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
+
+      that.stompClient.subscribe("/" + socket, (message) => {
+        if (message.body) {
+          return message.body;
+        }
+
+      }, () => {
+        // that.dialog.errorDialog("Error", "Koneksi Terputus");
+        console.log("koneksi terputus");
+
+      });
+    }, err => {
+      console.log("gagal menghubungkan ke server ");
+
+      // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
+    });
+  }
+
+  disconnect() {
+    this.stompClient.disconnect();
   }
 
   onOtorisationFinger() {
@@ -650,9 +692,6 @@ export class DialogTransactionComponent implements OnInit {
         break;
       default:
         break;
-
-
-
     }
 
   }
