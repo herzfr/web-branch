@@ -32,8 +32,6 @@ import { NgOtpInputModule } from 'ng-otp-input';
 import { TransactionService } from './services/transaction.service';
 // import { CurrencySetting } from './config/currency-setting';
 
-
-
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
     return jsonAppConfigService.load();
