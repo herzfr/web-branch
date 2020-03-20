@@ -523,7 +523,7 @@ export class DialogTransactionComponent implements OnInit {
       this.queueServ.changeStatusTransactionQ(arr).subscribe(e => {
         console.log(e);
         if (e['successId0']) {
-          if (localStorage.getItem('skip') !== null) {
+          if (localStorage.getItem('skip') !== null || localStorage.getItem('skip') != '') {
             var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
             this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
               console.log(eco);
@@ -533,6 +533,11 @@ export class DialogTransactionComponent implements OnInit {
                 this.queueServ.refreshQ(this.TERMINAL['branchCode']).subscribe()
                 localStorage.removeItem('skip')
                 this.dialogRef.close();
+              } else {
+                this.form.reset()
+                this.formGroup.reset()
+                this.queueServ.refreshQ(this.TERMINAL['branchCode']).subscribe()
+                this.dialogRef.close();
               }
 
             })
@@ -540,7 +545,7 @@ export class DialogTransactionComponent implements OnInit {
             console.log('localstorage null');
             this.form.reset()
             this.formGroup.reset()
-            this.queueServ.refreshQ('034').subscribe()
+            this.queueServ.refreshQ(this.TERMINAL['branchCode']).subscribe()
             this.dialogRef.close();
           }
         } else {
@@ -559,10 +564,31 @@ export class DialogTransactionComponent implements OnInit {
       this.queueServ.changeStatusTransactionQ(arr).subscribe(e => {
         console.log(e);
         if (e['successId0']) {
-          this.form.reset()
-          this.formGroup.reset()
-          this.queueServ.refreshQ('034').subscribe()
-          this.dialogRef.close();
+          if (localStorage.getItem('skip') !== null || localStorage.getItem('skip') != '') {
+            var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+            this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
+              console.log(eco);
+              if (eco['successId0']) {
+                this.form.reset()
+                this.formGroup.reset()
+                this.queueServ.refreshQ(this.TERMINAL['branchCode']).subscribe()
+                localStorage.removeItem('skip')
+                this.dialogRef.close();
+              } else {
+                this.form.reset()
+                this.formGroup.reset()
+                this.queueServ.refreshQ(this.TERMINAL['branchCode']).subscribe()
+                this.dialogRef.close();
+              }
+
+            })
+          } else {
+            this.form.reset()
+            this.formGroup.reset()
+            this.queueServ.refreshQ(this.TERMINAL['branchCode']).subscribe()
+            this.dialogRef.close();
+          }
+
         } else {
           console.log('data tidak ada');
         }
