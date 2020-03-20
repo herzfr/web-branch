@@ -54,4 +54,24 @@ export class TransactionService {
 
     return this.http.get('http://localhost:1111/api/wbservice/validatenasabah?' + params, this.httpOptions)
   }
+
+
+  headTellerList(rls, brch) {
+
+    const params = new HttpParams()
+      .set('roles', rls)
+      .set('branchcode', brch)
+
+    return this.http.get(this.apiUrl + 'api/users/byroles?' + params, this.httpOptions)
+  }
+
+
+  verifyFingerHead(username, token) {
+
+    const params = new HttpParams()
+      .set('username', username)
+      .set('token', token)
+
+    return this.http.get('http://localhost:1111/api/wbservice/validatehead?' + params, this.httpOptions)
+  }
 }

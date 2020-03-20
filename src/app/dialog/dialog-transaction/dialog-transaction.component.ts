@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, Input, NgZone } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatGridTileHeaderCssMatStyler, MatStepper, MatSidenav, MatDrawer } from '@angular/material';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { QueueService } from 'src/app/services/queue.service';
@@ -23,6 +23,7 @@ import * as SockJS from 'sockjs-client';
   styleUrls: ['./dialog-transaction.component.css', './dialog-transaction.component.scss']
 })
 export class DialogTransactionComponent implements OnInit {
+  private TERMINAL: any = [];
 
   private data: any;
   private dataForm: any;
@@ -47,10 +48,14 @@ export class DialogTransactionComponent implements OnInit {
   private transID_for_while: string;
   private status_for_while: number;
 
-  stepDisabled: boolean = true;
+  private stepDisabled: boolean = true;
+  private stepDisabledHorizontal: boolean = false;
 
-  secureLs = new SecureLS({ encodingType: 'aes' });
-  config = {
+  private isCloseDialog: boolean = true;
+
+
+  private secureLs = new SecureLS({ encodingType: 'aes' });
+  private config = {
     allowNumbersOnly: true,
     length: 6,
     isPasswordInput: true,
@@ -86,11 +91,8 @@ export class DialogTransactionComponent implements OnInit {
   private isWaitingConfirmation: boolean = false;
   private isRejectConfirmation: boolean = false;
 
-  namaHead: any = [
-    { value: '12312213123', viewValue: 'Mamank Racing' },
-    { value: '12312213123', viewValue: 'Kakek Sugiono' },
-    { value: '12312213123', viewValue: 'Tatang Bengkel' }
-  ];
+  private nameHead: any = [];
+  private isHeadTeller: boolean = false;
 
 
   // Otorisasi Head Teller
@@ -104,23 +106,26 @@ export class DialogTransactionComponent implements OnInit {
     path: '/assets/lottie/reject.json'
   };
 
-  base64Image = 'assets/png/avatar.png';
-  base64Sign = 'assets/png/signature.png';
-  NAME_CUST = 'John Lennon';
+  private base64Image = 'assets/png/avatar.png';
+  private base64Sign = 'assets/png/signature.png';
+  private NAME_CUST = 'John Lennon';
+  private imageID;
 
   private serverUrl = 'http://localhost:1111/socket';
   private stompClient;
   private ls = new securels({ encodingType: 'aes' });
   private token = this.ls.get('token')
 
+  private headSelectTeller: any;
+  private animationItem: AnimationItem;
 
   @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
   @ViewChild('ngOtpInput', { static: true }) ngOtpInputRef: any;
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
-    private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer) {
+    private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone) {
     this.data = data.data;
-
+    this.TERMINAL = JSON.parse(this.ls.get('terminal'))
 
     let forms = new Array;
     for (const key in data.data) {
@@ -286,7 +291,6 @@ export class DialogTransactionComponent implements OnInit {
 
   prosesQ() {
 
-
     let postStat = new Array;
     this.dataForm.forEach(e => {
       console.log(e.transid);
@@ -329,6 +333,7 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   transactionProcess(event) {
+
     console.log(event);
     let transId = event.TransaksiId.value
     let dataObj = this.findDataByTransactionId(transId, this.data)
@@ -371,6 +376,9 @@ export class DialogTransactionComponent implements OnInit {
           this.isNext = true;
           this.isCancelBtn = false;
           this.isSkipBtn = false;
+          this.stepDisabledHorizontal = true;
+          this.isCloseDialog = false;
+          // ========================================================================================================================
         }, 500)
       } else {
         console.log('gagal');
@@ -487,6 +495,9 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   done() {
+    this.stepDisabledHorizontal = false;
+    this.isHeadTeller = false
+
     if (this.dataSuccess.length === this.form.length) {
       console.log('suses di isi semua');
       this.isDoneBtn = true;
@@ -494,6 +505,8 @@ export class DialogTransactionComponent implements OnInit {
       console.log('masih belum');
     }
   }
+
+
 
   closeQDialog() {
     // this.dialogRef.close();
@@ -510,10 +523,26 @@ export class DialogTransactionComponent implements OnInit {
       this.queueServ.changeStatusTransactionQ(arr).subscribe(e => {
         console.log(e);
         if (e['successId0']) {
-          this.form.reset()
-          this.formGroup.reset()
-          this.queueServ.refreshQ('034').subscribe()
-          this.dialogRef.close();
+          if (localStorage.getItem('skip') !== null) {
+            var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+            this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
+              console.log(eco);
+              if (eco['successId0']) {
+                this.form.reset()
+                this.formGroup.reset()
+                this.queueServ.refreshQ(this.TERMINAL['branchCode']).subscribe()
+                localStorage.removeItem('skip')
+                this.dialogRef.close();
+              }
+
+            })
+          } else {
+            console.log('localstorage null');
+            this.form.reset()
+            this.formGroup.reset()
+            this.queueServ.refreshQ('034').subscribe()
+            this.dialogRef.close();
+          }
         } else {
           console.log('data tidak ada');
         }
@@ -552,7 +581,7 @@ export class DialogTransactionComponent implements OnInit {
 
   }
 
-  onOtpChange(event: any) {
+  onOtpChange(event: any, stepper: MatStepper) {
 
     if (event.length == 6) {
       console.log('cukup');
@@ -572,10 +601,12 @@ export class DialogTransactionComponent implements OnInit {
             this.base64Image = 'data:image/png;base64,' + e['imagepict']
             this.base64Sign = 'data:image/png;base64,' + e['imagesign']
             this.NAME_CUST = e['name']
+            this.imageID = e['imageid']
             this.images64()
-            this.initializeWebSocketConnection('vldnas')
+            this.sign64()
+            this.initializeWebSocketConnection('vldnas', stepper, null)
             this.transacServ.verifyFingerCust(e['imageid'], this.token).subscribe(eres => {
-              console.log(eres);
+              // console.log(eres);
             })
           })
         } else {
@@ -593,6 +624,12 @@ export class DialogTransactionComponent implements OnInit {
     }
   }
 
+  callFingerVerify() {
+    this.transacServ.verifyFingerCust(this.imageID, this.token).subscribe(eres => {
+      // console.log(eres);
+    })
+  }
+
   images64() {
     return this.sanitizer.bypassSecurityTrustResourceUrl(this.base64Image);
   }
@@ -600,18 +637,33 @@ export class DialogTransactionComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustResourceUrl(this.base64Sign);
   }
 
-  onFingerVerify(stepper: MatStepper) {
+  onFingerVerify(status, stepper: MatStepper) {
 
-
-    let finger = true
-
-    if (finger) {
+    if (status) {
       this.fingerMessage = 'Finger Valid'
       this.isFingerSuccess = true
       this.isFingerError = false
       $('#scan-finger').removeClass('blink')
       setTimeout(() => {
         stepper.next()
+        this.disconnect()
+        $('.otp-input').prop('readonly', false);
+        $('.otp-input').val('');
+        this.isPinMessageSuccess = false;
+        this.isPinMessageError = false;
+        this.isScanFinger = false;
+        this.isSwapCard = true;
+        this.isInputPin = false;
+        this.isCardNumber = false;
+        this.isFingerError = false;
+        this.isFingerSuccess = false;
+        this.transacServ.headTellerList('headteller', this.TERMINAL['branchCode']).subscribe(list => {
+          console.log(list);
+          if (list['success']) {
+            this.nameHead = list['record']
+          }
+          console.log(this.nameHead);
+        })
       }, 1000)
     } else {
       this.isFingerError = true
@@ -620,28 +672,71 @@ export class DialogTransactionComponent implements OnInit {
 
   }
 
-  initializeWebSocketConnection(socket) {
+  initializeWebSocketConnection(socket, stepper: MatStepper, drawer: MatDrawer) {
+
+    console.log(stepper);
+
     let ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(ws);
     let that = this;
-    this.stompClient.connect({ "testing": "testaja" }, function (frame) {
-      // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
 
-      that.stompClient.subscribe("/" + socket, (message) => {
-        if (message.body) {
-          return message.body;
-        }
+    switch (socket) {
+      case 'vldnas':
+        this.stompClient.connect({ "testing": "testaja" }, function (frame) {
+          // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
 
-      }, () => {
-        // that.dialog.errorDialog("Error", "Koneksi Terputus");
-        console.log("koneksi terputus");
+          that.stompClient.subscribe("/" + socket, (message) => {
+            if (message.body) {
 
-      });
-    }, err => {
-      console.log("gagal menghubungkan ke server ");
+              let parse = JSON.parse(message.body).success
 
-      // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
-    });
+              if (parse) {
+                that.onFingerVerify(parse, stepper)
+              }
+
+            }
+
+          }, () => {
+            // that.dialog.errorDialog("Error", "Koneksi Terputus");
+            console.log("koneksi terputus");
+
+          });
+        }, err => {
+          console.log("gagal menghubungkan ke server ");
+          // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
+        });
+        break;
+      case 'vldspv':
+        this.stompClient.connect({ "testing": "testaja" }, function (frame) {
+          // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
+
+          that.stompClient.subscribe("/" + socket, (message) => {
+            if (message.body) {
+
+              let parse = JSON.parse(message.body).success
+              console.log(parse);
+
+
+              if (parse) {
+                that.onFingerVerifyHead(parse, stepper, drawer)
+              }
+
+            }
+
+          }, () => {
+            // that.dialog.errorDialog("Error", "Koneksi Terputus");
+            console.log("koneksi terputus");
+
+          });
+        }, err => {
+          console.log("gagal menghubungkan ke server ");
+          // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
+        });
+        break;
+      default:
+        break;
+
+    }
   }
 
   disconnect() {
@@ -649,6 +744,7 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   onOtorisationFinger() {
+
   }
 
   openSideNav() {
@@ -656,9 +752,8 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   animationCreated(animationItem: AnimationItem): void {
-    // this.animationItem = animationItem;
-    console.log(animationItem);
-
+    this.animationItem = animationItem;
+    // console.log(animationItem);
   }
 
   close(reason: string) {
@@ -668,31 +763,80 @@ export class DialogTransactionComponent implements OnInit {
 
   onOtorisation(event, stepper: MatStepper, drawer: MatDrawer) {
     // console.log(event);
-
     switch (event) {
       case 'now':
         console.log('now');
-        setTimeout(() => {
-          drawer.toggle()
-          setTimeout(() => {
-            stepper.next()
-            this.isDisplayPrint = true;
-          }, 500)
-        }, 1000)
+        console.log(this.headSelectTeller);
+        this.initializeWebSocketConnection('vldspv', stepper, drawer)
+        this.transacServ.verifyFingerHead(this.headSelectTeller['username'], this.token).subscribe(e => {
+          console.log(e);
+        })
+        this.ngZone.runOutsideAngular(() => this.animationItem.play());
+        this.isHeadTeller = false
         break;
       case 'request':
         console.log('request');
         stepper.next()
+        this.isDisplayPrint = false;
         this.isWaitingConfirmation = true;
+        this.isRejectConfirmation = false;
+        this.stepDisabledHorizontal = false;
+        // this.isCloseDialog = true;
+        this.isHeadTeller = false
         break;
       case 'reject':
         console.log('reject');
+        this.isDisplayPrint = false;
+        this.isWaitingConfirmation = false;
         this.isRejectConfirmation = true;
+        this.stepDisabledHorizontal = false;
+        // this.isCloseDialog = true;
+        this.isHeadTeller = false
         stepper.next()
         break;
       default:
         break;
     }
+
+  }
+
+  onFingerVerifyHead(status, stepper: MatStepper, drawer: MatDrawer) {
+    this.ngZone.runOutsideAngular(() => this.animationItem.stop());
+    if (status) {
+      setTimeout(() => {
+        drawer.toggle()
+        setTimeout(() => {
+          stepper.next()
+          this.isDisplayPrint = true;
+          this.isWaitingConfirmation = false;
+          this.isRejectConfirmation = false;
+          this.stepDisabledHorizontal = false;
+          // this.isCloseDialog = true;
+          this.disconnect()
+        }, 500)
+      }, 1000)
+    } else {
+      console.log('silahkan coba lagi');
+
+    }
+
+  }
+
+  onSelectValueChangeHeadTeller(event) {
+
+    if (event !== null) {
+      this.isHeadTeller = true
+      this.headSelectTeller = event;
+    } else {
+      console.log('kosong');
+      this.isHeadTeller = false
+    }
+
+  }
+
+
+  configReady(event) {
+    console.log(event);
 
   }
 

@@ -6,7 +6,7 @@
     <li class="list-inline-item row justify-content-center">034 - Cabang Utama</li>
     <li class="list-inline-item row justify-content-end align-items-center">
       <!-- <P class="text">Maximize</P> -->
-      <i (click)="closeQDialog()" id="mini" class="fad fa-layer-minus fa-2x"></i>
+      <i *ngIf="isCloseDialog" (click)="closeQDialog()" id="mini" class="fad fa-layer-minus fa-2x"></i>
     </li>
   </ul>
 </div>
@@ -67,8 +67,8 @@
   <form [formGroup]="formGroup">
     <mat-horizontal-stepper formArrayName="form">
       <ng-container>
-        <mat-step [completed]="true" [formGroupName]="i"
-          *ngFor="let env of formGroup.controls.form.controls; let i = index">
+        <mat-step [aria-labelledby]="stepDisabledHorizontal ? 'disabled_Hori' : null" [completed]="true"
+          [formGroupName]="i" *ngFor="let env of formGroup.controls.form.controls; let i = index">
           <ng-container *ngFor="let a of env.controls | keyvalue">
             <ng-template *ngIf="a.key === 'Tipe'" matStepLabel>{{a.value.value }} </ng-template>
           </ng-container>
@@ -132,7 +132,7 @@
                       <div id="input-pin" class="card-body justify-content-center align-items-center d-flex">
                         <ng-otp-input id="inpfoc" *ngIf="isInputPin"
                           class="row d-flex align-items-center justify-content-center"
-                          (onInputChange)="onOtpChange($event)" [config]="config" #ngOtpInput>
+                          (onInputChange)="onOtpChange($event, stepper)" [config]="config" #ngOtpInput>
                         </ng-otp-input>
                       </div>
                       <div class="card-footer text-muted">
@@ -147,7 +147,7 @@
                   <div class="col-sm">
                     <div class="card">
                       <div id="scan-finger" class="card-body justify-content-center d-flex">
-                        <img (click)="onFingerVerify(stepper)" *ngIf="isScanFinger"
+                        <img (click)="callFingerVerify()" *ngIf="isScanFinger"
                           src="../../../assets/svgs/scan-finger-ic.svg" alt="">
                       </div>
                       <div class="card-footer text-muted">
@@ -186,9 +186,9 @@
                 <div class="d-flex justify-content-center">
                   <mat-form-field class="container-fluid col-sm-6">
                     <mat-label>Pilih Head Teller</mat-label>
-                    <mat-select>
-                      <mat-option *ngFor="let nm of namaHead" [value]="nm.value">
-                        {{nm.viewValue}}
+                    <mat-select (selectionChange)="onSelectValueChangeHeadTeller($event.value)">
+                      <mat-option *ngFor="let nm of nameHead | keyvalue" [value]="nm.value">
+                        {{nm.value.firstname}} {{nm.value.lastname}}
                       </mat-option>
                     </mat-select>
                   </mat-form-field>
@@ -199,11 +199,13 @@
                       class="fad fa-trash-undo fa-3x"></i>
                     <p>Reject</p>
                   </mat-card>
-                  <mat-card (click)="onOtorisation('request', stepper)" align="center" class="m-2 btn-card"><i
-                      class="fad fa-user-shield fa-3x"></i>
+                  <mat-card *ngIf="isHeadTeller" (click)="onOtorisation('request', stepper)" align="center"
+                    class="m-2 btn-card">
+                    <i class="fad fa-user-shield fa-3x"></i>
                     <p>Req Otorisasi</p>
                   </mat-card>
-                  <mat-card (click)="drawer.toggle()" align="center" class="m-2 btn-card">
+                  <mat-card *ngIf="isHeadTeller" id="now-section" (click)="drawer.toggle()" align="center"
+                    class="m-2 btn-card">
                     <i class="fad fa-fingerprint fa-3x"></i>
                     <p>Override</p>
                   </mat-card>
@@ -211,10 +213,11 @@
 
                 <mat-drawer #drawer class="example-sidenav" mode="over" position="end">
                   <div class="container-fluid justify-content-end d-flex">
-                    <i class="fad fa-times fa-2x"></i>
+                    <i (click)="drawer.toggle()" class="fad fa-times fa-2x"></i>
 
                     <div class="container-fluid">
-                      <ng-lottie height="400px" [options]="options" (animationCreated)="animationCreated($event)">
+                      <ng-lottie height="400px" [options]="options" (configReady)="configReady()"
+                        (animationCreated)="animationCreated($event)">
                       </ng-lottie>
                       <div (click)="onOtorisation('now', stepper, drawer)" class="d-flex justify-content-center"><button
                           mat-button>Verifikasi Head
@@ -297,7 +300,7 @@
                 </div>
                 <div class="row justify-content-between">
                   <button mat-button (click)="print()" class="print-button">Print</button>
-                  <button mat-button class="print-button" matStepperNext>Next</button>
+                  <button mat-button (click)="done()" class="print-button" matStepperNext>Next</button>
                 </div>
                 <!-- <button (click)="done()" mat-button matStepperNext>Next</button> -->
               </div>
