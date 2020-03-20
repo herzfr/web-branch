@@ -20,7 +20,7 @@ declare var $: any;
 })
 export class TestComponent implements OnInit {
 
-  private serverUrl = 'http://localhost:1111/socket';
+  private serverUrl = 'https://10.62.10.28:8444/socket';
   private stompClient;
 
   @ViewChild('form', { static: false }) form: NgForm;
@@ -45,7 +45,8 @@ export class TestComponent implements OnInit {
 
   ngOnInit() {
 
-    this.initializeWebSocketConnection("vldnas");
+    this.initializeWebSocketConnection("vldspv/useridnya");
+    
 
   }
 
