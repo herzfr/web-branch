@@ -270,17 +270,24 @@ export class DashboardComponent implements OnInit {
 
         if (resBack[0].skip) {
           console.log('skip jalan');
-
           this.nextQueue()
+
+          // Get Local STORAGE
+          var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
 
           resBack.forEach(el => {
             delete el.skip
+            oldItems.push(el);
           });
 
-          this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
-            console.log(res);
-            this.queueServ.refreshQ(this.branchCode).subscribe()
-          })
+          localStorage.setItem('skip', JSON.stringify(oldItems));
+          console.log(JSON.stringify(oldItems));
+
+
+          // this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
+          //   console.log(res);
+          //   this.queueServ.refreshQ(this.branchCode).subscribe()
+          // })
 
         } else if (resBack[0].batal) {
           console.log('batal jalan');
@@ -303,7 +310,27 @@ export class DashboardComponent implements OnInit {
 
           this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
             console.log(res);
-            this.queueServ.refreshQ(this.branchCode).subscribe()
+            if (res['successId0']) {
+              if (localStorage.getItem('skip') !== null) {
+
+                var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+                this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
+                  console.log(eco);
+
+                  if (eco['successId0']) {
+                    this.queueServ.refreshQ(this.branchCode).subscribe()
+                    localStorage.removeItem('skip')
+                  } else {
+                    this.queueServ.refreshQ(this.branchCode).subscribe()
+                  }
+
+                })
+
+              } else {
+                this.queueServ.refreshQ(this.branchCode).subscribe()
+              }
+            }
+
           })
         }
       }

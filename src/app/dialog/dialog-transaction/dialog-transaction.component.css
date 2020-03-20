@@ -137,6 +137,11 @@ input[type="text"]:focus {
   cursor: not-allowed;
 }
 
+::ng-deep .mat-step-header[aria-labelledby="disabled_Hori"] {
+  pointer-events: none !important;
+  cursor: not-allowed;
+}
+
 .alert-danger {
   font-size: 30px;
 }
