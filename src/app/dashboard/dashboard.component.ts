@@ -197,6 +197,22 @@ export class DashboardComponent implements OnInit {
             this.transactionDialog(res['record'])
           } else {
             console.log('data tidak ada');
+
+            if (localStorage.getItem('skip') !== null) {
+
+              var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+              this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
+                console.log(eco);
+
+                if (eco['successId0']) {
+                  this.queueServ.refreshQ(this.branchCode).subscribe()
+                  localStorage.removeItem('skip')
+                } else {
+                  this.queueServ.refreshQ(this.branchCode).subscribe()
+                }
+
+              })
+            }
           }
         })
 
