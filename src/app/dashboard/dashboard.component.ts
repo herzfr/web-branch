@@ -197,6 +197,22 @@ export class DashboardComponent implements OnInit {
             this.transactionDialog(res['record'])
           } else {
             console.log('data tidak ada');
+
+            if (localStorage.getItem('skip') !== null) {
+
+              var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+              this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
+                console.log(eco);
+
+                if (eco['successId0']) {
+                  this.queueServ.refreshQ(this.branchCode).subscribe()
+                  localStorage.removeItem('skip')
+                } else {
+                  this.queueServ.refreshQ(this.branchCode).subscribe()
+                }
+
+              })
+            }
           }
         })
 
@@ -205,6 +221,25 @@ export class DashboardComponent implements OnInit {
       }
 
     })
+
+
+
+    // function disableF5(e) { if ((e.which || e.keyCode) == 116) e.preventDefault(); };
+    // $(document).on("keydown", disableF5);
+
+    // window.history.pushState(null, null, document.URL);
+
+
+    // simply visual, let's you know when the correct iframe is selected
+    // $(window).on("focus", function (e) {
+    //   $("html, body").css({ background: "#FFF", color: "#000" })
+    //     .find("h2").html("THIS BOX NOW HAS FOCUS<br />F5 should not work.");
+    // })
+    //   .on("blur", function (e) {
+    //     $("html, body").css({ background: "", color: "" })
+    //       .find("h2").html("CLICK HERE TO GIVE THIS BOX FOCUS BEFORE PRESSING F5");
+    //   });
+
 
   }
 
@@ -244,44 +279,81 @@ export class DashboardComponent implements OnInit {
     this.dlg.open(DialogTransactionComponent, dialogConfig).afterClosed().subscribe(resBack => {
       console.log(resBack);
 
-      if (resBack[0].skip) {
-        console.log('skip jalan');
+      if (resBack === undefined) {
+        console.log('data tidak ada');
 
-        this.nextQueue()
+      } else {
 
-        resBack.forEach(el => {
-          delete el.skip
-        });
+        if (resBack[0].skip) {
+          console.log('skip jalan');
+          this.nextQueue()
 
-        this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
-          console.log(res);
-          this.queueServ.refreshQ(this.branchCode).subscribe()
-        })
+          // Get Local STORAGE
+          var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
 
-      } else if (resBack[0].batal) {
-        console.log('batal jalan');
+          resBack.forEach(el => {
+            delete el.skip
+            oldItems.push(el);
+          });
 
-        resBack.forEach(el => {
-          delete el.batal
-        });
+          localStorage.setItem('skip', JSON.stringify(oldItems));
+          console.log(JSON.stringify(oldItems));
 
-        this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
-          console.log(res);
-          this.queueServ.refreshQ(this.branchCode).subscribe()
-        })
 
-      } else if (resBack[0].proses) {
-        console.log('proses jalan');
+          // this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
+          //   console.log(res);
+          //   this.queueServ.refreshQ(this.branchCode).subscribe()
+          // })
 
-        resBack.forEach(el => {
-          delete el.proses
-        });
+        } else if (resBack[0].batal) {
+          console.log('batal jalan');
 
-        this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
-          console.log(res);
-          this.queueServ.refreshQ(this.branchCode).subscribe()
-        })
+          resBack.forEach(el => {
+            delete el.batal
+          });
+
+          this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
+            console.log(res);
+            this.queueServ.refreshQ(this.branchCode).subscribe()
+          })
+
+        } else if (resBack[0].proses) {
+          console.log('proses jalan');
+
+          resBack.forEach(el => {
+            delete el.proses
+          });
+
+          this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
+            console.log(res);
+            if (res['successId0']) {
+              if (localStorage.getItem('skip') !== null) {
+
+                var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+                this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
+                  console.log(eco);
+
+                  if (eco['successId0']) {
+                    this.queueServ.refreshQ(this.branchCode).subscribe()
+                    localStorage.removeItem('skip')
+                  } else {
+                    this.queueServ.refreshQ(this.branchCode).subscribe()
+                  }
+
+                })
+
+              } else {
+                this.queueServ.refreshQ(this.branchCode).subscribe()
+              }
+            }
+
+          })
+        }
       }
+
+
+
+
 
     })
 

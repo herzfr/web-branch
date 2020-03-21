@@ -20,7 +20,7 @@ declare var $: any;
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  private serverUrl = 'https://192.168.56.1:8444/socket'
+  private serverUrl = 'https://10.62.10.28:8444/socket'
   private stompClient;
 
   ls = new securels({ encodingType: 'aes' });
@@ -144,11 +144,14 @@ export class LoginComponent implements OnInit, OnDestroy {
           const body = JSON.parse(message.body);
           that.secureLs.set("data", JSON.stringify(body.record));
           that.secureLs.set("termdata", JSON.stringify(body.userterminal));
+          that.secureLs.set("token", body.token);
           if (body.success) {
             $('#verify').modal('hide')
             $('.container-fluid').removeClass('modalBlur');
             that.router.navigate(['/home']);
             that.stompClient.disconnect();
+            // console.log(body.token);
+
           }
         }
 

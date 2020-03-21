@@ -6,6 +6,8 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { Page404Component } from './page404/page404.component';
 import { AuthGuard } from './services/auth.guard';
+import { TestComponent } from './test/test.component';
+import { CanDeactivateGuard } from './utility/can-deactivate/can-deactivate.guard';
 
 const routes: Routes = [
   {
@@ -23,6 +25,9 @@ const routes: Routes = [
     path: 'account', component: HomeComponent,
     canActivate: [AuthGuard],
     loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
+  },
+  {
+    path: 'test', component: TestComponent
   },
   {
     path: '404', component: Page404Component,
