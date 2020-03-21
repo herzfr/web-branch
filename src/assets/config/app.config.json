@@ -1,5 +1,5 @@
 {
-  "ipServer": "https://192.168.43.91:8443/",
-  "ipSocketServer": "https://192.168.43.91:8444/",
+  "ipServer": "https://localhost:8443/",
+  "ipSocketServer": "https://localhost:8444/",
   "requestTimeout": 30000
 }
