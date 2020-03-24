@@ -929,7 +929,7 @@ export class DialogTransactionComponent implements OnInit {
 
 
 
-        this.initializeWebSocketConnection2('vldspv' + user, stepper, drawer);
+        this.initializeWebSocketConnection2('vldspv' + this.dataFormHeadValidation.transid, stepper, drawer);
 
 
 
