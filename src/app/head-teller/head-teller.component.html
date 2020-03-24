@@ -1,0 +1,71 @@
+<div class="row">
+  <div class="col-12 col-md-8">
+    <h1 class="display-4">Confirmasi Otorisasi Request</h1>
+  </div>
+  <div class="col-6 col-md-4 d-flex align-items-center justify-content-end">
+    <div class="input-search ml-3 mr-3">
+      <input id="search" type="text" placeholder="Search . . ." required>
+      <!-- <input matInput (keyup)="applyFilter($event)" id="search" type="text" placeholder="Search . . ." required> -->
+    </div>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="col-12 col-md-8">
+    <p class="h3">Daftar Transaksi</p>
+  </div>
+  <div class="col-6 col-md-4 d-flex align-items-center justify-content-end">
+    <button class="btn-queue">Antrian Berikutnya</button>
+    <!-- <button (click)="nextQueue()" class="btn-queue">Antrian Berikutnya</button> -->
+  </div>
+</div>
+
+<div class="example-container mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource">
+
+    <!-- Position Column -->
+    <ng-container matColumnDef="teller">
+      <th mat-header-cell *matHeaderCellDef> Teller Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.userterminal}} </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="time">
+      <th mat-header-cell *matHeaderCellDef> Waktu </th>
+      <td mat-cell *matCellDef="let element"> {{element.timeStampValidation}} </td>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="term">
+      <th mat-header-cell *matHeaderCellDef> Terminal Id </th>
+      <td mat-cell *matCellDef="let element"> {{element.terminalid}} </td>
+    </ng-container>
+
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="detail">
+      <th mat-header-cell *matHeaderCellDef> Details </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-button (click)="MainFunction(element, '1')"><i
+            class="fad fa-info-circle fa-2x text-info"></i></button>
+        <button mat-button (click)="MainFunction(element, '2')"><i
+            class="fad fa-times-circle fa-2x text-danger"></i></button>
+        <button mat-button (click)="MainFunction(element, '3')"><i
+            class="fad fa-check-circle fa-2x text-success"></i></button>
+      </td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <!-- <ng-container matColumnDef="detail">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell class="d-flex justify-content-end" *matCellDef="let element">
+        <button mat-button (click)="showDetails(element)">DETAILS</button>
+        <button mat-button (click)="editItem(element)">EDIT</button>
+        <button mat-button (click)="deleteItem(element)">DELETE</button>
+      </mat-cell>
+    </ng-container> -->
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
