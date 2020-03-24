@@ -44,11 +44,7 @@ export class HeadTellerComponent implements OnInit {
 
           console.log(el.timeStampValidation);
           var s = moment.utc(el.timeStampValidation).format("DD/MM/YYYY HH:mm:ss");
-
-          let a = moment(el.timeStampValidation).format("DD MMM YYYY hh:mm a")
           el.timeStampValidation = moment.utc(el.timeStampValidation).format("DD/MM/YY HH:mm:ss")
-
-
 
           arr.push(el);
         }

@@ -14,6 +14,7 @@ import * as securels from 'secure-ls';
 
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import { AppConfiguration } from 'src/app/models/app.configuration';
 
 
 
@@ -113,7 +114,10 @@ export class DialogTransactionComponent implements OnInit {
   private imageID;
 
   private serverUrl = 'http://localhost:1111/socket';
+  private serverUrlSocket;
   private stompClient;
+  private stompClientSocket;
+
   private ls = new securels({ encodingType: 'aes' });
   private token = this.ls.get('token')
 
@@ -124,9 +128,11 @@ export class DialogTransactionComponent implements OnInit {
   @ViewChild('ngOtpInput', { static: true }) ngOtpInputRef: any;
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
-    private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone) {
+    private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone, private appConfig: AppConfiguration) {
     this.data = data.data;
     this.TERMINAL = JSON.parse(this.ls.get('terminal'))
+
+    this.serverUrlSocket = this.appConfig.ipSocketServer;
 
     let forms = new Array;
     for (const key in data.data) {
@@ -762,6 +768,8 @@ export class DialogTransactionComponent implements OnInit {
         });
         break;
       case 'vldspv':
+        console.log("runing validation supervisor");
+
         this.stompClient.connect({}, function (frame) {
           // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
 
@@ -798,6 +806,47 @@ export class DialogTransactionComponent implements OnInit {
         break;
 
     }
+  }
+
+  initializeWebSocketConnection2(socket, stepper: MatStepper, drawer: MatDrawer) {
+
+    console.log(stepper);
+    console.log(this.serverUrlSocket);
+
+
+    let ws = new SockJS(this.serverUrlSocket + "socket");
+    this.stompClientSocket = Stomp.over(ws);
+    let that = this;
+
+
+    this.stompClientSocket.connect({}, function (frame) {
+      // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
+
+      that.stompClientSocket.subscribe("/" + socket, (message) => {
+        if (message.body) {
+
+          let parse = JSON.parse(message.body).success
+
+          if (parse) {
+            that.onFingerVerify(parse, stepper)
+          }
+
+        }
+
+      }, () => {
+        // that.dialog.errorDialog("Error", "Koneksi Terputus");
+
+        console.log("koneksi terputus");
+        console.log("Koneksi Ulang");
+
+
+      });
+    }, err => {
+      console.log("gagal menghubungkan ke server ");
+      console.log("Menghubungkan Ulang");
+
+    });
+
   }
 
   disconnect() {
@@ -844,21 +893,26 @@ export class DialogTransactionComponent implements OnInit {
         // this.isCloseDialog = true;
         this.isHeadTeller = false
 
-        this.dataFormHeadValidation.userterminal = this.ls.get('termdata').replace(/"/g, '');
         this.dataFormHeadValidation.status = 999;
 
         if (this.dataFormHeadValidation.trntype === 'Tarik Tunai') {
           this.dataFormHeadValidation.trntype = 'trk'
         } else if (this.dataFormHeadValidation.trntype === 'Setor Tunai') {
-          this.dataFormHeadValidation.trntype  = 'str'
+          this.dataFormHeadValidation.trntype = 'str'
         } else if (this.dataFormHeadValidation.trntype === 'Transaksi Antar Rekening') {
-          this.dataFormHeadValidation.trntype  = 'tar'
+          this.dataFormHeadValidation.trntype = 'tar'
         } else if (this.dataFormHeadValidation.trntype === 'Transaksi Antar Bank') {
-          this.dataFormHeadValidation.trntype  = 'tab'
+          this.dataFormHeadValidation.trntype = 'tab'
         }
 
+        this.dataFormHeadValidation.isRejected = 0
+        this.dataFormHeadValidation.isValidated = 0
         console.log("selected Teller : ", this.headSelectTeller);
         console.log("data form : ", this.dataFormHeadValidation);
+
+        console.log("user terminal : ", JSON.parse(this.ls.get('data')).userterminal);
+
+        this.dataFormHeadValidation.userterminal = JSON.parse(this.ls.get('data')).userterminal;
 
 
         let terminalData = this.ls.get('termdata');
@@ -873,6 +927,9 @@ export class DialogTransactionComponent implements OnInit {
 
         })
 
+
+
+        this.initializeWebSocketConnection2('vldspv' + this.dataFormHeadValidation.transid, stepper, drawer);
 
 
 
@@ -911,7 +968,6 @@ export class DialogTransactionComponent implements OnInit {
       }, 1000)
     } else {
       console.log('silahkan coba lagi');
-
     }
 
   }
