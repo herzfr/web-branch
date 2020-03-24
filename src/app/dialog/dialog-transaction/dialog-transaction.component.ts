@@ -335,6 +335,19 @@ export class DialogTransactionComponent implements OnInit {
   transactionProcess(event) {
 
     console.log(event);
+
+    const accountNumber = event.Dari.value;
+
+    if (accountNumber === 1001000002) {
+      this.cardNum = 1234567890000001;
+    } else if (accountNumber === 1001000003) {
+      this.cardNum = 1234567890000003;
+    } else {
+      this.cardNum = 1234567890123456;
+    }
+    console.log("card number : ", this.cardNum);
+
+
     let transId = event.TransaksiId.value
     let dataObj = this.findDataByTransactionId(transId, this.data)
     // let terminal = JSON.parse(localStorage.getItem('terminal'))
@@ -597,7 +610,7 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   onSwapCard() {
-    this.cardNum = 1234567890000003;
+    // this.cardNum = 1234567890000003;
 
     if (this.cardNum !== null) {
       this.isInputPin = true
@@ -613,6 +626,8 @@ export class DialogTransactionComponent implements OnInit {
       console.log('cukup');
       $('.otp-input').blur();
       $('.otp-input').prop('readonly', true);
+      console.log("car number yang dikirim : " + this.cardNum);
+
       this.transacServ.verifyCard(this.cardNum, event).subscribe(res => {
         console.log(res);
         if (res['success']) {
@@ -708,7 +723,7 @@ export class DialogTransactionComponent implements OnInit {
 
     switch (socket) {
       case 'vldnas':
-        this.stompClient.connect({ "testing": "testaja" }, function (frame) {
+        this.stompClient.connect({}, function (frame) {
           // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
 
           that.stompClient.subscribe("/" + socket, (message) => {
@@ -724,11 +739,22 @@ export class DialogTransactionComponent implements OnInit {
 
           }, () => {
             // that.dialog.errorDialog("Error", "Koneksi Terputus");
+          
             console.log("koneksi terputus");
+            console.log("Koneksi Ulang");
+            setTimeout(() => {
+              that.initializeWebSocketConnection(socket, stepper, drawer);
+            }, 1000);
 
           });
         }, err => {
           console.log("gagal menghubungkan ke server ");
+          console.log("Menghubungkan Ulang");
+          
+
+          setTimeout(() => {
+            that.initializeWebSocketConnection(socket, stepper, drawer);
+          }, 1000);
           // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
         });
         break;
@@ -751,7 +777,13 @@ export class DialogTransactionComponent implements OnInit {
 
           }, () => {
             // that.dialog.errorDialog("Error", "Koneksi Terputus");
+           
             console.log("koneksi terputus");
+            console.log("Koneksi Ulang");
+            
+            setTimeout(() => {
+              that.initializeWebSocketConnection(socket, stepper, drawer);
+            }, 1000);
 
           });
         }, err => {
@@ -793,7 +825,7 @@ export class DialogTransactionComponent implements OnInit {
       case 'now':
         console.log('now');
         console.log(this.headSelectTeller);
-        this.initializeWebSocketConnection('vldspv', stepper, drawer)
+        this.initializeWebSocketConnection('vldspv', stepper, drawer);
         this.transacServ.verifyFingerHead(this.headSelectTeller['username'], this.token).subscribe(e => {
           console.log(e);
         })

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { NavItem } from '../models/nav-item';
 import * as moment from 'moment';
 
@@ -8,6 +8,9 @@ import { WebsocketService } from '../services/websocket.service';
 import { DataBranchServices } from '../services/data-branch.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { UserService } from '../services/user.service';
+import { SharedService } from '../services/shared.service';
+import { MatSidenav } from '@angular/material';
 
 declare var $: any;
 
@@ -28,6 +31,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   private firstName = "";
   private lastName = "";
 
+  isMenuVisible: boolean = true;
+
   private branchSub: Subscription;
 
   secureLs = new securels({ encodingType: 'aes' });
@@ -38,6 +43,12 @@ export class HomeComponent implements OnInit, OnDestroy {
       displayName: 'Financial Retail',
       iconName: 'financial-retail.svg',
       children: [
+        {
+          displayName: 'Teller DashBoard',
+          iconName: 'chevron_right',
+          route: "/teller",
+          children: []
+        },
         {
           displayName: 'Pembayaran dari Teller Lain',
           iconName: 'chevron_right',
@@ -125,9 +136,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   ];
 
+  @ViewChild('drawer', { static: false }) public drawer: MatSidenav;
 
-  constructor(private dialog: DialogService, private websocket: WebsocketService, private branchService: DataBranchServices, 
-    private route : Router) {
+
+  constructor(private dialog: DialogService, private websocket: WebsocketService, private branchService: DataBranchServices,
+    private route: Router, private userService: UserService, private sharedService: SharedService) {
     this.setInfoNavbar();
   }
 
@@ -138,6 +151,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       });
     });
     this.userVoid();
+
+    let dataRoles: any = this.userService.getUserRoles();
+    console.log("isi roles ", dataRoles);
+
+    this.sharedService.isVisibleSource.subscribe((isVisible: boolean) => {
+      this.isMenuVisible = isVisible;
+      if (this.isMenuVisible === false) {
+        this.drawer.close();
+      }
+    });
+
+
   }
 
   // get user data 

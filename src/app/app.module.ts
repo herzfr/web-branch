@@ -30,6 +30,7 @@ import { TestComponent } from './test/test.component';
 import { TestService } from './test/test.service';
 import { NgOtpInputModule } from 'ng-otp-input';
 import { TransactionService } from './services/transaction.service';
+import { SharedService } from './services/shared.service';
 // import { CurrencySetting } from './config/currency-setting';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
@@ -69,7 +70,8 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
   ],
   providers: [
-    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService, TestService, TransactionService,
+    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService,
+    TestService, TransactionService, SharedService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],
