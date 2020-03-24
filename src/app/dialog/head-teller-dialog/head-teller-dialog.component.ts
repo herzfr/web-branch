@@ -12,14 +12,15 @@ export class HeadTellerDialogComponent implements OnInit {
   private id: number;
 
   constructor(private dialogRef: MatDialogRef<HeadTellerDialogComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog) {
-    this.data = data.message
     this.id = data.id
-
-    console.log(data.message);
-
+    this.data = data.message;
   }
 
   ngOnInit() {
+  }
+
+  closeInfo() {
+    this.dialogRef.close()
   }
 
 }
