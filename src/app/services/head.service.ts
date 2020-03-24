@@ -23,7 +23,7 @@ export class HeadService {
   };
 
   constructor(private appConfiguration: AppConfiguration, private http: HttpClient) {
-    this.apiUrl = this.appConfiguration.ipServer;
+    this.apiUrl = this.appConfiguration.ipSocketServer;
     this.apiSocket = this.appConfiguration.ipSocketServer;
     console.log(this.ls.get('token'));
   }
@@ -37,6 +37,20 @@ export class HeadService {
 
     return this.http.get(this.apiUrl + 'api/wbheadvalidation/getnew?' + params, this.httpOptions)
   }
+
+  setState(stt, transId, reject, usr) {
+
+    // const params = new HttpParams()
+    //   .set('state', stt)
+    //   .set('transId', transId)
+    //   .set('rejectedstate', reject)
+    //   .set('user', usr)
+    console.log(this.apiUrl + 'api/wbheadvalidation/setstate?state=' + stt + '&transId=' + transId + '&rejectedstate=' + reject + '&user=' + usr);
+
+    return this.http.put(this.apiUrl + 'api/wbheadvalidation/setstate?state=' + stt + '&transId=' + transId + '&rejectedstate=' + reject + '&user=' + usr, this.httpOptions)
+  }
+
+
 
 
 

@@ -15,19 +15,17 @@ import { OtoTable } from '../models/otorisastion-table';
 })
 export class HeadTellerComponent implements OnInit {
 
-  displayedColumns = ['teller', 'time', 'term', 'detail'];
+  displayedColumns = ['teller', 'transacId', 'time', 'term', 'detail'];
   OtoTableData: any;
   dataSource = new MatTableDataSource<OtoTable>(this.OtoTableData);
-
+  userId: string;
 
 
   ls = new SecureLS({ encodingType: 'aes' });
 
   constructor(public dialog: MatDialog, private headServ: HeadService) {
-
-    let user = this.ls.get('token')
-    console.log(user);
-
+    let user = JSON.parse(this.ls.get('data'));
+    this.userId = user['userid']
 
   }
 
@@ -45,14 +43,8 @@ export class HeadTellerComponent implements OnInit {
           const el = e[key];
 
           // change time
-          var d = new Date();
-          d.setMilliseconds(el.timeStampValidation);
-          el.timeStampValidation = d.getMilliseconds();
-
-
-
-
-
+          var d = new Date(el.timeStampValidation);
+          el.timeStampValidation = moment(d).format('LTS')
 
           arr.push(el);
         }
@@ -65,13 +57,13 @@ export class HeadTellerComponent implements OnInit {
   }
 
   MainFunction(event, num: string) {
-    console.log(event, num);
+    console.log(JSON.parse(event['transbuff']), num);
 
 
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
       id: parseInt(num),
-      message: event,
+      message: JSON.parse(event['transbuff']),
     }
     dialogConfig.backdropClass = 'backdropBackground';
     dialogConfig.disableClose = true;
@@ -85,12 +77,17 @@ export class HeadTellerComponent implements OnInit {
         break;
       case '2':
         console.log('reject');
-        this.dialog.open(HeadTellerDialogComponent, dialogConfig)
+
+        this.headServ.setState(1, event['transid'], 1, this.userId).subscribe(res => {
+          console.log(res);
+
+        })
+        // this.dialog.open(HeadTellerDialogComponent, dialogConfig)
 
         break;
       case '3':
         console.log('confirm');
-        this.dialog.open(HeadTellerDialogComponent, dialogConfig)
+        // this.dialog.open(HeadTellerDialogComponent, dialogConfig)
         break;
       default:
         break;
