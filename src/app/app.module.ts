@@ -31,6 +31,8 @@ import { TestService } from './test/test.service';
 import { NgOtpInputModule } from 'ng-otp-input';
 import { TransactionService } from './services/transaction.service';
 import { SharedService } from './services/shared.service';
+import { HeadTellerDialogComponent } from './dialog/head-teller-dialog/head-teller-dialog.component';
+import { HeadService } from './services/head.service';
 // import { CurrencySetting } from './config/currency-setting';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
@@ -50,9 +52,10 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     DialogErrorComponent,
     DialogTransactionComponent,
     TestComponent,
+    HeadTellerDialogComponent,
 
   ],
-  entryComponents: [DialogErrorComponent, DialogTransactionComponent],
+  entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -71,7 +74,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   ],
   providers: [
     CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService,
-    TestService, TransactionService, SharedService,
+    TestService, TransactionService, SharedService, HeadService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],
