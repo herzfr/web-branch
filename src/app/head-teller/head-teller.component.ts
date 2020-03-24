@@ -42,9 +42,13 @@ export class HeadTellerComponent implements OnInit {
         if (e.hasOwnProperty(key)) {
           const el = e[key];
 
-          // change time
-          var d = new Date(el.timeStampValidation);
-          el.timeStampValidation = moment(d).format('LTS')
+          console.log(el.timeStampValidation);
+          var s = moment.utc(el.timeStampValidation).format("DD/MM/YYYY HH:mm:ss");
+
+          let a = moment(el.timeStampValidation).format("DD MMM YYYY hh:mm a")
+          el.timeStampValidation = moment.utc(el.timeStampValidation).format("DD/MM/YY HH:mm:ss")
+
+
 
           arr.push(el);
         }

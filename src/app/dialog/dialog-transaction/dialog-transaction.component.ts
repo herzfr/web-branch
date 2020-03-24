@@ -51,8 +51,9 @@ export class DialogTransactionComponent implements OnInit {
   private stepDisabled: boolean = true;
   private stepDisabledHorizontal: boolean = false;
 
-  private isCloseDialog: boolean = true;
+  private dataFormHeadValidation: any;
 
+  private isCloseDialog: boolean = true;
 
   private secureLs = new SecureLS({ encodingType: 'aes' });
   private config = {
@@ -377,6 +378,8 @@ export class DialogTransactionComponent implements OnInit {
     }
 
     console.log(dataProsesApi);
+
+    this.dataFormHeadValidation = dataProsesApi;
     this.queueServ.processTransactionDataQ(dataProsesApi).subscribe(res => {
       console.log(res);
       if (res['success']) {
@@ -739,7 +742,7 @@ export class DialogTransactionComponent implements OnInit {
 
           }, () => {
             // that.dialog.errorDialog("Error", "Koneksi Terputus");
-          
+
             console.log("koneksi terputus");
             console.log("Koneksi Ulang");
             setTimeout(() => {
@@ -750,7 +753,7 @@ export class DialogTransactionComponent implements OnInit {
         }, err => {
           console.log("gagal menghubungkan ke server ");
           console.log("Menghubungkan Ulang");
-          
+
 
           setTimeout(() => {
             that.initializeWebSocketConnection(socket, stepper, drawer);
@@ -759,7 +762,7 @@ export class DialogTransactionComponent implements OnInit {
         });
         break;
       case 'vldspv':
-        this.stompClient.connect({ "testing": "testaja" }, function (frame) {
+        this.stompClient.connect({}, function (frame) {
           // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
 
           that.stompClient.subscribe("/" + socket, (message) => {
@@ -777,10 +780,10 @@ export class DialogTransactionComponent implements OnInit {
 
           }, () => {
             // that.dialog.errorDialog("Error", "Koneksi Terputus");
-           
+
             console.log("koneksi terputus");
             console.log("Koneksi Ulang");
-            
+
             setTimeout(() => {
               that.initializeWebSocketConnection(socket, stepper, drawer);
             }, 1000);
@@ -801,8 +804,7 @@ export class DialogTransactionComponent implements OnInit {
     this.stompClient.disconnect();
   }
 
-  onOtorisationFinger() {
-
+  onOtorisationFinger(request, stepper) {
   }
 
   openSideNav() {
@@ -841,6 +843,40 @@ export class DialogTransactionComponent implements OnInit {
         this.stepDisabledHorizontal = false;
         // this.isCloseDialog = true;
         this.isHeadTeller = false
+
+        this.dataFormHeadValidation.userterminal = this.ls.get('termdata').replace(/"/g, '');
+        this.dataFormHeadValidation.status = 999;
+
+        if (this.dataFormHeadValidation.trntype === 'Tarik Tunai') {
+          this.dataFormHeadValidation.trntype = 'trk'
+        } else if (this.dataFormHeadValidation.trntype === 'Setor Tunai') {
+          this.dataFormHeadValidation.trntype  = 'str'
+        } else if (this.dataFormHeadValidation.trntype === 'Transaksi Antar Rekening') {
+          this.dataFormHeadValidation.trntype  = 'tar'
+        } else if (this.dataFormHeadValidation.trntype === 'Transaksi Antar Bank') {
+          this.dataFormHeadValidation.trntype  = 'tab'
+        }
+
+        console.log("selected Teller : ", this.headSelectTeller);
+        console.log("data form : ", this.dataFormHeadValidation);
+
+
+        let terminalData = this.ls.get('termdata');
+        let user = JSON.parse(this.ls.get('data')).userid;
+        console.log("terminal : ", terminalData);
+        console.log("username : ", user);
+
+
+
+        this.transacServ.sendRemoteValidation(this.dataFormHeadValidation, user).subscribe(resp => {
+          console.log(resp);
+
+        })
+
+
+
+
+
         break;
       case 'reject':
         console.log('reject');

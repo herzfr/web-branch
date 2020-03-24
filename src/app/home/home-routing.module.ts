@@ -4,7 +4,6 @@ import { DashboardComponent } from '../dashboard/dashboard.component';
 import { UserGuard } from '../services/guard/user.guard';
 import { HeadTellerComponent } from '../head-teller/head-teller.component';
 
-
 const routes: Routes = [
   {
     path: '',
