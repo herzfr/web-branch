@@ -143,7 +143,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         if (message.body) {
           const body = JSON.parse(message.body);
           that.secureLs.set("data", JSON.stringify(body.record));
-          that.secureLs.set("termdata", JSON.stringify(body.userterminal));
+          that.secureLs.set("termdata", JSON.stringify(body.record.userterminal));
           that.secureLs.set("token", body.token);
           if (body.success) {
             $('#verify').modal('hide')

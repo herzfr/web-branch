@@ -9,7 +9,7 @@ import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { Observable } from 'rxjs';
 import { FormCanDeactivate } from '../utility/form-can-deactivate/form-can-deactivate';
-
+import * as SecureLS from 'secure-ls';
 
 declare var $: any;
 
@@ -20,8 +20,10 @@ declare var $: any;
 })
 export class TestComponent implements OnInit {
 
-  private serverUrl = 'https://10.62.10.28:8444/socket';
+  private serverUrl = 'https://192.168.137.1:8444/socket';
   private stompClient;
+
+  ls = new SecureLS({ encodingType: 'aes' });
 
   @ViewChild('form', { static: false }) form: NgForm;
 
@@ -30,6 +32,8 @@ export class TestComponent implements OnInit {
 
   private name = new FormControl('');
   message: string;
+
+  userId: String;
 
   submit() {
     console.log(this.form.submitted);
@@ -41,12 +45,23 @@ export class TestComponent implements OnInit {
     var dateNow = btoa(moment(new Date()).format("DDMMYYYYDDMM"));
     var key = crypto.enc.Utf8.parse(dateNow);
     this.secretKey = key;
+
+    let user = JSON.parse(this.ls.get('data'));
+    this.userId = user.userid;
+
+    console.log("user", user);
+    console.log("user id ", this.userId);
+
+    
   }
 
   ngOnInit() {
 
-    this.initializeWebSocketConnection("vldspv/useridnya");
-    
+    console.log();
+
+    this.initializeWebSocketConnection("vldspv"+ this.userId);
+
+
 
   }
 

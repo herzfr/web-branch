@@ -67,11 +67,16 @@ export class TransactionService {
 
 
   verifyFingerHead(username, token) {
-
     const params = new HttpParams()
       .set('username', username)
       .set('token', token)
 
     return this.http.get('http://localhost:1111/api/wbservice/validatehead?' + params, this.httpOptions)
   }
+
+  sendRemoteValidation(validationValue, userId) {
+    return this.http.post(this.apiSocket + 'api/wbheadvalidation?user='+ userId, validationValue, this.httpOptions)
+  }
+
+
 }
