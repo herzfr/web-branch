@@ -1,3 +1,14 @@
+#mini {
+  color: #277793;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#mini:hover {
+  color: #b2dae9;
+}
+
+
 .mat-dialog-container {
   padding: 10px;
   width: 200px;
@@ -83,7 +94,7 @@ input[type="text"] {
   border: 1px solid #133764;
   box-sizing: border-box;
   border-radius: 20px;
-  /* outline: none; */
+  outline: none;
   padding-left: 10px;
   padding-right: 10px;
   transition: all 0.3s ease;
@@ -99,6 +110,7 @@ input[type="text"]:focus {
   border: 0px solid transparent;
   padding: 10px;
   width: 200px;
+  max-height: 60px;
   color: #fff;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
   border-radius: 50px;
@@ -107,13 +119,31 @@ input[type="text"]:focus {
 }
 
 ::ng-deep .mat-step-header .mat-step-icon-selected {
-  background-color: #3b4e76 !important;
+  background-color: #44baa7 !important;
   color: white !important;
 }
 
 ::ng-deep .mat-step-header .mat-step-icon-state-edit {
   background-color: #3b4e76 !important;
   color: white !important;
+}
+
+::ng-deep .mat-step-header .mat-step-icon-state-done {
+  background-color: green;
+}
+
+::ng-deep .mat-step-header[aria-labelledby="disabled_Resi"] {
+  pointer-events: none !important;
+  cursor: not-allowed;
+}
+
+::ng-deep .mat-step-header[aria-labelledby="disabled_Hori"] {
+  pointer-events: none !important;
+  cursor: not-allowed;
+}
+
+.alert-danger {
+  font-size: 30px;
 }
 
 .batal {
@@ -129,4 +159,205 @@ input[type="text"]:focus {
 .proses {
   background: linear-gradient(265.14deg, #007991 -4.48%, #2E5676 53.7%, #78ffd6 125.93%);
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
+}
+
+/* ======================================================================= */
+
+button.print-button {
+  width: 200px;
+  height: 40px;
+  outline: none;
+  position: relative;
+  padding: 0;
+  border: 0;
+  border: none;
+  background: linear-gradient(170.06deg, #2B5876 3.56%, #4E4376 96.21%);
+}
+
+span.print-icon,
+span.print-icon::before,
+span.print-icon::after,
+button.print-button:hover .print-icon::after {
+  border: solid 4px #333;
+}
+
+span.print-icon::after {
+  border-width: 2px;
+}
+
+/* button.print-button {
+  position: relative;
+  padding: 0;
+  border: 0;
+  border: none;
+} */
+
+/* 
+span.print-icon,
+span.print-icon::before,
+span.print-icon::after,
+button.print-button:hover .print-icon::after {
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+span.print-icon {
+  position: relative;
+  display: inline-block;
+  padding: 0;
+  margin-top: 20%;
+
+  width: 60%;
+  height: 35%;
+  background: #fff;
+  border-radius: 20% 20% 0 0;
+}
+
+span.print-icon::before {
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  left: 12%;
+  right: 12%;
+  height: 110%;
+
+  transition: height .2s .15s;
+}
+
+span.print-icon::after {
+  content: " ";
+  position: absolute;
+  top: 55%;
+  left: 12%;
+  right: 12%;
+  height: 0%;
+  background: #fff;
+  background-repeat: no-repeat;
+  background-size: 70% 90%;
+  background-position: center;
+  background-image: linear-gradient(to top,
+      #fff 0, #fff 14%,
+      #333 14%, #333 28%,
+      #fff 28%, #fff 42%,
+      #333 42%, #333 56%,
+      #fff 56%, #fff 70%,
+      #333 70%, #333 84%,
+      #fff 84%, #fff 100%);
+
+  transition: height .2s, border-width 0s .2s, width 0s .2s;
+}
+
+button.print-button:hover {
+  cursor: pointer;
+}
+
+button.print-button:hover .print-icon::before {
+  height: 0px;
+  transition: height .2s;
+}
+
+button.print-button:hover .print-icon::after {
+  height: 120%;
+  transition: height .2s .15s, border-width 0s .16s;
+} */
+
+.card {
+  min-height: 200px;
+  border: none;
+}
+
+.card-footer {
+  border: none;
+  background: none;
+}
+
+i.fad {
+  color: #234A7B;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+::ng-deep .wrapper {
+  border: 1px solid #234A7B;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+
+
+
+@keyframes blinker {
+  from {
+    opacity: 1.0;
+  }
+
+  to {
+    opacity: 0.0;
+  }
+}
+
+@-webkit-keyframes blinker {
+  from {
+    opacity: 1.0;
+  }
+
+  to {
+    opacity: 0.0;
+  }
+}
+
+.blink {
+  text-decoration: blink;
+  animation-name: blinker;
+  animation-duration: 0.6s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+  -webkit-animation-name: blinker;
+  -webkit-animation-duration: 0.6s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-direction: alternate;
+}
+
+.card-text {
+  min-height: 20px;
+}
+
+.btn-card {
+  cursor: pointer;
+  min-width: 120px;
+  transition: all 0.3s ease;
+}
+
+.btn-card:hover {
+  background: #b2dae9;
+}
+
+.btn-card:focus {
+  box-shadow: inset 4px 4px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 3px 0 rgba(0, 0, 0, .12);
+}
+
+/* 
+@media print {
+  #btn-print, {
+    display: none !important;
+  }
+
+  #btn-print, {
+    display: none !important;
+  }
+} */
+
+
+.example-sidenav-content {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.example-sidenav {
+  padding: 20px;
+  min-width: 400px;
 }

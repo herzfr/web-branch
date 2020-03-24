@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, APP_INITIALIZER, LOCALE_ID } from '@angular/core';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CryptoService } from './services/crypto.service';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -26,9 +26,11 @@ import { DialogTransactionComponent } from './dialog/dialog-transaction/dialog-t
 import { MatTableModule } from '@angular/material';
 import { WebsocketService } from './services/websocket.service';
 import { UtilityService } from './services/utility.service';
-import { NgxCurrencyModule } from 'ngx-currency';
-import { CurrencySetting } from './config/currency-setting';
- 
+import { TestComponent } from './test/test.component';
+import { TestService } from './test/test.service';
+import { NgOtpInputModule } from 'ng-otp-input';
+import { TransactionService } from './services/transaction.service';
+// import { CurrencySetting } from './config/currency-setting';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -46,6 +48,8 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     NavsComponent,
     DialogErrorComponent,
     DialogTransactionComponent,
+    TestComponent,
+
   ],
   entryComponents: [DialogErrorComponent, DialogTransactionComponent],
   imports: [
@@ -61,11 +65,11 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     NgxBootstrapModule,
     MaterialModule,
     MatTableModule,
-    NgxCurrencyModule.forRoot(CurrencySetting),
+    NgOtpInputModule,
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
   ],
   providers: [
-    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService,UtilityService,
+    CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService, TestService, TransactionService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],

@@ -1,15 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavItem } from '../models/nav-item';
 import * as moment from 'moment';
-declare var $: any;
-// declare var jQuery: any;
+
 import * as securels from 'secure-ls';
-import * as Stomp from 'stompjs';
-import * as SockJS from 'sockjs-client';
 import { DialogService } from '../services/dialog.service';
 import { WebsocketService } from '../services/websocket.service';
-import { AppConfiguration } from '../models/app.configuration';
-  
+import { DataBranchServices } from '../services/data-branch.service';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+
+declare var $: any;
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -19,9 +20,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private iPAdd;
   private lastLog;
+  private lastLoghour;
   private loginDate;
   private userName = "";
   private branchCode = "";
+  private branchDescript = "";
+  private firstName = "";
+  private lastName = "";
+
+  private branchSub: Subscription;
+
   secureLs = new securels({ encodingType: 'aes' });
 
   // version = VERSION;
@@ -110,7 +118,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         {
           displayName: 'User Table',
           iconName: 'chevron_right',
-          route:"/account",
+          route: "/account",
           children: []
         }
       ]
@@ -118,28 +126,51 @@ export class HomeComponent implements OnInit, OnDestroy {
   ];
 
 
-  constructor(private dialog: DialogService, private websocket: WebsocketService) {
+  constructor(private dialog: DialogService, private websocket: WebsocketService, private branchService: DataBranchServices, 
+    private route : Router) {
     this.setInfoNavbar();
   }
 
   ngOnInit() {
-
     $(document).ready(function () {
       $('#nav-icon').click(function () {
         $(this).toggleClass('open');
       });
     });
-
     this.userVoid();
   }
 
-
+  // get user data 
   userVoid() {
     const data = JSON.parse(this.secureLs.get("data"));
+
+    console.log(data);
+
+    this.branchSub = this.branchService.getBranchByCode(data.branchcode).subscribe(res => {
+      this.branchDescript = res['record'].description;
+    });
+
     this.userName = data.username;
     this.branchCode = data.branchcode;
+    this.firstName = data.firstname;
+    this.lastName = data.lastname;
+
+    const date = moment(data.lastlogindate).locale('ID').format('Do MMMM  YYYY')
+    console.log("raw : ", data.lastlogindate);
+
+    console.log("date :", date);
+
+    this.lastLog = data.lastlogindate
+    // this.lastLoghour = data.lastlogindate
+
+
     const socketDestination = "usr" + this.userName;
     this.websocket.initializeWebSocketConnection(socketDestination)
+    setTimeout(() => {
+      if (this.branchSub) {
+        this.branchSub.unsubscribe();
+      }
+    }, 2000);
   }
 
   setInfoNavbar() {
@@ -152,6 +183,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.websocket.disconnect();
+  }
+
+  logout() {
+    localStorage.removeItem('data');
+    localStorage.removeItem('termdata');
+    this.route.navigate(['/login']);
   }
 
 }

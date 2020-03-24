@@ -1,0 +1,22 @@
+<form class="example-form">
+  <mat-form-field class="example-full-width">
+    <mat-label>Test Encrypt </mat-label>
+    <input matInput placeholder="Input Plain Text" [formControl]="name">
+  </mat-form-field>
+
+</form>
+<button mat-raised-button color="primary" (click)="testing()">Primary</button>
+
+
+<div id="chatControls">
+  <form  #form="ngForm" (ngSubmit)="submit()">
+    <input id="message" placeholder="Type your message" [(ngModel)]="message" name="message">
+    <button id="send" type="submit">Send</button>
+  </form>
+</div>
+<ul id="userlist">
+  <!-- Built by JS -->
+</ul>
+<div id="chat">
+  <!-- Built by JS -->
+</div>

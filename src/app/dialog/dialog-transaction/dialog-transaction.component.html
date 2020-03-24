@@ -4,6 +4,10 @@
       <img id="logoQue" src="./assets/svgs/logo-blue.svg" alt="">
     </li>
     <li class="list-inline-item row justify-content-center">034 - Cabang Utama</li>
+    <li class="list-inline-item row justify-content-end align-items-center">
+      <!-- <P class="text">Maximize</P> -->
+      <i *ngIf="isCloseDialog" (click)="closeQDialog()" id="mini" class="fad fa-layer-minus fa-2x"></i>
+    </li>
   </ul>
 </div>
 <mat-dialog-content class="mat-typography">
@@ -33,11 +37,12 @@
       <p class="h6 ml-1 mr-1">Data Nasabah</p>
       <div class="container-fluid d-flex justify-content-between">
         <div class="col text-center">
-          <img src="../../../assets/png/avatar.png" alt="..." class="img-thumbnail rounded">
+          <!-- <img src="../../../assets/png/avatar.png" alt="..." class="img-thumbnail rounded"> -->
+          <img [src]="images64()" alt="..." class="img-thumbnail rounded">
           <p class="text-center font-weight-bold">Foto Nasabah</p>
         </div>
         <div class="col text-center">
-          <img src="../../../assets/png/signature.png" alt="..." class="img-thumbnail retangle">
+          <img [src]="sign64()" alt="..." class="img-thumbnail retangle">
           <p class="text-center font-weight-bold">Tanda Tangan Nasabah</p>
         </div>
       </div>
@@ -53,7 +58,7 @@
     <label class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama <span
         class="text-right">:</span></label>
     <div class="col-sm-10">
-      <input type="text" class="form-control-plaintext col-6" id="nameName" value="John Lennon">
+      <input type="text" class="form-control-plaintext col-6" id="nameName" [(ngModel)]="NAME_CUST">
     </div>
   </div>
 
@@ -62,25 +67,253 @@
   <form [formGroup]="formGroup">
     <mat-horizontal-stepper formArrayName="form">
       <ng-container>
-        <mat-step [formGroupName]="i" *ngFor="let env of formGroup.controls.form.controls; let i = index">
-          <ng-template matStepLabel>Transaction {{i + 1}}
-            <!-- <ng-container *ngFor="let a of env.controls | keyvalue"></ng-container> -->
-          </ng-template>
-          <!-- 
-          <mat-form-field *ngFor="let a of env.controls | keyvalue">
-            <input matInput placeholder="Address" formControlName="{{ a.key }}" required>
-          </mat-form-field> -->
+        <mat-step [aria-labelledby]="stepDisabledHorizontal ? 'disabled_Hori' : null" [completed]="true"
+          [formGroupName]="i" *ngFor="let env of formGroup.controls.form.controls; let i = index">
+          <ng-container *ngFor="let a of env.controls | keyvalue">
+            <ng-template *ngIf="a.key === 'Tipe'" matStepLabel>{{a.value.value }} </ng-template>
+          </ng-container>
 
-          <div *ngFor="let a of env.controls | keyvalue" class="form-group row">
-            <label
-              class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ a.key }}
-              <span class="text-right">:</span></label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control-plaintext col-6" formControlName="{{ a.key }}">
-            </div>
-          </div>
+          <mat-vertical-stepper [linear]="isLinear" #stepper>
 
-          <div>
+            <!-- STEP 1 -->
+            <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null" [stepControl]="1">
+              <ng-template matStepLabel>Cek Transaksi</ng-template>
+
+              <div *ngFor="let a of env.controls | keyvalue" class="form-group row">
+                <ng-container *ngIf="a.key ==='TransaksiId'">
+                  <label
+                    class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Transaksi
+                    Id
+                    <span class="text-right">:</span></label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control-plaintext col-6" formControlName="{{ a.key }}">
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="a.key !=='TransaksiId'">
+                  <label
+                    class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ a.key }}
+                    <span class="text-right">:</span></label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control-plaintext col-6" formControlName="{{ a.key }}">
+                  </div>
+                </ng-container>
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <button (click)="transactionCancel(i, env.controls)" mat-button>Batal</button>
+                <button (click)="transactionProcess(env.controls)" mat-button matStepperNext>Proses</button>
+              </div>
+            </mat-step>
+
+            <!-- STEP 2 -->
+            <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null" [stepControl]="2">
+              <ng-template matStepLabel>Otorisasi Transaksi Nasabah</ng-template>
+
+
+              <div class="container">
+                <div class="row mt-3 mb-5">
+                  <div class="col-sm">
+                    <div class="card">
+                      <div id="card-swap" class="card-body justify-content-center d-flex blink">
+                        <img (click)="onSwapCard()" src="assets/svgs/swip-card.svg" alt="">
+                      </div>
+                      <div class="card-footer text-muted">
+                        <p class="card-text text-center mb-0">Gesek Kartu Nasabah</p>
+                        <p
+                          class="card-text text-center text-info align-items-center d-flex justify-content-center font-italic">
+                          <span *ngIf="isCardNumber">{{ cardNum }}</span></p>
+                      </div>
+                    </div>
+                  </div>
+                  <i class="fad fa-chevron-right fa-4x align-items-center d-flex"></i>
+                  <div class="col-sm">
+                    <div class="card">
+                      <div id="input-pin" class="card-body justify-content-center align-items-center d-flex">
+                        <ng-otp-input id="inpfoc" *ngIf="isInputPin"
+                          class="row d-flex align-items-center justify-content-center"
+                          (onInputChange)="onOtpChange($event, stepper)" [config]="config" #ngOtpInput>
+                        </ng-otp-input>
+                      </div>
+                      <div class="card-footer text-muted">
+                        <p class="card-text text-center mb-0">Masukan PIN</p>
+                        <p class="card-text text-center align-items-center d-flex justify-content-center font-italic">
+                          <span class="text-danger" *ngIf="isPinMessageError">{{ pinMessage }}</span>
+                          <span class="text-info" *ngIf="isPinMessageSuccess">{{ pinMessage }}</span></p>
+                      </div>
+                    </div>
+                  </div>
+                  <i class="fad fa-chevron-right fa-4x align-items-center d-flex"></i>
+                  <div class="col-sm">
+                    <div class="card">
+                      <div id="scan-finger" class="card-body justify-content-center d-flex">
+                        <img (click)="callFingerVerify()" *ngIf="isScanFinger"
+                          src="../../../assets/svgs/scan-finger-ic.svg" alt="">
+                      </div>
+                      <div class="card-footer text-muted">
+                        <p class="card-text text-center mb-0">Scan Sidik Jari Nasabah</p>
+                        <p class="card-text text-center align-items-center d-flex justify-content-center font-italic">
+                          <span class="text-danger" *ngIf="isFingerError">{{ fingerMessage }}</span>
+                          <span class="text-info" *ngIf="isFingerSuccess">{{ fingerMessage }}</span></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <button mat-button matStepperNext>Next</button> -->
+            </mat-step>
+
+            <!-- STEP 3 -->
+            <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null" [stepControl]="3">
+              <ng-template matStepLabel>Otorisasi / Override Head Teller</ng-template>
+
+              <mat-drawer-container class="example-container" autosize>
+
+                <div class="container-fluid mb-3 mt-3">
+                  <img src="assets/svgs/logo-blue.svg" class="mb-3" alt="img-thumbnail">
+                  <p class="h6 text-center">Transaksi Otorisasi</p>
+                  <div *ngFor="let item of env.controls | keyvalue" class="form-group row mb-0">
+                    <label
+                      class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key }}
+                      :</label>
+                    <div class="col-sm-10">
+                      <label class="form-control-plaintext">{{ item.value.value }}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                  <mat-form-field class="container-fluid col-sm-6">
+                    <mat-label>Pilih Head Teller</mat-label>
+                    <mat-select (selectionChange)="onSelectValueChangeHeadTeller($event.value)">
+                      <mat-option *ngFor="let nm of nameHead | keyvalue" [value]="nm.value">
+                        {{nm.value.firstname}} {{nm.value.lastname}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                  <mat-card (click)="onOtorisation('reject', stepper)" align="center" class="m-2 btn-card"><i
+                      class="fad fa-trash-undo fa-3x"></i>
+                    <p>Reject</p>
+                  </mat-card>
+                  <mat-card *ngIf="isHeadTeller" (click)="onOtorisation('request', stepper)" align="center"
+                    class="m-2 btn-card">
+                    <i class="fad fa-user-shield fa-3x"></i>
+                    <p>Req Otorisasi</p>
+                  </mat-card>
+                  <mat-card *ngIf="isHeadTeller" id="now-section" (click)="drawer.toggle()" align="center"
+                    class="m-2 btn-card">
+                    <i class="fad fa-fingerprint fa-3x"></i>
+                    <p>Override</p>
+                  </mat-card>
+                </div>
+
+                <mat-drawer #drawer class="example-sidenav" mode="over" position="end">
+                  <div class="container-fluid justify-content-end d-flex">
+                    <i (click)="drawer.toggle()" class="fad fa-times fa-2x"></i>
+
+                    <div class="container-fluid">
+                      <ng-lottie height="400px" [options]="options" (configReady)="configReady()"
+                        (animationCreated)="animationCreated($event)">
+                      </ng-lottie>
+                      <div (click)="onOtorisation('now', stepper, drawer)" class="d-flex justify-content-center"><button
+                          mat-button>Verifikasi Head
+                          Teller</button></div>
+                    </div>
+                  </div>
+                </mat-drawer>
+
+              </mat-drawer-container>
+
+
+              <!-- <div *ngIf="isProsses" class="d-flex align-items-center" style="min-height: 100px;">
+                <p class="h2 mr-3">Data sedang diproses</p>
+                <div class="LoaderBalls">
+                  <div class="LoaderBalls__item"></div>
+                  <div class="LoaderBalls__item"></div>
+                  <div class="LoaderBalls__item"></div>
+                </div>
+              </div>
+
+              <div *ngIf="isSuccess" class="success-checkmark align-items-center d-flex">
+                <div class="check-icon">
+                  <span class="icon-line line-tip"></span>
+                  <span class="icon-line line-long"></span>
+                  <div class="icon-circle"></div>
+                  <div class="icon-fix"></div>
+                </div>
+                <p class="h2 m-0 ml-3 text-success">Transaksi Sukses</p>
+              </div>
+
+              <div *ngIf="isError" class="d-flex align-items-center" style="min-height: 100px;">
+                <div class="alert alert-danger mb-0" role="alert">
+                  <i class="fad fa-exclamation-triangle"></i> Data Error!
+                </div>
+              </div> -->
+
+              <!-- <div class="d-flex justify-content-end">
+                <button *ngIf="isBack" mat-button (click)="isDoor(1, 2, stepper)">Back</button>
+                <button *ngIf="isNext" mat-button (click)="isDoor(3, 2, stepper)">Next</button>
+              </div> -->
+            </mat-step>
+
+            <!-- STEP 4 -->
+            <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null" [stepControl]="4">
+              <ng-template matStepLabel>Hasil Transaksi</ng-template>
+
+              <div *ngIf="isRejectConfirmation"
+                class="container-fluid d-flex justify-content-start align-items-center mb-5 mt-5">
+                <p class="h6 text-center pr-5">Data telah di Reject</p>
+                <ng-lottie width="100px" height="100px" [options]="optionReject"
+                  (animationCreated)="animationCreated($event)">
+                </ng-lottie>
+              </div>
+
+              <div *ngIf="isWaitingConfirmation"
+                class="container-fluid d-flex justify-content-start align-items-center mt-3">
+                <p class="h6 text-center mr-5">Menunggu konfirmasi dari Head Teller</p>
+                <ng-lottie width="200px" height="200px" [options]="optionWaiting"
+                  (animationCreated)="animationCreated($event)">
+                </ng-lottie>
+              </div>
+
+              <div *ngIf="isDisplayPrint" id="print-section" class="container-fluid  mt-3">
+                <img src="assets/svgs/logo-blue.svg" class="mb-3" alt="img-thumbnail">
+                <p class="h6 text-center">Bukti Transaksi</p>
+                <div *ngFor="let item of env.controls | keyvalue" class="form-group row mb-0">
+                  <label
+                    class="col-sm-2 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key }}
+                    :</label>
+                  <div class="col-sm-10">
+                    <label class="form-control-plaintext">{{ item.value.value }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="isDisplayPrint" class="container-fluid align-items-center">
+                <div class="row justify-content-center">
+                  <img src="assets/png/print.png" alt="">
+                </div>
+                <div class="row justify-content-between">
+                  <button mat-button (click)="print()" class="print-button">Print</button>
+                  <button mat-button (click)="done()" class="print-button" matStepperNext>Next</button>
+                </div>
+                <!-- <button (click)="done()" mat-button matStepperNext>Next</button> -->
+              </div>
+            </mat-step>
+
+            <!-- STEP 5 -->
+            <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null">
+              <ng-template matStepLabel>Done</ng-template>
+              <p>You are now done.</p>
+            </mat-step>
+          </mat-vertical-stepper>
+
+          <div class="d-flex justify-content-center">
             <!-- <button mat-button matStepperPrevious>Back</button>
             <button mat-button matStepperNext>Next</button> -->
           </div>
@@ -92,9 +325,11 @@
 
 
 </mat-dialog-content>
-<mat-dialog-actions class="justify-content-between">
-  <button class="batal" (click)="cancelQ()" mat-button mat-dialog-close>Batal</button>
-  <button class="skip" (click)="skipQ()" mat-button mat-dialog-close>Skip</button>
-  <button class="proses" (click)="prosesQ()" mat-button mat-dialog-close>Proses</button>
+<mat-dialog-actions class="justify-content-center">
+  <div class="container-fluid justify-content-between d-flex m-0">
+    <button *ngIf="isCancelBtn" class="batal" (click)="cancelQ()" mat-button mat-dialog-close>Batal</button>
+    <button *ngIf="isSkipBtn" class="skip" (click)="skipQ()" mat-button mat-dialog-close>Skip</button>
+  </div>
+  <button *ngIf="isDoneBtn" class="proses" (click)="prosesQ()" mat-button mat-dialog-close>Selesai</button>
   <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
 </mat-dialog-actions>

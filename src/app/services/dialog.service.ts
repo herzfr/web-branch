@@ -4,7 +4,7 @@ import { DialogErrorComponent } from '../dialog/dialog-error/dialog-error.compon
 import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root' 
 })
 export class DialogService {
 

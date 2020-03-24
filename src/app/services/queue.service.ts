@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AppConfiguration } from '../models/app.configuration';
+import * as securels from 'secure-ls';
 
 @Injectable({
   providedIn: 'root'
@@ -10,18 +11,23 @@ export class QueueService {
   private apiUrl;
   private apiSocket;
 
+  ls = new securels({ encodingType: 'aes' });
+  token = this.ls.get('token')
+
   headers_object = new HttpHeaders()
     .set('Content-Type', 'application/json')
-  // .set('Authorization', 'Bearer ' + this.token);
+    .set('Authorization', 'Bearer ' + this.token);
 
   httpOptions = {
-    headers: this.headers_object
+    headers: this.headers_object 
   };
 
 
   constructor(private appConfiguration: AppConfiguration, private http: HttpClient) {
     this.apiUrl = this.appConfiguration.ipServer;
     this.apiSocket = this.appConfiguration.ipSocketServer;
+    console.log(this.ls.get('token'));
+
   }
 
   getNewQueue(brch: string, status1: string, status2) {
@@ -54,4 +60,11 @@ export class QueueService {
   refreshQ(brch) {
     return this.http.get(this.apiSocket + 'api/queue/refresh?branchcode=' + brch, this.httpOptions)
   }
+
+  processTransactionDataQ(body) {
+    return this.http.post(this.apiUrl + 'api/wbtrans/process', body, this.httpOptions)
+  }
+
+
+
 }

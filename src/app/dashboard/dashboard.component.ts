@@ -14,6 +14,7 @@ import { QueueService } from '../services/queue.service';
 import { QTable } from '../models/queue-table';
 import { AppConfiguration } from '../models/app.configuration';
 import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
+import * as SecureLS from 'secure-ls';
 
 @Component({
   selector: 'app-dashboard',
@@ -41,6 +42,8 @@ export class DashboardComponent implements OnInit {
   displayedColumns = ['queue', 'time', 'type'];
   dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
 
+  secureLs = new SecureLS({ encodingType: 'aes' });
+
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService, private appConfig: AppConfiguration) {
@@ -61,7 +64,7 @@ export class DashboardComponent implements OnInit {
     console.log('jalan');
     let dataQ;
 
-    let branch = JSON.parse(localStorage.getItem('terminal'))
+    let branch = JSON.parse(this.secureLs.get("terminal"));
     this.branchCode = branch.branchCode;
 
     this.queueServ.getNewQueue(this.branchCode, this.waitingCall, this.outCall).subscribe(res => {
@@ -194,6 +197,22 @@ export class DashboardComponent implements OnInit {
             this.transactionDialog(res['record'])
           } else {
             console.log('data tidak ada');
+
+            if (localStorage.getItem('skip') !== null) {
+
+              var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+              this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
+                console.log(eco);
+
+                if (eco['successId0']) {
+                  this.queueServ.refreshQ(this.branchCode).subscribe()
+                  localStorage.removeItem('skip')
+                } else {
+                  this.queueServ.refreshQ(this.branchCode).subscribe()
+                }
+
+              })
+            }
           }
         })
 
@@ -203,63 +222,26 @@ export class DashboardComponent implements OnInit {
 
     })
 
-  }
 
 
-  nextQueue2(event) {
+    // function disableF5(e) { if ((e.which || e.keyCode) == 116) e.preventDefault(); };
+    // $(document).on("keydown", disableF5);
 
-    this.queueServ.getLatestQue('034', 998).subscribe(res => {
+    // window.history.pushState(null, null, document.URL);
 
-      if (res['success'] == true) {
-        let datares = res['record']
-        console.log(datares);
 
-        res['record'].forEach(element => {
-          element.transbuff = '[' + element.transbuff + ']'
-          let parse = JSON.parse(element.transbuff)
-          element.transbuff = parse;
-        });
+    // simply visual, let's you know when the correct iframe is selected
+    // $(window).on("focus", function (e) {
+    //   $("html, body").css({ background: "#FFF", color: "#000" })
+    //     .find("h2").html("THIS BOX NOW HAS FOCUS<br />F5 should not work.");
+    // })
+    //   .on("blur", function (e) {
+    //     $("html, body").css({ background: "", color: "" })
+    //       .find("h2").html("CLICK HERE TO GIVE THIS BOX FOCUS BEFORE PRESSING F5");
+    //   });
 
-        this.transactionDialog(res['record'])
-
-        event.forEach(el => {
-          delete el.hold
-        });
-
-        this.queueServ.changeStatusTransactionQ(event).subscribe(e => {
-          console.log(e);
-          this.queueServ.refreshQ(this.branchCode).subscribe()
-        })
-
-      } else if (res['success'] == false) {
-
-        this.queueServ.getLatestQue('034', 999).subscribe(res => {
-
-          if (res['success'] == true) {
-            let datares = res['record']
-            console.log(datares);
-
-            res['record'].forEach(element => {
-              element.transbuff = '[' + element.transbuff + ']'
-              let parse = JSON.parse(element.transbuff)
-              element.transbuff = parse;
-            });
-
-            this.transactionDialog(res['record'])
-          } else {
-            console.log('data tidak ada');
-          }
-        })
-
-      } else {
-        console.log('DATA TIDAK ADA');
-      }
-
-    })
 
   }
-
-
 
   transactionDialog(datas) {
     const dialogConfig = new MatDialogConfig();
@@ -267,12 +249,15 @@ export class DashboardComponent implements OnInit {
       id: 1,
       data: datas,
     }
+    dialogConfig.backdropClass = 'backdropBackground';
+    dialogConfig.disableClose = true;
+    dialogConfig.width = '1000px';
 
     let postStat = new Array;
+
     for (const key in datas) {
       if (datas.hasOwnProperty(key)) {
         const element = datas[key];
-        console.log(element.transid);
 
         let transid = element.transid;
 
@@ -281,56 +266,104 @@ export class DashboardComponent implements OnInit {
         obj.status = this.inCall;
 
         postStat.push(obj)
+
       }
     }
-    console.log(postStat);
 
-    this.queueServ.changeStatusTransactionQ(postStat).subscribe(e => {
-      console.log(e);
-      if (e['successId0']) {
-        this.queueServ.refreshQ(this.branchCode).subscribe(e => {
-
-        })
+    this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
+      console.log(res);
+      if (res['successId0']) {
+        this.queueServ.refreshQ(this.branchCode).subscribe()
       }
     })
-
-    dialogConfig.backdropClass = 'backdropBackground';
-    dialogConfig.disableClose = true;
-    dialogConfig.width = '1000px';
-    // dialogConfig.height = '500px';
     this.dlg.open(DialogTransactionComponent, dialogConfig).afterClosed().subscribe(resBack => {
       console.log(resBack);
 
-      if (resBack.successId0) {
-        this.getDataTableQ()
-        this.queueServ.refreshQ(this.branchCode).subscribe()
-      } else if (resBack[0].hold) {
-        // console.log('hold dipanggil');
-        this.nextQueue2(resBack)
+      if (resBack === undefined) {
+        console.log('data tidak ada');
+
+      } else {
+
+        if (resBack[0].skip) {
+          console.log('skip jalan');
+          this.nextQueue()
+
+          // Get Local STORAGE
+          var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+
+          resBack.forEach(el => {
+            delete el.skip
+            oldItems.push(el);
+          });
+
+          localStorage.setItem('skip', JSON.stringify(oldItems));
+          console.log(JSON.stringify(oldItems));
+
+
+          // this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
+          //   console.log(res);
+          //   this.queueServ.refreshQ(this.branchCode).subscribe()
+          // })
+
+        } else if (resBack[0].batal) {
+          console.log('batal jalan');
+
+          resBack.forEach(el => {
+            delete el.batal
+          });
+
+          this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
+            console.log(res);
+            this.queueServ.refreshQ(this.branchCode).subscribe()
+          })
+
+        } else if (resBack[0].proses) {
+          console.log('proses jalan');
+
+          resBack.forEach(el => {
+            delete el.proses
+          });
+
+          this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
+            console.log(res);
+            if (res['successId0']) {
+              if (localStorage.getItem('skip') !== null) {
+
+                var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+                this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
+                  console.log(eco);
+
+                  if (eco['successId0']) {
+                    this.queueServ.refreshQ(this.branchCode).subscribe()
+                    localStorage.removeItem('skip')
+                  } else {
+                    this.queueServ.refreshQ(this.branchCode).subscribe()
+                  }
+
+                })
+
+              } else {
+                this.queueServ.refreshQ(this.branchCode).subscribe()
+              }
+            }
+
+          })
+        }
       }
+
+
+
+
 
     })
 
-
   }
 
-
-
-
   connect() {
-
-    let ls = JSON.parse(localStorage.getItem("terminal"));
+    let ls = JSON.parse(this.secureLs.get("terminal"));
     const branchCode = ls.branchCode;
-    // const branchWord = converter.toWords(branchCode).split("-").join("");
     const socketChannel = "/tlrx" + branchCode;
-
-    console.log(socketChannel);
-    // this.websocket.initializeWebSocketConnection(socketChannel);
-    // console.log("branch code ", branchCode.replace(/^0+/, ''));
-    // console.log(a.split("-").join(""));
-
     this.initializeWebSocketConnection(socketChannel);
-
   }
 
   initializeWebSocketConnection(socket) {

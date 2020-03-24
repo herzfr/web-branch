@@ -11,7 +11,6 @@ import * as SockJS from 'sockjs-client';
 
 import { LoginModel } from '../models/login-model';
 import { AppConfiguration } from '../models/app.configuration';
-
 declare var $: any;
 
 @Component({
@@ -21,8 +20,10 @@ declare var $: any;
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  private serverUrl = 'https://192.168.56.1:8444/socket'
+  private serverUrl = 'https://10.62.10.28:8444/socket'
   private stompClient;
+
+  ls = new securels({ encodingType: 'aes' });
 
   private branch;
   private terminal;
@@ -39,6 +40,16 @@ export class LoginComponent implements OnInit, OnDestroy {
   isRequired: boolean = true;
 
   constructor(private auth: AuthenticateService, private router: Router, private dataBranch: DataBranchServices, private dialog: DialogService, private appConfig: AppConfiguration) {
+
+    try {
+      let user = JSON.parse(this.ls.get('data'));
+      if (user) {
+        this.router.navigate(['/home']);
+      }
+    } catch (error) {
+      // console.log("no user data ");
+    }
+
     this.loginForm = new FormGroup({
       username: new FormControl('', Validators.required)
     });
@@ -65,14 +76,27 @@ export class LoginComponent implements OnInit, OnDestroy {
       })
     }
 
-    const term = localStorage.getItem('terminal');
-    if (term == null) {
+    // const term = localStorage.getItem('terminal');
+    try {
+      JSON.parse(this.secureLs.get("terminal"));
+    } catch (error) {
       $('#modalTerm').modal('show')
       $('.container-fluid').addClass('modalBlur');
       this.subData = this.dataBranch.getBranchAll().subscribe((res) => {
         this.branch = res;
       })
     }
+
+
+
+
+    // if (term === null ) {
+    //   $('#modalTerm').modal('show')
+    //   $('.container-fluid').addClass('modalBlur');
+    //   this.subData = this.dataBranch.getBranchAll().subscribe((res) => {
+    //     this.branch = res;
+    //   })
+    // }
   }
 
   verify() {
@@ -117,14 +141,17 @@ export class LoginComponent implements OnInit, OnDestroy {
       that.stompClient.subscribe("/" + socket, (message) => {
 
         if (message.body) {
-
           const body = JSON.parse(message.body);
           that.secureLs.set("data", JSON.stringify(body.record));
+          that.secureLs.set("termdata", JSON.stringify(body.userterminal));
+          that.secureLs.set("token", body.token);
           if (body.success) {
             $('#verify').modal('hide')
             $('.container-fluid').removeClass('modalBlur');
             that.router.navigate(['/home']);
             that.stompClient.disconnect();
+            // console.log(body.token);
+
           }
         }
 
@@ -157,7 +184,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       "terminalID": this.selectedTerm,
       "branchCode": this.selectedBranch,
     }
-    localStorage.setItem('terminal', JSON.stringify(term))
+    this.secureLs.set("terminal", JSON.stringify(term));
+    // localStorage.setItem('terminal', JSON.stringify(term))
     $('#modalTerm').modal('hide');
     $('.container-fluid').removeClass('modalBlur');
   }

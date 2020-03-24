@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css?family=Overpass&display=swap');
+
+.labelText {
+  font-family: Overpass;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 25px;
+  /* identical to box height */
+  color: #234A7B;
+}
+h1{
+  color: #234A7B;
+}
+
+
+.customInput {
+  background: #EEF3F8;
+  border: 1px solid #133764;
+  box-sizing: border-box;
+  border-radius: 20px;
+}
+
+.textError {
+  padding: 0px;
+  font-size: 14px;
+}
+
+
+.mat-horizontal-stepper-header{
+  pointer-events: none;
+}
+
+.fullWidth{
+  width: 100%;
+}
+
+.green-icon {
+  color: #9ccc65;
+}
+
+.red-icon{
+  color: red;
+}
