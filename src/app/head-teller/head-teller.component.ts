@@ -91,6 +91,11 @@ export class HeadTellerComponent implements OnInit {
         break;
       case '3':
         console.log('confirm');
+
+        this.headServ.setState(1, event['transid'], 0, this.userId).subscribe(res => {
+          console.log(res);
+
+        })
         // this.dialog.open(HeadTellerDialogComponent, dialogConfig)
         break;
       default:

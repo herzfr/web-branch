@@ -45,7 +45,6 @@ export class HeadService {
     //   .set('transId', transId)
     //   .set('rejectedstate', reject)
     //   .set('user', usr)
-    console.log(this.apiUrl + 'api/wbheadvalidation/setstate?state=' + stt + '&transId=' + transId + '&rejectedstate=' + reject + '&user=' + usr);
 
     return this.http.put(this.apiUrl + 'api/wbheadvalidation/setstate?state=' + stt + '&transId=' + transId + '&rejectedstate=' + reject + '&user=' + usr, this.httpOptions)
   }
