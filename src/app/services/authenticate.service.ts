@@ -43,7 +43,7 @@ export class AuthenticateService {
   }
 
   openLoginApp() {
-    return this.http.get(this.localHost + "api/wbservice/openApp");
+    return this.http.get(this.localHost + "api/wbservice/userLogin");
   }
 
   callLoginApp() {

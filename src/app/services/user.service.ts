@@ -10,14 +10,14 @@ export class UserService {
 
   private apiUrl;
 
-  ls = new securels({ encodingType: 'aes' });
-  token = this.ls.get('token')
+  private ls = new securels({ encodingType: 'aes' });
+  private token = this.ls.get('token')
 
-  headers_object = new HttpHeaders()
+  private headers_object = new HttpHeaders()
     .set('Content-Type', 'application/json')
     .set('Authorization', 'Bearer ' + this.token);
 
-  httpOptions = {
+  private httpOptions = {
     headers: this.headers_object
   };
 
@@ -52,6 +52,17 @@ export class UserService {
 
   editUser(user: any) {
     return this.http.put(this.apiUrl + 'api/users', user, this.httpOptions)
+  }
+
+  getUserRoles(): any {
+    let user = JSON.parse(this.ls.get('data'));
+    let rolesData: any = {};
+    rolesData.isAdmin = user.roles.includes("admin")
+    rolesData.isHeadTeller = user.roles.includes("headteller")
+    rolesData.isHeadCs = user.roles.includes("headcs")
+    rolesData.isTeller = user.roles.includes("teller")
+    rolesData.isCs = user.roles.includes("cs")
+    return rolesData;
   }
 
 

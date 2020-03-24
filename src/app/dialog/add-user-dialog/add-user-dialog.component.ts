@@ -56,7 +56,7 @@ export class AddUserDialogComponent implements OnInit, AfterViewInit, OnDestroy 
   private secureLs = new securels({ encodingType: 'aes' });
   private logedUser: any;
 
-  private roles: any = [{ role: "Admin", value: "admin" }, { role: "Teller", value: "teller" }, { role: "Customer Service", value: "cs" }];
+  private roles: any = [{ role: "Admin", value: "admin" }, { role: "Teller", value: "teller" }, { role: "Customer Service", value: "cs" }, { role: "Head Teller", value: "headteller" }, { role: "Head Customer Service", value: "headcs" }];
 
   private options: AnimationOptions = {
     path: '/assets/lottie/successicon.json'
