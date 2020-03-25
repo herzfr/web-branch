@@ -1,14 +1,13 @@
 <mat-toolbar>
   <div class="container-fluid justify-content-between d-flex p-0">
     <div class="col-6 col-md-3 d-flex align-items-center p-0">
-      <ng-container *ngIf="this.isMenuVisible">
+      
         <div id="nav-icon" (click)="drawer.toggle()">
           <span></span>
           <span></span>
           <span></span>
           <span></span>
         </div>
-      </ng-container>
       <img class="pl-3 pr-3" src="/assets/svgs/logo-blue.svg" alt="logo">
     </div>
     <div class="col-12 col-sm-6 col-md-9 d-flex align-items-center justify-content-end">
@@ -60,7 +59,6 @@
 <mat-drawer-container class="example-container h-100" autosize>
   <mat-drawer #drawer class="example-sidenav" mode="side">
 
-    <ng-container *ngIf="this.isMenuVisible">
       <span *ngFor="let item of navItems">
         <!-- Handle branch node buttons here -->
         <span *ngIf="item.children && item.children.length > 0">
@@ -78,7 +76,6 @@
           </button>
         </span>
       </span>
-    </ng-container>
 
   </mat-drawer>
 

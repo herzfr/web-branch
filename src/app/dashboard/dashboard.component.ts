@@ -24,11 +24,6 @@ import { SharedService } from '../services/shared.service';
 })
 export class DashboardComponent implements OnInit {
 
-  // waitingStatusX: string = '999';
-  // waitingStatusY: string = '000';
-
-  isVisible: boolean = true;
-
   private waitingCall: string = '999';
   private outCall: string = '998';
   private inCall: string = '997';
@@ -49,7 +44,7 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService, 
+  constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService,
     private appConfig: AppConfiguration, private sharedService: SharedService) {
     this.serverUrl = appConfig.ipSocketServer + "socket";
     console.log("dashboar socket : ", this.serverUrl);
@@ -170,11 +165,6 @@ export class DashboardComponent implements OnInit {
   }
 
   nextQueue() {
-
-    this.isVisible = !this.isVisible;
-    this.sharedService.isVisibleSource.next(this.isVisible);
-
-
     this.queueServ.getLatestQue('034', 998).subscribe(res => {
 
       if (res['success'] == true) {

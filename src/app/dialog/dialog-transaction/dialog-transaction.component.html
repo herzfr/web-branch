@@ -98,7 +98,7 @@
                     <input type="text" class="form-control-plaintext col-6" formControlName="{{ a.key }}">
                   </div>
                 </ng-container>
-              </div> 
+              </div>
 
               <div class="d-flex justify-content-between">
                 <button (click)="transactionCancel(i, env.controls)" mat-button>Batal</button>
@@ -147,8 +147,8 @@
                   <div class="col-sm">
                     <div class="card">
                       <div id="scan-finger" class="card-body justify-content-center d-flex">
-                        <img (click)="callFingerVerify()" *ngIf="isScanFinger"
-                          src="assets/svgs/scan-finger-ic.svg" alt="">
+                        <img (click)="callFingerVerify()" *ngIf="isScanFinger" src="assets/svgs/scan-finger-ic.svg"
+                          alt="">
                       </div>
                       <div class="card-footer text-muted">
                         <p class="card-text text-center mb-0">Scan Sidik Jari Nasabah</p>
@@ -264,19 +264,23 @@
             <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null" [stepControl]="4">
               <ng-template matStepLabel>Hasil Transaksi</ng-template>
 
-              <div *ngIf="isRejectConfirmation"
-                class="container-fluid d-flex justify-content-start align-items-center mb-5 mt-5">
-                <p class="h6 text-center pr-5">Data telah di Reject</p>
-                <ng-lottie width="100px" height="100px" [options]="optionReject"
-                  (animationCreated)="animationCreated($event)">
-                </ng-lottie>
-              </div>
+              <ng-container *ngIf="isRejectConfirmation">
+                <div class="container-fluid d-flex justify-content-start align-items-center">
+                  <p>Transaksi telah di Reject</p>
+                </div>
+                <div class="container-fluid d-flex justify-content-start align-items-center mb-2 mt-2">
+                  <ng-lottie width="100px" height="100px" [options]="optionReject" (animationCreated)="animationCreated($event)">
+                  </ng-lottie>
+                </div>
+                <div>
+                  <button mat-button matStepperNext>Selanjutnya</button>
+                </div>
+              </ng-container>
 
               <div *ngIf="isWaitingConfirmation"
                 class="container-fluid d-flex justify-content-start align-items-center mt-3">
                 <p class="h6 text-center mr-5">Menunggu konfirmasi dari Head Teller</p>
-                <ng-lottie width="200px" height="200px" [options]="optionWaiting"
-                  (animationCreated)="animationCreated($event)">
+                <ng-lottie width="200px" height="200px" [options]="optionWaiting">
                 </ng-lottie>
               </div>
 

@@ -46,7 +46,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         {
           displayName: 'Teller DashBoard',
           iconName: 'chevron_right',
-          route: "/teller",
+          route: "/home/teller",
+          children: []
+        },
+        {
+          displayName: 'Head Teller DashBoard',
+          iconName: 'chevron_right',
+          route: "/home/head-teller",
           children: []
         },
         {
@@ -168,8 +174,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   // get user data 
   userVoid() {
     const data = JSON.parse(this.secureLs.get("data"));
-
-    console.log(data);
 
     this.branchSub = this.branchService.getBranchByCode(data.branchcode).subscribe(res => {
       this.branchDescript = res['record'].description;

@@ -20,7 +20,7 @@ declare var $: any;
 })
 export class TestComponent implements OnInit {
 
-  private serverUrl = 'https://192.168.137.1:8444/socket';
+  private serverUrl = 'https://192.168.43.91:8444/socket';
   private stompClient;
 
   ls = new SecureLS({ encodingType: 'aes' });
@@ -59,7 +59,7 @@ export class TestComponent implements OnInit {
 
     console.log();
 
-    this.initializeWebSocketConnection("vldspv"+ this.userId);
+    this.initializeWebSocketConnection("vldspv083890446796250320200958400001");
 
 
 

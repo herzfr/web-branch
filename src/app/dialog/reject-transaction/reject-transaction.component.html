@@ -1,0 +1,17 @@
+<mat-dialog-content>
+
+  <ng-lottie [options]="options" (animationCreated)="animationCreated($event)">
+  </ng-lottie>
+
+  <p class="text-center"><strong> Konfirmasi Rejected</strong></p>
+  <p class="text-center"><strong>Reject Transaksi Ini...?</strong></p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-center">
+  <div class="button_cont">
+    <!-- <Button class="btnClose" [mat-dialog-close]="true" (click)="close()">Close</Button> -->
+    <button mat-raised-button color="warn" (click)="rejected()">Ya</button>
+    <button mat-raised-button color="primary" (click)="close()">Tidak</button>
+  </div>
+</mat-dialog-actions>

@@ -340,24 +340,18 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   transactionProcess(event) {
-
-    console.log(event);
-
     const accountNumber = event.Dari.value;
 
-    if (accountNumber === 1001000002) {
+    if (accountNumber === "1001000002") {
       this.cardNum = 1234567890000001;
-    } else if (accountNumber === 1001000003) {
+    } else if (accountNumber === "1001000003") {
       this.cardNum = 1234567890000003;
     } else {
       this.cardNum = 1234567890123456;
     }
-    console.log("card number : ", this.cardNum);
-
 
     let transId = event.TransaksiId.value
-    let dataObj = this.findDataByTransactionId(transId, this.data)
-    // let terminal = JSON.parse(localStorage.getItem('terminal'))
+    let dataObj = this.findDataByTransactionId(transId, this.data);
     let terminal = JSON.parse(this.secureLs.get("terminal"))
     let branchCode = terminal.branchCode;
     let term = terminal.terminalID;
@@ -376,20 +370,16 @@ export class DialogTransactionComponent implements OnInit {
       "queueno": dataObj.queueno.toString(),
       "timestampentry": dataObj.timestampentry.toString(),
       "userid": dataObj.userid,
-      // "userid": "23423423423423423423423423423423",
       "userterminal": dataObj.userterminal,
       "trntype": event.Tipe.value,
       "status": "",
       "transbuff": payLoad,
     }
 
-    console.log(dataProsesApi);
-
     this.dataFormHeadValidation = dataProsesApi;
     this.queueServ.processTransactionDataQ(dataProsesApi).subscribe(res => {
       console.log(res);
       if (res['success']) {
-        // console.log('sucess');
         this.dataSuccess.push(res)
         setTimeout(() => {
           this.isProsses = false;
@@ -458,7 +448,6 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   print() {
-    // $('#print-section').printThis();
     $('#print-section').printThis({
       debug: false,               // show the iframe for debugging
       importCSS: true,            // import parent page css
@@ -481,20 +470,6 @@ export class DialogTransactionComponent implements OnInit {
       beforePrint: null,          // function called before iframe is filled
       afterPrint: null            // function called before iframe is removed
     });
-
-
-
-    // const toShow = this.hideParentSiblings($('#print-section'));
-    // $('#print-section').hide();
-    // window.print();
-    // for (const e of toShow) {
-    //   e.show();
-    // }
-    // $('#form-sibling').show();
-
-    // setTimeout(() => {
-    //   $('#print').modal('hide')
-    // }, 3000)
   }
 
   hideParentSiblings(element): any[] {
@@ -531,8 +506,6 @@ export class DialogTransactionComponent implements OnInit {
 
 
   closeQDialog() {
-    // this.dialogRef.close();
-
     if (this.status_for_while === 999) {
       let arr = new Array;
       let obj: any = new Object();
@@ -619,14 +592,11 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   onSwapCard() {
-    // this.cardNum = 1234567890000003;
-
     if (this.cardNum !== null) {
       this.isInputPin = true
       this.isCardNumber = true
       $('#card-swap').removeClass('blink')
     }
-
   }
 
   onOtpChange(event: any, stepper: MatStepper) {
@@ -748,18 +718,12 @@ export class DialogTransactionComponent implements OnInit {
 
           }, () => {
             // that.dialog.errorDialog("Error", "Koneksi Terputus");
-
-            console.log("koneksi terputus");
-            console.log("Koneksi Ulang");
             setTimeout(() => {
               that.initializeWebSocketConnection(socket, stepper, drawer);
             }, 1000);
 
           });
         }, err => {
-          console.log("gagal menghubungkan ke server ");
-          console.log("Menghubungkan Ulang");
-
 
           setTimeout(() => {
             that.initializeWebSocketConnection(socket, stepper, drawer);
@@ -781,7 +745,7 @@ export class DialogTransactionComponent implements OnInit {
 
 
               if (parse) {
-                that.onFingerVerifyHead(parse, stepper, drawer)
+                that.onFingerVerifyHead(parse, stepper, drawer, "onsite")
               }
 
             }
@@ -825,11 +789,32 @@ export class DialogTransactionComponent implements OnInit {
       that.stompClientSocket.subscribe("/" + socket, (message) => {
         if (message.body) {
 
-          let parse = JSON.parse(message.body).success
+          let receivedValue = JSON.parse(message.body);
+          console.log("socket value: ", receivedValue);
+          console.log("rejected", receivedValue.rejected);
+          console.log("success", receivedValue.success);
 
-          if (parse) {
-            that.onFingerVerify(parse, stepper)
+
+
+
+          if (receivedValue.rejected) {
+            console.log("transaction rejected");
+
+            that.isDisplayPrint = false;
+            that.isWaitingConfirmation = false;
+            that.isRejectConfirmation = true;
+            that.stepDisabledHorizontal = false;
+            // this.isCloseDialog = true;
+            that.isHeadTeller = false
+            // stepper.next()
+          } else {
+            that.onFingerVerifyHead(true, stepper, drawer, "remote")
           }
+
+
+          // if (parse) {
+          //   that.onFingerVerify(parse, stepper)
+          // }
 
         }
 
@@ -920,18 +905,13 @@ export class DialogTransactionComponent implements OnInit {
         console.log("terminal : ", terminalData);
         console.log("username : ", user);
 
-
-
         this.transacServ.sendRemoteValidation(this.dataFormHeadValidation, user).subscribe(resp => {
           console.log(resp);
 
         })
 
 
-
         this.initializeWebSocketConnection2('vldspv' + this.dataFormHeadValidation.transid, stepper, drawer);
-
-
 
 
         break;
@@ -951,24 +931,35 @@ export class DialogTransactionComponent implements OnInit {
 
   }
 
-  onFingerVerifyHead(status, stepper: MatStepper, drawer: MatDrawer) {
-    this.ngZone.runOutsideAngular(() => this.animationItem.stop());
-    if (status) {
-      setTimeout(() => {
-        drawer.toggle()
+  onFingerVerifyHead(status, stepper: MatStepper, drawer: MatDrawer, type: string) {
+    if (type === "onsite") {
+      console.log("run on");
+      
+      this.ngZone.runOutsideAngular(() => this.animationItem.stop());
+      if (status) {
         setTimeout(() => {
-          stepper.next()
-          this.isDisplayPrint = true;
-          this.isWaitingConfirmation = false;
-          this.isRejectConfirmation = false;
-          this.stepDisabledHorizontal = false;
-          // this.isCloseDialog = true;
-          this.disconnect()
-        }, 500)
-      }, 1000)
+          drawer.toggle()
+          setTimeout(() => {
+            stepper.next()
+            this.isDisplayPrint = true;
+            this.isWaitingConfirmation = false;
+            this.isRejectConfirmation = false;
+            this.stepDisabledHorizontal = false;
+            // this.isCloseDialog = true;
+            this.disconnect()
+          }, 500)
+        }, 1000)
+      } else {
+        console.log('silahkan coba lagi');
+      }
     } else {
-      console.log('silahkan coba lagi');
+      this.isDisplayPrint = true;
+      this.isWaitingConfirmation = false;
+      this.isRejectConfirmation = false;
+      this.stepDisabledHorizontal = false;
+      this.stompClientSocket.disconnect();
     }
+
 
   }
 

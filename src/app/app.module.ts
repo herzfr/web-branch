@@ -33,6 +33,7 @@ import { TransactionService } from './services/transaction.service';
 import { SharedService } from './services/shared.service';
 import { HeadTellerDialogComponent } from './dialog/head-teller-dialog/head-teller-dialog.component';
 import { HeadService } from './services/head.service';
+import { UserDataService } from './services/user-data.service';
 // import { CurrencySetting } from './config/currency-setting';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
@@ -74,7 +75,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   ],
   providers: [
     CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService,
-    TestService, TransactionService, SharedService, HeadService,
+    TestService, TransactionService, SharedService, HeadService,UserDataService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],
