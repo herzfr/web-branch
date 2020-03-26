@@ -12,6 +12,7 @@ import { LottieModule } from 'ngx-lottie';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { ChangeUserDialogComponent } from '../dialog/change-user-dialog/change-user-dialog.component';
 import { UserBiometricComponent } from '../dialog/user-biometric/user-biometric.component';
+import { SignaturePadModule } from '@ng-plus/signature-pad';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { UserBiometricComponent } from '../dialog/user-biometric/user-biometric.
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
+    SignaturePadModule,
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
   ],
   entryComponents: [AddUserDialogComponent, DeleteUserDialogComponent, ChangeUserDialogComponent, UserBiometricComponent],

@@ -65,5 +65,15 @@ export class UserService {
     return rolesData;
   }
 
+  // https://10.62.10.28:8443/api/wbimageuser/userimage
+
+  getDataBiometri(img) {
+    return this.http.get(this.apiUrl + 'api/wbimageuser/userimage?imageId=' + img, this.httpOptions)
+  }
+
+  updateDataPict(obj) {
+    return this.http.put(this.apiUrl + 'api/wbimageuser/updateImage', obj, this.httpOptions)
+  }
+
 
 }

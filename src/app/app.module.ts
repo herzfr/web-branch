@@ -34,6 +34,7 @@ import { SharedService } from './services/shared.service';
 import { HeadTellerDialogComponent } from './dialog/head-teller-dialog/head-teller-dialog.component';
 import { HeadService } from './services/head.service';
 import { UserDataService } from './services/user-data.service';
+import { NgxImageCompressService } from 'ngx-image-compress';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -73,7 +74,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   ],
   providers: [
     CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService,
-    TestService, TransactionService, SharedService, HeadService,UserDataService,
+    TestService, TransactionService, SharedService, HeadService, UserDataService, NgxImageCompressService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],
