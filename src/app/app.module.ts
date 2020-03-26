@@ -34,7 +34,6 @@ import { SharedService } from './services/shared.service';
 import { HeadTellerDialogComponent } from './dialog/head-teller-dialog/head-teller-dialog.component';
 import { HeadService } from './services/head.service';
 import { UserDataService } from './services/user-data.service';
-// import { CurrencySetting } from './config/currency-setting';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -54,7 +53,6 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     DialogTransactionComponent,
     TestComponent,
     HeadTellerDialogComponent,
-
   ],
   entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent],
   imports: [

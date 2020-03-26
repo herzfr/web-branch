@@ -11,13 +11,15 @@ import { DeleteUserDialogComponent } from '../dialog/delete-user-dialog/delete-u
 import { LottieModule } from 'ngx-lottie';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { ChangeUserDialogComponent } from '../dialog/change-user-dialog/change-user-dialog.component';
+import { UserBiometricComponent } from '../dialog/user-biometric/user-biometric.component';
 
 @NgModule({
   declarations: [
     AccountComponent,
     AddUserDialogComponent,
     DeleteUserDialogComponent,
-    ChangeUserDialogComponent
+    ChangeUserDialogComponent,
+    UserBiometricComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +29,7 @@ import { ChangeUserDialogComponent } from '../dialog/change-user-dialog/change-u
     ReactiveFormsModule,
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
   ],
-  entryComponents: [AddUserDialogComponent, DeleteUserDialogComponent, ChangeUserDialogComponent],
+  entryComponents: [AddUserDialogComponent, DeleteUserDialogComponent, ChangeUserDialogComponent, UserBiometricComponent],
   providers: [UserService, {
     provide: STEPPER_GLOBAL_OPTIONS, useValue: { displayDefaultIndicatorType: false }
   }]
