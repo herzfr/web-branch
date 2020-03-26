@@ -782,6 +782,9 @@ export class DialogTransactionComponent implements OnInit {
     this.stompClientSocket = Stomp.over(ws);
     let that = this;
 
+    console.log("koneksi ke : ", socket);
+
+
 
     this.stompClientSocket.connect({}, function (frame) {
       // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
@@ -902,10 +905,8 @@ export class DialogTransactionComponent implements OnInit {
 
         let terminalData = this.ls.get('termdata');
         let user = JSON.parse(this.ls.get('data')).userid;
-        console.log("terminal : ", terminalData);
-        console.log("username : ", user);
 
-        this.transacServ.sendRemoteValidation(this.dataFormHeadValidation, user).subscribe(resp => {
+        this.transacServ.sendRemoteValidation(this.dataFormHeadValidation, this.headSelectTeller.userid).subscribe(resp => {
           console.log(resp);
 
         })
@@ -934,8 +935,14 @@ export class DialogTransactionComponent implements OnInit {
   onFingerVerifyHead(status, stepper: MatStepper, drawer: MatDrawer, type: string) {
     if (type === "onsite") {
       console.log("run on");
-      
-      this.ngZone.runOutsideAngular(() => this.animationItem.stop());
+      try {
+        this.ngZone.runOutsideAngular(() => this.animationItem.stop());
+      } catch (error) {
+        console.log("Lottie Error!");
+
+      }
+
+
       if (status) {
         setTimeout(() => {
           drawer.toggle()
