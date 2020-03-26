@@ -11,6 +11,7 @@ import { ChangeUserDialogComponent } from '../dialog/change-user-dialog/change-u
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataBranchServices } from '../services/data-branch.service';
 import * as moment from 'moment';
+import { UserBiometricComponent } from '../dialog/user-biometric/user-biometric.component';
 
 // created by Dwi S
 
@@ -337,6 +338,17 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
         })
       }
     })
+  }
+
+  editBiometric(value) {
+    console.log(value);
+    
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      id: 1,
+      data: value
+    };
+    this.dialog.open(UserBiometricComponent, dialogConfig);
   }
 
 }

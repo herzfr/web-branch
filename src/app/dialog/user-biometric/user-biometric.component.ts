@@ -14,7 +14,7 @@ export class UserBiometricComponent implements OnInit {
 
 
   constructor(private dialogRef: MatDialogRef<UserBiometricComponent>, @Inject(MAT_DIALOG_DATA) data) {
-    this.value = data.value;
+    this.value = data.data;
     console.log("sending value : ", this.value);
 
   }
