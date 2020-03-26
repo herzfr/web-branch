@@ -806,7 +806,7 @@ export class DialogTransactionComponent implements OnInit {
             that.isDisplayPrint = false;
             that.isWaitingConfirmation = false;
             that.isRejectConfirmation = true;
-            that.stepDisabledHorizontal = false;
+            // that.stepDisabledHorizontal = false;
             // this.isCloseDialog = true;
             that.isHeadTeller = false
             // stepper.next()
@@ -877,7 +877,7 @@ export class DialogTransactionComponent implements OnInit {
         this.isDisplayPrint = false;
         this.isWaitingConfirmation = true;
         this.isRejectConfirmation = false;
-        this.stepDisabledHorizontal = false;
+        // this.stepDisabledHorizontal = false;
         // this.isCloseDialog = true;
         this.isHeadTeller = false
 
@@ -921,7 +921,7 @@ export class DialogTransactionComponent implements OnInit {
         this.isDisplayPrint = false;
         this.isWaitingConfirmation = false;
         this.isRejectConfirmation = true;
-        this.stepDisabledHorizontal = false;
+        // this.stepDisabledHorizontal = false;
         // this.isCloseDialog = true;
         this.isHeadTeller = false
         stepper.next()
@@ -935,6 +935,7 @@ export class DialogTransactionComponent implements OnInit {
   onFingerVerifyHead(status, stepper: MatStepper, drawer: MatDrawer, type: string) {
     if (type === "onsite") {
       console.log("run on");
+      this.done()
       try {
         this.ngZone.runOutsideAngular(() => this.animationItem.stop());
       } catch (error) {
@@ -951,7 +952,7 @@ export class DialogTransactionComponent implements OnInit {
             this.isDisplayPrint = true;
             this.isWaitingConfirmation = false;
             this.isRejectConfirmation = false;
-            this.stepDisabledHorizontal = false;
+            // this.stepDisabledHorizontal = false;
             // this.isCloseDialog = true;
             this.disconnect()
           }, 500)
@@ -963,7 +964,7 @@ export class DialogTransactionComponent implements OnInit {
       this.isDisplayPrint = true;
       this.isWaitingConfirmation = false;
       this.isRejectConfirmation = false;
-      this.stepDisabledHorizontal = false;
+      // this.stepDisabledHorizontal = false;
       this.stompClientSocket.disconnect();
     }
 
