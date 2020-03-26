@@ -940,9 +940,7 @@ export class DialogTransactionComponent implements OnInit {
         this.ngZone.runOutsideAngular(() => this.animationItem.stop());
       } catch (error) {
         console.log("Lottie Error!");
-
       }
-
 
       if (status) {
         setTimeout(() => {
@@ -967,8 +965,6 @@ export class DialogTransactionComponent implements OnInit {
       // this.stepDisabledHorizontal = false;
       this.stompClientSocket.disconnect();
     }
-
-
   }
 
   onSelectValueChangeHeadTeller(event) {
