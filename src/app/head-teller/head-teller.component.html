@@ -15,8 +15,6 @@
     <p class="h3">Daftar Transaksi Otorisasi</p>
   </div>
   <div class="col-6 col-md-4 d-flex align-items-center justify-content-end">
-    <!-- <button class="btn-queue">Antrian Berikutnya</button> -->
-    <!-- <button (click)="nextQueue()" class="btn-queue">Antrian Berikutnya</button> -->
   </div>
 </div>
 
@@ -49,10 +47,9 @@
       <td mat-cell *matCellDef="let element">
         <button mat-button (click)="MainFunction(element, '1')"><i
             class="fad fa-info-circle fa-2x text-info"></i></button>
-        <button mat-button (click)="MainFunction(element, '2')"><i
-            class="fad fa-times-circle fa-2x text-danger"></i></button>
         <button mat-button (click)="MainFunction(element, '3')"><i
-            class="fad fa-check-circle fa-2x text-success"></i></button>
+            class="fad fa-fingerprint fa-2x text-primary"></i></button>
+
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
