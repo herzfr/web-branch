@@ -810,6 +810,7 @@ export class DialogTransactionComponent implements OnInit {
             // this.isCloseDialog = true;
             that.isHeadTeller = false
             // stepper.next()
+            that.done()
           } else {
             that.onFingerVerifyHead(true, stepper, drawer, "remote")
           }
@@ -924,6 +925,7 @@ export class DialogTransactionComponent implements OnInit {
         // this.stepDisabledHorizontal = false;
         // this.isCloseDialog = true;
         this.isHeadTeller = false
+        this.done()
         stepper.next()
         break;
       default:
