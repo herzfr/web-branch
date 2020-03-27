@@ -23,8 +23,8 @@ export class UserBiometricComponent implements OnInit, AfterViewInit {
   isChangePictAndSign: boolean = false;
   ctx: CanvasRenderingContext2D;
 
-  @ViewChild('video', { static: true }) videoElement: ElementRef;
-  @ViewChild('canvas', { static: true }) canvas: ElementRef;
+  @ViewChild('video', { static: true }) videoElement: ElementRef = null;
+  @ViewChild('canvas', { static: true }) canvas: ElementRef = null;
 
   constraints = {
     video: {
@@ -51,7 +51,6 @@ export class UserBiometricComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.startCamera()
   }
 
 
@@ -113,6 +112,7 @@ export class UserBiometricComponent implements OnInit, AfterViewInit {
 
   changePictAndSign() {
     this.isChangePictAndSign = true;
+    this.startCamera()
     // console.log(this.photoImage);
     // console.log(this.signatureImage);
   }
