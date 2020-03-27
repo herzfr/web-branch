@@ -75,5 +75,9 @@ export class UserService {
     return this.http.put(this.apiUrl + 'api/wbimageuser/updateImage', obj, this.httpOptions)
   }
 
+  updateDataBiometric(usr) {
+    // http://localhost:1111/api/wbservice/userbiometric
+    return this.http.get('http://localhost:1111/api/wbservice/userbiometric?username=' + usr + '&token=' + this.token, this.httpOptions)
+  }
 
 }

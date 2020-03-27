@@ -50,11 +50,10 @@
       <!-- <p class="h6">Ambil Foto Anda</p> -->
       <div class="col-12">
 
-        <ng-signature-pad [height]="250" doneButtonText="Show Sign" doneButtonClass="btn-sign"
+        <ng-signature-pad [height]="250" doneButtonText="Change Request" doneButtonClass="btn-sign"
           clearButtonClass="btn-sign" format="base64" (done)="showImage($event)">
         </ng-signature-pad>
-
-        <img [src]="signatureImage" *ngIf="signatureImage" />
+        <p *ngIf="signatureImage">Request {{ reqsuccess  }}</p>
 
       </div>
     </div>

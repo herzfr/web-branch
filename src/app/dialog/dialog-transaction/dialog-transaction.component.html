@@ -79,26 +79,18 @@
             <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null" [stepControl]="1">
               <ng-template matStepLabel>Cek Transaksi</ng-template>
 
-              <div *ngFor="let a of env.controls | keyvalue" class="form-group row">
-                <ng-container *ngIf="a.key ==='TransaksiId'">
-                  <label
-                    class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Transaksi
-                    Id
-                    <span class="text-right">:</span></label>
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control-plaintext col-6" formControlName="{{ a.key }}">
-                  </div>
-                </ng-container>
+              <ng-container *ngFor="let a of env.controls | keyvalue">
+                <div *ngIf="a.key != 'TransaksiId'" class="form-group row">
 
-                <ng-container *ngIf="a.key !=='TransaksiId'">
                   <label
                     class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ a.key }}
                     <span class="text-right">:</span></label>
                   <div class="col-sm-9">
                     <input type="text" class="form-control-plaintext col-6" formControlName="{{ a.key }}">
                   </div>
-                </ng-container>
-              </div>
+
+                </div>
+              </ng-container>
 
               <div class="d-flex justify-content-between">
                 <button (click)="transactionCancel(i, env.controls)" mat-button>Batal</button>
@@ -269,7 +261,8 @@
                   <p>Transaksi telah di Reject</p>
                 </div>
                 <div class="container-fluid d-flex justify-content-start align-items-center mb-2 mt-2">
-                  <ng-lottie width="100px" height="100px" [options]="optionReject" (animationCreated)="animationCreated($event)">
+                  <ng-lottie width="100px" height="100px" [options]="optionReject"
+                    (animationCreated)="animationCreated($event)">
                   </ng-lottie>
                 </div>
                 <div>
