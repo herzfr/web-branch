@@ -5,6 +5,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { UserService } from 'src/app/services/user.service';
 
+import * as Stomp from 'stompjs';
+import * as SockJS from 'sockjs-client';
+
 
 @Component({
   selector: 'app-user-biometric',
@@ -12,6 +15,9 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./user-biometric.component.css']
 })
 export class UserBiometricComponent implements OnInit, AfterViewInit {
+
+  private serverUrl = 'http://localhost:1111/socket'
+  private stompClient;
 
   private value: any;
   private returnValue: any = {};
@@ -59,6 +65,7 @@ export class UserBiometricComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     // this.startCamera()
+    this.initializeWebSocketConnection('userbiometric')
   }
 
 
@@ -181,10 +188,39 @@ export class UserBiometricComponent implements OnInit, AfterViewInit {
     this.userServ.updateDataBiometric(this.value['username']).subscribe()
   }
 
+  initializeWebSocketConnection(socket) {
+    let ws = new SockJS(this.serverUrl);
+    this.stompClient = Stomp.over(ws);
+    let that = this;
+    this.stompClient.connect({ "testing": "testaja" }, function (frame) {
+
+
+      that.stompClient.subscribe("/" + socket, (message) => {
+
+        if (message.body) {
+          const body = JSON.parse(message.body);
+
+          if (body.success) {
+            that.stompClient.disconnect();
+            that.dialogRef.close('reload')
+            // console.log(body.token);
+          }
+        }
+
+      }, () => {
+        // that.dialog.errorDialog("Error", "Koneksi Terputus");
+      });
+    }, err => {
+      // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
+    });
+  }
+
+
   close() {
     this.returnValue.isRejected = false;
     this.dialogRef.close(this.returnValue);
   }
+
 
   imagesPict() {
     if (this.value['imagepict'] === null) {
@@ -242,5 +278,7 @@ export class UserBiometricComponent implements OnInit, AfterViewInit {
       return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.value['imagefinger5']);
     }
   }
+
+
 
 }
