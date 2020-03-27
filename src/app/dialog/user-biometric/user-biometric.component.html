@@ -1,23 +1,71 @@
-<mat-dialog-content>
+<div mat-dialog-title class="d-flex justify-content-between align-items-center">
+  <p class="h4 mb-0">Data Biometri User</p>
+  <button (click)="close()" class="btn"><i class="fad fa-times fa-2x"></i></button>
+</div>
+<mat-dialog-content class="mat-typography">
 
-  <div class="row">
-    <div class="col-5">
-      <img src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20(55).jpg" class="img-fluid" alt="">
-    </div>
-
-    <div class="col-7">
-      <p><strong>My travel to paradise</strong></p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit [...]</p>
-      <button type="button" class="btn btn-info btn-md">Read more</button>
-
+  <div class="form-group row mb-0">
+    <label class="col-sm-2 col-form-label font-weight-bold"> Username</label>
+    <div class="col-sm-10">
+      <label class="col-form-label">: {{ value.username }}</label>
     </div>
   </div>
+
+  <p class="text-center h6">Foto & Tanda Tangan</p>
+  <div class="row justify-content-start mb-3">
+    <mat-card class="m-1 card-pict align-items-center d-flex"><img [src]="imagesPict()" class="img-thumbnail rounded">
+    </mat-card>
+    <mat-card class="m-1 card-sign col align-items-center d-flex"><img [src]="imagesSign()"
+        class="img-thumbnail retangle"></mat-card>
+  </div>
+
+  <p class="text-center h6">Biometric</p>
+  <div class="row justify-content-start">
+    <mat-card class="m-1 col"><img [src]="finger1()" class="img-thumbnail"></mat-card>
+    <mat-card class="m-1 col"><img [src]="finger2()" class="img-thumbnail"></mat-card>
+    <mat-card class="m-1 col"><img [src]="finger3()" class="img-thumbnail"></mat-card>
+    <mat-card class="m-1 col"><img [src]="finger4()" class="img-thumbnail"></mat-card>
+    <mat-card class="m-1 col"><img [src]="finger5()" class="img-thumbnail"></mat-card>
+  </div>
+
+  <ng-container *ngIf="isChangePictAndSign">
+    <div class="d-flex align-items-center justify-content-center mt-2 mb-2">
+      <!-- <p class="h6">Ambil Foto Anda</p> -->
+      <div class="col-sm-5">
+        <video #video class="vid" autoplay></video>
+      </div>
+      <div class="col-sm-2">
+        <button mat-raised-button class="container-fluid card-capt justify-content-center align-items-center mb-2"
+          (click)="capture()"><i class="fad fa-camera-alt fa-2x"></i></button>
+
+        <button mat-raised-button class="container-fluid card-capt justify-content-center align-items-center mb-2"
+          (click)="compressFile()"><i class="fad fa-upload fa-2x"></i></button>
+      </div>
+      <div class="col-sm-5">
+        <canvas #canvas class="vid"></canvas>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-center mt-2 mb-2">
+      <!-- <p class="h6">Ambil Foto Anda</p> -->
+      <div class="col-12">
+
+        <ng-signature-pad [height]="250" doneButtonText="Show Sign" doneButtonClass="btn-sign"
+          clearButtonClass="btn-sign" format="base64" (done)="showImage($event)">
+        </ng-signature-pad>
+
+        <img [src]="signatureImage" *ngIf="signatureImage" />
+
+      </div>
+    </div>
+  </ng-container>
 
 
 </mat-dialog-content>
 
 <mat-dialog-actions class="justify-content-center">
   <div class="button_cont">
-    <button mat-raised-button color="primary" (click)="close()">Tidak</button>
+    <button (click)="changePictAndSign()" mat-raised-button>Ganti Photo & TTD</button>
+    <button (click)="changeFinger()" mat-raised-button>Ganti Finger</button>
   </div>
 </mat-dialog-actions>
