@@ -28,7 +28,7 @@
     <mat-card class="m-1 col"><img [src]="finger5()" class="img-thumbnail"></mat-card>
   </div>
 
-  <ng-container>
+  <ng-container *ngIf="isChangePictAndSign">
     <div class="d-flex align-items-center justify-content-center mt-2 mb-2">
       <!-- <p class="h6">Ambil Foto Anda</p> -->
       <div class="col-sm-5">
@@ -43,7 +43,6 @@
       </div>
       <div class="col-sm-5">
         <canvas #canvas class="vid"></canvas>
-        <img src="{{photoImage}}" alt="">
       </div>
     </div>
 

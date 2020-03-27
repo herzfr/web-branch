@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
 import { AnimationOptions } from 'ngx-lottie';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -11,7 +11,7 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './user-biometric.component.html',
   styleUrls: ['./user-biometric.component.css']
 })
-export class UserBiometricComponent implements OnInit {
+export class UserBiometricComponent implements OnInit, AfterViewInit {
 
   private value: any;
   private returnValue: any = {};
@@ -21,11 +21,7 @@ export class UserBiometricComponent implements OnInit {
   photoImage: string;
 
   isChangePictAndSign: boolean = false;
-  canvasEl: any;
   ctx: CanvasRenderingContext2D;
-  imageObj = new Image();
-
-
 
   @ViewChild('video', { static: true }) videoElement: ElementRef;
   @ViewChild('canvas', { static: true }) canvas: ElementRef;
@@ -46,6 +42,9 @@ export class UserBiometricComponent implements OnInit {
     this.value = data.data;
     console.log("sending value : ", this.value);
 
+  }
+  ngAfterViewInit(): void {
+    console.log("afterinit");
   }
 
   ngOnDestroy(): void {
@@ -83,6 +82,8 @@ export class UserBiometricComponent implements OnInit {
     this.renderer.setProperty(this.canvas.nativeElement, 'height', this.videoHeight);
     this.canvas.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
 
+
+
     captureImgBeforeCompress = this.canvas.nativeElement.toDataURL("image/png")
     // console.log(captureImg);
 
@@ -111,7 +112,7 @@ export class UserBiometricComponent implements OnInit {
   }
 
   changePictAndSign() {
-
+    this.isChangePictAndSign = true;
     // console.log(this.photoImage);
     // console.log(this.signatureImage);
   }
@@ -128,20 +129,21 @@ export class UserBiometricComponent implements OnInit {
       this.imageCompress.compressFile(image, orientation, 50, 50).then(
         result => {
           this.photoImage = result;
-          // console.warn('Size in bytes is now:', this.imageCompress.byteCount(result));
-          // this.canvas.nativeElement.getContext('2d').drawImage(this.photoImage, 0, 0);
-          this.canvasEl = this.canvas.nativeElement;
-          this.ctx = this.canvasEl.getContext('2d');
-          this.canvasEl.width = this.videoWidth;
-          this.canvasEl.height = this.videoHeight;
-          this.imageObj.src = result;
 
-          console.log(result);
-          console.log(this.imageObj);
+          const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
+          this.ctx = canvasEl.getContext('2d')!;
+          let image = new Image()
 
-          // this.ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
-          this.ctx.drawImage(this.imageObj, 0, 0, this.canvasEl.width, this.canvasEl.height);
-          // this.drawCircles();
+          canvasEl.width = 500;
+          canvasEl.height = 500;
+
+          this.ctx.lineCap = 'round';
+          image.onload = () => {
+            this.ctx.drawImage(image, 0, 0, 500, 500);
+          }
+          image.src = result
+          console.log(image.src);
+
         }
       );
 
@@ -163,20 +165,10 @@ export class UserBiometricComponent implements OnInit {
         this.dialogRef.close()
       } else {
         console.log(e['message']);
-
       }
 
     })
   }
-
-
-
-
-
-
-
-
-
 
   close() {
     this.returnValue.isRejected = false;
