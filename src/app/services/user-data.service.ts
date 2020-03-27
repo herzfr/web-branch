@@ -16,4 +16,9 @@ export class UserDataService {
     return data;
   }
 
+  getUserToken() {
+    const token = this.ls.get("token");
+    return token;
+  }
+
 }

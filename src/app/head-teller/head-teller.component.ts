@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatTableDataSource } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatTableDataSource, MatIconRegistry } from '@angular/material';
 import { HeadTellerDialogComponent } from '../dialog/head-teller-dialog/head-teller-dialog.component';
 import { HeadService } from '../services/head.service';
 import { OtoTable } from '../models/otorisastion-table';
@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
 import { RejectTransactionComponent } from '../dialog/reject-transaction/reject-transaction.component';
 import { ConfirmTransactionComponent } from '../dialog/confirm-transaction/confirm-transaction.component';
 import { DialogService } from '../services/dialog.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 // created by Dwi & Herza
 
@@ -43,8 +44,10 @@ export class HeadTellerComponent implements OnInit, OnDestroy {
   constructor(public dialog: MatDialog, private headServ: HeadService, private appConfig: AppConfiguration,
     private userData: UserDataService, private dialogService: DialogService) {
     let user = this.userData.getUserData();
-    this.userId = user['userid']
-    this.serverUrl = appConfig.ipSocketServer + "socket"
+    this.userId = user['userid'];
+    this.serverUrl = appConfig.ipSocketServer + "socket";
+
+
   }
 
   ngOnInit() {
@@ -130,7 +133,7 @@ export class HeadTellerComponent implements OnInit, OnDestroy {
           }
         }
       }, () => {
-       that.dialogService.errorDialog("Error", "Koneksi Terputus, Koneksi Ulang");
+        that.dialogService.errorDialog("Error", "Koneksi Terputus, Koneksi Ulang");
         setTimeout(() => {
           that.initializeWebSocketConnection(that.socketDestination);
         }, 2000);
@@ -171,14 +174,21 @@ export class HeadTellerComponent implements OnInit, OnDestroy {
       value: value
     };
     this.subDialog = this.dialog.open(ConfirmTransactionComponent, dialogConfig).afterClosed().subscribe(resBack => {
-      console.log("return value : ", resBack['isApprove']);
-      if (resBack['isApprove']) {
+      console.log("return value : ", resBack['returnType']);
 
-       this.subService =  this.headServ.setState(1, this.transId, 0, this.userId).subscribe(res => {
+      let valueReturn = resBack['returnType'];
+
+      if (valueReturn === 2) {
+        console.log("approve");
+        this.subService = this.headServ.setState(1, this.transId, 0, this.userId).subscribe(res => {
           this.getData();
         })
 
+      } else if (valueReturn === 3) {
+        console.log("rejected ");
+        this.confirmRejected();
       }
+
     });
   }
 

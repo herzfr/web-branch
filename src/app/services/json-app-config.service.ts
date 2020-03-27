@@ -20,6 +20,8 @@ export class JsonAppConfigService extends AppConfiguration {
         this.ipServer = data.ipServer;
         this.ipSocketServer = data.ipSocketServer;
         this.requestTimeout = data.requestTimeout;
+        this.ipLocalHost = "http://localhost:1111/api/wbservice/"
+        this.ipLocalHostSocket = "http://localhost:1111/socket"
         console.log("configuration loaded");
       })
       .catch(() => {
