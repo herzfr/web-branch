@@ -35,6 +35,7 @@ import { HeadTellerDialogComponent } from './dialog/head-teller-dialog/head-tell
 import { HeadService } from './services/head.service';
 import { UserDataService } from './services/user-data.service';
 import { NgxImageCompressService } from 'ngx-image-compress';
+import { DialogTransactionNonComponent } from './dialog/dialog-transaction-non/dialog-transaction-non.component';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -54,8 +55,9 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     DialogTransactionComponent,
     TestComponent,
     HeadTellerDialogComponent,
+    DialogTransactionNonComponent,
   ],
-  entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent],
+  entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent, DialogTransactionNonComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -1,0 +1,63 @@
+<div id="title" mat-dialog-title>
+  <ul class="container justify-content-center mb-0">
+    <li class="list-inline-item row justify-content-center font-weight-bolder">PEMBUATAN REKENING BARU</li>
+    <li class="list-inline-item row justify-content-center font-weight-bold">No Antrian 008</li>
+  </ul>
+
+  <div class="row justify-content-between pl-3 pr-3">
+    <p class="h6 mb-0 font-weight-bold">Date</p>
+    <p class="h6 mb-0 font-weight-bold">Time</p>
+  </div>
+  <div class="row justify-content-between pl-3 pr-3">
+    <small class="text-justify">10 January 2020</small>
+    <small class="text-justify">10.46</small>
+  </div>
+</div>
+
+<div id="nik" class="form-group row">
+  <label class="col-sm-2 col-form-label font-weight-bold">NIK</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control" id="nik">
+  </div>
+  <div class="col-sm-2">
+    <button mat-button class="btn-retrieve">Retrieve</button>
+  </div>
+</div>
+
+<div id="line1" class="row justify-content-center">
+  <p class="h6 pt-1 mb-0 ">Data Pemohon</p>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-4 col-form-label font-weight-bold">Identitas yang Digunakan </label>
+  <div class="col-sm-8 col-form-label">
+    :
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+      <label class="form-check-label" for="inlineRadio1">KTP</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+      <label class="form-check-label" for="inlineRadio2">Passpor</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
+      <label class="form-check-label" for="inlineRadio3">Lainnya</label>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-content class="mat-typography">
+
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-center">
+  <div class="container-fluid justify-content-between d-flex m-0">
+    <button class="batal" mat-button mat-dialog-close>Batal</button>
+    <button class="skip" mat-button mat-dialog-close>Skip</button>
+  </div>
+  <button class="proses" mat-button mat-dialog-close>Selesai</button>
+  <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
+</mat-dialog-actions>
