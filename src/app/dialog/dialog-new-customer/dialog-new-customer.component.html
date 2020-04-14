@@ -25,32 +25,302 @@
   </div>
 </div>
 
-<div id="line1" class="row justify-content-center">
-  <p class="h6 pt-1 mb-0 ">Data Pemohon</p>
-</div>
 
-<ng-container>
-
-  <div class="form-group row">
-    <label class="col-sm-4 col-form-label font-weight-bold">Identitas yang Digunakan </label>
-    <div class="col-sm-8 col-form-label">
-      :
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-        <label class="form-check-label" for="inlineRadio1">KTP</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-        <label class="form-check-label" for="inlineRadio2">Passpor</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-        <label class="form-check-label" for="inlineRadio3">Lainnya</label>
-      </div>
-    </div>
+<form [formGroup]="productInfo">
+  <div id="line1" class="row justify-content-center mb-3">
+    <p class="h6 pt-1 mb-0 ">Info Produk</p>
   </div>
 
-</ng-container>
+  <div *ngFor="let item of productInfo.controls | keyvalue" class="form-group row mb-1">
+    <label *ngIf="item.key === 'email'" class="col-sm-2 col-form-label font-weight-bold">Email</label>
+    <label *ngIf="item.key === 'tipeKartu'" class="col-sm-2 col-form-label font-weight-bold">Tipe Kartu</label>
+    <label *ngIf="item.key === 'produk'" class="col-sm-2 col-form-label font-weight-bold">Produk</label>
+    <label *ngIf="item.key === 'tujuan'" class="col-sm-2 col-form-label font-weight-bold">Tujuan</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" formControlName="{{item.key}}">
+    </div>
+  </div>
+</form>
+
+<form [formGroup]="dataPemohon">
+  <div id="line1" class="row justify-content-center mb-3">
+    <p class="h6 pt-1 mb-0 ">Data Pemohon</p>
+  </div>
+
+  <ng-container *ngFor="let item of dataPemohon.controls | keyvalue">
+
+    <div *ngIf="item.key ==='identitas'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Identitas yang Digunakan </label>
+      <div class="col-sm-6 col-form-label">
+        :
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="{{item.key}}" id="inlineRadio1" value="ktp"
+            formControlName="{{item.key}}">
+          <label class="form-check-label" for="inlineRadio1">KTP</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="{{item.key}}" id="inlineRadio2" value="passpor"
+            formControlName="{{item.key}}">
+          <label class="form-check-label" for="inlineRadio2">Passpor</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="{{item.key}}" id="inlineRadio3" value="lainnya"
+            formControlName="{{item.key}}">
+          <label class="form-check-label" for="inlineRadio3">Lainnya</label>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='noIdentitas'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">No Identitas</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="noIdentitas">
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='namaLengkap'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Nama Lengkap</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="namaLengkap">
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='namaIbu'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Nama Ibu</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="namaIbu">
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='noHandphone'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">No Handphone</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="noHandphone">
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='noNpwp'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">No NPWP</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="noNpwp">
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='alamat'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Alamat (Sesuai Identitas)</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="alamat">
+      </div>
+    </div>
+
+
+    <div *ngIf="item.key === 'noRt'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">RT/RW</label>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" formControlName="noRt">
+      </div>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" formControlName="noRw">
+      </div>
+      <label class="col-sm-2 col-form-label font-weight-bold">Kodepos</label>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" formControlName="kodePos">
+      </div>
+    </div>
+
+
+    <div *ngIf="item.key ==='provinsi'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Provinsi</label>
+      <div class="col-sm-4">
+        <select class="form-control option" formControlName="provinsi">
+          <option value="">Select a category</option>
+          <option *ngFor='let prv of province' [selected]="prv.id === item.value" [value]="prv.id">{{prv.nama}}</option>
+        </select>
+      </div>
+
+      <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab.</label>
+      <div class="col-sm-4">
+        <select class="form-control option" formControlName="kabupaten">
+          <option value="">Select a category</option>
+          <option *ngFor='let ct of kabkot' [selected]="ct.id === item.value" [value]="ct.id">{{ct.nama}}</option>
+        </select>
+      </div>
+
+      <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan</label>
+      <div class="col-sm-4">
+        <select class="form-control option" formControlName="kecamatan">
+          <option value="">Select a category</option>
+          <option *ngFor='let kc of dataKec' [selected]="kc.id === item.value" [value]="kc.id">{{kc.nama}}</option>
+        </select>
+      </div>
+
+      <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan</label>
+      <div class="col-sm-4">
+        <select class="form-control option" formControlName="kelurahan">
+          <option value="">Select a category</option>
+          <option *ngFor='let kl of dataKel' [selected]="kl.id === item.value" [value]="kl.id">{{kl.nama}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='telpRumah'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Telp Rumah</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="telpRumah">
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='alamatDomisili'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Alamat Domisili</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="alamatDomisili">
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='provinsiDomisili'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Provinsi Domisili</label>
+      <div class="col-sm-4">
+        <select class="form-control option" formControlName="provinsiDomisili">
+          <option value="">Select a category</option>
+          <option *ngFor='let prv of province' [selected]="prv.id === item.value" [value]="prv.id">{{prv.nama}}</option>
+        </select>
+      </div>
+
+      <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab. Domisili</label>
+      <div class="col-sm-4">
+        <select class="form-control option" formControlName="kabupatenDomisili">
+          <option value="">Select a category</option>
+          <option *ngFor='let ct of kabkot2' [selected]="ct.id === item.value" [value]="ct.id">{{ct.nama}}</option>
+        </select>
+      </div>
+
+      <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan Domisili</label>
+      <div class="col-sm-4">
+        <select class="form-control option" formControlName="kecamatanDomisili">
+          <option value="">Select a category</option>
+          <option *ngFor='let kc of dataKec2' [selected]="kc.id === item.value" [value]="kc.id">{{kc.nama}}</option>
+        </select>
+      </div>
+
+      <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan Domisili</label>
+      <div class="col-sm-4">
+        <select class="form-control option" formControlName="kelurahanDomisili">
+          <option value="">Select a category</option>
+          <option *ngFor='let kl of dataKel2' [selected]="kl.id === item.value" [value]="kl.id">{{kl.nama}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='telpDomisili'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Telp Rumah Domisili</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="telpDomisili">
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='tempatLahir'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Tempat Lahir</label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" formControlName="tempatLahir">
+      </div>
+
+      <label class="col-sm-2 col-form-label font-weight-bold">Tanggal Lahir</label>
+      <div class="col-sm-3 d-flex align-items-center">
+        <input type="text" class="form-control" formControlName="tempatLahir" [matDatepicker]="picker">
+      </div>
+      <div class="col-sm-1">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='kewarganegaraan'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Kewarganegaraan </label>
+      <div class="col-sm-6 col-form-label">
+        :
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="{{item.key}}" id="kewarganegaraanRadio1" value="1"
+            formControlName="{{item.key}}">
+          <label class="form-check-label" for="kewarganegaraanRadio1">WNI</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="{{item.key}}" id="kewarganegaraanRadio2" value="0"
+            formControlName="{{item.key}}">
+          <label class="form-check-label" for="kewarganegaraanRadio2">WNA</label>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='jenisKelamin'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Jenis Kelamin </label>
+      <div class="col-sm-6 col-form-label">
+        :
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="{{item.key}}" id="jenisKelaminRadio1" value="0"
+            formControlName="{{item.key}}">
+          <label class="form-check-label" for="jenisKelaminRadio1">Pria</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="{{item.key}}" id="jenisKelaminRadio2" value="1"
+            formControlName="{{item.key}}">
+          <label class="form-check-label" for="jenisKelaminRadio2">Wanita</label>
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="item.key ==='agama'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Agama</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="agama">
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='pendidikan'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Pendidikan</label>
+      <div class="col-sm-4">
+        <select class="form-control option" formControlName="pendidikan">
+          <option value="">Select a category</option>
+          <option *ngFor='let edu of dataEdu' [selected]="edu.id === item.value" [value]="edu.id">{{edu.name}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+
+
+    <!-- 
+    <div class="row">
+
+      <div class="col-sm-6">
+        <div *ngIf="item.key ==='noRt' && " class="form-group row mb-1">
+          <label class="col-sm-2 col-form-label font-weight-bold">RT</label>
+          <div class="col-sm-2">
+            <input type="text" class="form-control" formControlName="{{item.key}}">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div *ngIf="item.key ==='noRw'" class="form-group row mb-1">
+          <label class="col-sm-2 col-form-label font-weight-bold">RW</label>
+          <div class="col-sm-2">
+            <input type="text" class="form-control" formControlName="{{item.key}}">
+          </div>
+        </div>
+      </div>
+
+    </div> -->
+
+
+
+
+
+
+  </ng-container>
+
+
+</form>
 
 <mat-dialog-content class="mat-typography">
 
@@ -66,3 +336,26 @@
   <button class="proses" mat-button mat-dialog-close>Selesai</button>
   <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
 </mat-dialog-actions>
+
+
+
+
+
+<!-- <div class="form-group row">
+      <label class="col-sm-4 col-form-label font-weight-bold">Identitas yang Digunakan </label>
+      <div class="col-sm-8 col-form-label">
+        :
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+          <label class="form-check-label" for="inlineRadio1">KTP</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+          <label class="form-check-label" for="inlineRadio2">Passpor</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
+          <label class="form-check-label" for="inlineRadio3">Lainnya</label>
+        </div>
+      </div>
+    </div> -->

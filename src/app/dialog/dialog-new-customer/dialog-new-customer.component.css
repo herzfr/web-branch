@@ -5,9 +5,19 @@
   color: #192A59;
 }
 
+::ng-deep .cdk-overlay-pane {
+  overflow: auto;
+}
+
+* label {
+  font-size: 14px;
+}
+
 /* Input
  ------------------------------------------------------------- */
 input[type="text"] {
+  height: 30px;
+  font-size: smaller;
   background: #EEF3F8;
   border: 1px solid #133764;
   box-sizing: border-box;
@@ -22,6 +32,24 @@ input[type="text"] {
 input[type="text"]:focus {
   text-indent: 10px;
   box-shadow: none;
+}
+
+/* Select
+ ------------------------------------------------------------- */
+select.form-control:not([size]):not([multiple]) {
+  height: calc(2rem + 1px);
+  box-shadow: none;
+  height: 30px;
+  font-size: smaller;
+  background: #EEF3F8;
+  border: 1px solid #133764;
+  box-sizing: border-box;
+  border-radius: 20px;
+  outline: none;
+  padding-left: 10px;
+  padding-right: 10px;
+  transition: all 0.3s ease;
+  color: #133764;
 }
 
 
