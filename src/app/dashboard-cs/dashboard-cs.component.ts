@@ -13,7 +13,7 @@ import { QueueService } from '../services/queue.service';
 import { AppConfiguration } from '../models/app.configuration';
 import { SharedService } from '../services/shared.service';
 import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
-import { DialogTransactionNonComponent } from '../dialog/dialog-transaction-non/dialog-transaction-non.component';
+import { DialogNewCustomerComponent } from '../dialog/dialog-new-customer/dialog-new-customer.component';
 declare var $: any;
 declare var jQuery: any;
 
@@ -168,10 +168,9 @@ export class DashboardCsComponent implements OnInit {
 
     if (TypeNasabah === 'non') {
       console.log('test');
-      this.transactionDialogNon()
       this.queueServ.getNewQueueCS(this.branchCode, "998", "999").subscribe(e => {
-        console.log(e);
-
+        console.log(e[0]);
+        this.transactionDialogNon(e[0])
       })
     } else {
       this.queueServ.getLatestQue(this.branchCode, 998).subscribe(res => {
@@ -250,17 +249,17 @@ export class DashboardCsComponent implements OnInit {
 
   }
 
-  transactionDialogNon() {
+  transactionDialogNon(event) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
       id: 1,
-      data: "data ini",
+      data: event,
     }
     dialogConfig.backdropClass = 'backdropBackground';
     dialogConfig.disableClose = true;
     dialogConfig.width = '1200px';
 
-    this.dlg.open(DialogTransactionNonComponent, dialogConfig)
+    this.dlg.open(DialogNewCustomerComponent, dialogConfig)
   }
 
   transactionDialog(datas) {
