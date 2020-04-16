@@ -132,32 +132,32 @@
     <div *ngIf="item.key ==='provinsi'" class="form-group row mb-1">
       <label class="col-sm-2 col-form-label font-weight-bold">Provinsi</label>
       <div class="col-sm-4">
-        <select class="form-control option" formControlName="provinsi">
-          <option value="">Select a category</option>
+        <select (change)="onChangeProv(dataPemohon, 'provinsi', 1)" class="form-control option"
+          formControlName="provinsi">
           <option *ngFor='let prv of province' [selected]="prv.id === item.value" [value]="prv.id">{{prv.nama}}</option>
         </select>
       </div>
 
       <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab.</label>
       <div class="col-sm-4">
-        <select class="form-control option" formControlName="kabupaten">
-          <option value="">Select a category</option>
+        <select (change)="onChangeCity(dataPemohon, 'kabupaten', 1)" class="form-control option"
+          formControlName="kabupaten">
           <option *ngFor='let ct of kabkot' [selected]="ct.id === item.value" [value]="ct.id">{{ct.nama}}</option>
         </select>
       </div>
 
       <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan</label>
       <div class="col-sm-4">
-        <select class="form-control option" formControlName="kecamatan">
-          <option value="">Select a category</option>
+        <select (change)="onChangeDist(dataPemohon, 'kecamatan', 1)" class="form-control option"
+          formControlName="kecamatan">
           <option *ngFor='let kc of dataKec' [selected]="kc.id === item.value" [value]="kc.id">{{kc.nama}}</option>
         </select>
       </div>
 
       <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan</label>
       <div class="col-sm-4">
-        <select class="form-control option" formControlName="kelurahan">
-          <option value="">Select a category</option>
+        <select (change)="onChangeVill(dataPemohon, 'kelurahan', 1)" class="form-control option"
+          formControlName="kelurahan">
           <option *ngFor='let kl of dataKel' [selected]="kl.id === item.value" [value]="kl.id">{{kl.nama}}</option>
         </select>
       </div>
@@ -180,7 +180,8 @@
     <div *ngIf="item.key ==='provinsiDomisili'" class="form-group row mb-1">
       <label class="col-sm-2 col-form-label font-weight-bold">Provinsi Domisili</label>
       <div class="col-sm-4">
-        <select class="form-control option" formControlName="provinsiDomisili">
+        <select (change)="onChangeProv(dataPemohon, 'provinsiDomisili', 2)" class="form-control option"
+          formControlName="provinsiDomisili">
           <option value="">Select a category</option>
           <option *ngFor='let prv of province' [selected]="prv.id === item.value" [value]="prv.id">{{prv.nama}}</option>
         </select>
@@ -188,7 +189,8 @@
 
       <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab. Domisili</label>
       <div class="col-sm-4">
-        <select class="form-control option" formControlName="kabupatenDomisili">
+        <select (change)="onChangeCity(dataPemohon, 'kabupatenDomisili', 2)" class="form-control option"
+          formControlName="kabupatenDomisili">
           <option value="">Select a category</option>
           <option *ngFor='let ct of kabkot2' [selected]="ct.id === item.value" [value]="ct.id">{{ct.nama}}</option>
         </select>
@@ -196,7 +198,8 @@
 
       <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan Domisili</label>
       <div class="col-sm-4">
-        <select class="form-control option" formControlName="kecamatanDomisili">
+        <select (change)="onChangeDist(dataPemohon, 'kecamatanDomisili', 2)" class="form-control option"
+          formControlName="kecamatanDomisili">
           <option value="">Select a category</option>
           <option *ngFor='let kc of dataKec2' [selected]="kc.id === item.value" [value]="kc.id">{{kc.nama}}</option>
         </select>
@@ -204,7 +207,8 @@
 
       <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan Domisili</label>
       <div class="col-sm-4">
-        <select class="form-control option" formControlName="kelurahanDomisili">
+        <select (change)="onChangeVill(dataPemohon, 'kelurahanDomisili', 2)" class="form-control option"
+          formControlName="kelurahanDomisili">
           <option value="">Select a category</option>
           <option *ngFor='let kl of dataKel2' [selected]="kl.id === item.value" [value]="kl.id">{{kl.nama}}</option>
         </select>
@@ -226,12 +230,13 @@
 
       <label class="col-sm-2 col-form-label font-weight-bold">Tanggal Lahir</label>
       <div class="col-sm-3 d-flex align-items-center">
-        <input type="text" class="form-control" formControlName="tempatLahir" [matDatepicker]="picker">
+        <input type="text" class="form-control" formControlName="tanggalLahir" [matDatepicker]="picker">
       </div>
       <div class="col-sm-1">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </div>
+      <!-- <button (click)="test()">TEST</button> -->
     </div>
 
     <div *ngIf="item.key ==='kewarganegaraan'" class="form-group row mb-1">
@@ -268,7 +273,6 @@
       </div>
     </div>
 
-
     <div *ngIf="item.key ==='agama'" class="form-group row mb-1">
       <label class="col-sm-2 col-form-label font-weight-bold">Agama</label>
       <div class="col-sm-6">
@@ -287,39 +291,314 @@
       </div>
     </div>
 
+  </ng-container>
+</form>
+
+<form [formGroup]="dataPekerjaan">
+  <div id="line1" class="row justify-content-center mb-3">
+    <p class="h6 pt-1 mb-0 ">Data Pekerjaan</p>
+  </div>
+
+  <ng-container *ngFor="let item of dataPekerjaan.controls | keyvalue">
 
 
-    <!-- 
-    <div class="row">
-
+    <div *ngIf="item.key == 'pekerjaan'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Pekerjaan</label>
       <div class="col-sm-6">
-        <div *ngIf="item.key ==='noRt' && " class="form-group row mb-1">
-          <label class="col-sm-2 col-form-label font-weight-bold">RT</label>
-          <div class="col-sm-2">
-            <input type="text" class="form-control" formControlName="{{item.key}}">
-          </div>
-        </div>
+        <input type="text" class="form-control" formControlName="{{ item.key }}">
+      </div>
+    </div>
+
+    <div *ngIf="item.key == 'namaKantor'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Nama Kantor</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="{{ item.key }}">
+      </div>
+    </div>
+
+    <div *ngIf="item.key == 'jabatan'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Jabatan</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="{{ item.key }}">
+      </div>
+    </div>
+
+    <div *ngIf="item.key == 'alamat'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Alamat (kantor)</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="{{ item.key }}">
+      </div>
+    </div>
+
+    <div *ngIf="item.key === 'noRtKantor'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">RT/RW</label>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" formControlName="noRtKantor">
+      </div>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" formControlName="noRwKantor">
+      </div>
+      <label class="col-sm-2 col-form-label font-weight-bold">Kodepos</label>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" formControlName="kodePos">
+      </div>
+    </div>
+
+
+    <div *ngIf="item.key ==='provinsi'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Provinsi</label>
+      <div class="col-sm-4">
+        <select (change)="onChangeProv(dataPekerjaan, 'provinsi', 3)" class="form-control option"
+          formControlName="provinsi">
+          <option value="">Select a category</option>
+          <option *ngFor='let prv of province' [selected]="prv.id === item.value" [value]="prv.id">{{prv.nama}}</option>
+        </select>
       </div>
 
-      <div class="col-sm-6">
-        <div *ngIf="item.key ==='noRw'" class="form-group row mb-1">
-          <label class="col-sm-2 col-form-label font-weight-bold">RW</label>
-          <div class="col-sm-2">
-            <input type="text" class="form-control" formControlName="{{item.key}}">
-          </div>
-        </div>
+      <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab.</label>
+      <div class="col-sm-4">
+        <select (change)="onChangeCity(dataPekerjaan, 'kabupaten', 3)" class="form-control option"
+          formControlName="kabupaten">
+          <option value="">Select a category</option>
+          <option *ngFor='let ct of kabkot3' [selected]="ct.id === item.value" [value]="ct.id">{{ct.nama}}</option>
+        </select>
       </div>
 
-    </div> -->
+      <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan</label>
+      <div class="col-sm-4">
+        <select (change)="onChangeDist(dataPekerjaan, 'kecamatan', 3)" class="form-control option"
+          formControlName="kecamatan">
+          <option value="">Select a category</option>
+          <option *ngFor='let kc of dataKec3' [selected]="kc.id === item.value" [value]="kc.id">{{kc.nama}}</option>
+        </select>
+      </div>
 
+      <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan</label>
+      <div class="col-sm-4">
+        <select (change)="onChangeVill(dataPekerjaan, 'kelurahan', 3)" class="form-control option"
+          formControlName="kelurahan">
+          <option value="">Select a category</option>
+          <option *ngFor='let kl of dataKel3' [selected]="kl.id === item.value" [value]="kl.id">{{kl.nama}}</option>
+        </select>
+      </div>
+    </div>
 
+    <div *ngIf="item.key == 'sumber'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Sumber Gaji</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="{{ item.key }}">
+      </div>
+    </div>
 
+    <div *ngIf="item.key ==='penghasilan'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Penghasilan </label>
+      <div class="col-sm-6 col-form-label">
+        :
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="{{item.key}}" id="penghasilanRadio1" value="1"
+            formControlName="{{item.key}}">
+          <label class="form-check-label" for="penghasilanRadio1">&le; 5 Juta</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="{{item.key}}" id="penghasilanRadio2" value="2"
+            formControlName="{{item.key}}">
+          <label class="form-check-label" for="penghasilanRadio2">5 - 10 Juta</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="{{item.key}}" id="penghasilanRadio3" value="3"
+            formControlName="{{item.key}}">
+          <label class="form-check-label" for="penghasilanRadio3">&ge; 10 Juta </label>
+        </div>
+      </div>
+    </div>
 
+    <div *ngIf="item.key ==='penghasilanLain'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Penghasilan Lainnya</label>
+      <div class="col-sm-6 col-form-label">
+        :
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="{{item.key}}" id="penghasilanLainRadio1" value="1"
+            formControlName="{{item.key}}">
+          <label class="form-check-label" for="penghasilanLainRadio1">&le; 5 Juta</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="{{item.key}}" id="penghasilanLainRadio2" value="2"
+            formControlName="{{item.key}}">
+          <label class="form-check-label" for="penghasilanLainRadio2">5 - 10 Juta</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="{{item.key}}" id="penghasilanLainRadio3" value="3"
+            formControlName="{{item.key}}">
+          <label class="form-check-label" for="penghasilanLainRadio3">&ge; 10 Juta </label>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</form>
+
+<form [formGroup]="dataKerabat">
+  <div id="line1" class="row justify-content-center mb-3">
+    <p class="h6 pt-1 mb-0 ">Data Kerabat dan Ahli Waris</p>
+  </div>
+
+  <ng-container *ngFor="let item of dataKerabat.controls | keyvalue">
+
+    <div *ngIf="item.key == 'namaKerabat'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Nama Kerabat</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="{{ item.key }}">
+      </div>
+    </div>
+
+    <div *ngIf="item.key == 'alamatKerabat'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Alamat Kerabat</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="{{ item.key }}">
+      </div>
+    </div>
+
+    <div *ngIf="item.key == 'telpKerabat'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Telp Kerabat</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="{{ item.key }}">
+      </div>
+    </div>
+
+    <div *ngIf="item.key === 'noRtKerabat'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">RT/RW</label>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" formControlName="noRtKerabat">
+      </div>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" formControlName="noRwKerabat">
+      </div>
+      <label class="col-sm-2 col-form-label font-weight-bold">Kodepos</label>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" formControlName="kodePosKerabat">
+      </div>
+    </div>
+
+    <div *ngIf="item.key ==='provinsiKerabat'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Provinsi <span
+          class="text-muted">(*Kerabat)</span></label>
+      <div class="col-sm-4">
+        <select (change)="onChangeProv(dataKerabat, 'provinsiKerabat', 4)" class="form-control option"
+          formControlName="provinsiKerabat">
+          <option value="">Select a category</option>
+          <option *ngFor='let prv of province' [selected]="prv.id === item.value" [value]="prv.id">{{prv.nama}}</option>
+        </select>
+      </div>
+
+      <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab. <span
+          class="text-muted">(*Kerabat)</span></label>
+      <div class="col-sm-4">
+        <select (change)="onChangeCity(dataKerabat, 'kabupatenKerabat', 4)" class="form-control option"
+          formControlName="kabupatenKerabat">
+          <option value="">Select a category</option>
+          <option *ngFor='let ct of kabkot4' [selected]="ct.id === item.value" [value]="ct.id">{{ct.nama}}</option>
+        </select>
+      </div>
+
+      <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan <span
+          class="text-muted">(*Kerabat)</span></label>
+      <div class="col-sm-4">
+        <select (change)="onChangeDist(dataKerabat, 'kecamatanKerabat', 4)" class="form-control option"
+          formControlName="kecamatanKerabat">
+          <option value="">Select a category</option>
+          <option *ngFor='let kc of dataKec4' [selected]="kc.id === item.value" [value]="kc.id">{{kc.nama}}</option>
+        </select>
+      </div>
+
+      <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan <span
+          class="text-muted">(*Kerabat)</span></label>
+      <div class="col-sm-4">
+        <select (change)="onChangeVill(dataKerabat, 'kelurahanKerabat', 4)" class="form-control option"
+          formControlName="kelurahanKerabat">
+          <option value="">Select a category</option>
+          <option *ngFor='let kl of dataKel4' [selected]="kl.id === item.value" [value]="kl.id">{{kl.nama}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="item.key == 'namaAhliWaris'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Nama Ahli Waris</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="{{ item.key }}">
+      </div>
+    </div>
+
+    <div *ngIf="item.key == 'alamatAhliWaris'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Alamat Ahli Waris</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="{{ item.key }}">
+      </div>
+    </div>
+
+    <div *ngIf="item.key == 'telpAhliWaris'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Telp Ahli Waris</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="{{ item.key }}">
+      </div>
+    </div>
+
+    <div *ngIf="item.key === 'noRtAhliWaris'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">RT/RW</label>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" formControlName="noRtAhliWaris">
+      </div>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" formControlName="noRwAhliWaris">
+      </div>
+      <!-- <label class="col-sm-2 col-form-label font-weight-bold">Kodepos</label>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" formControlName="kodePosKerabat">
+      </div> -->
+    </div>
+
+    <div *ngIf="item.key ==='provinsiAhliWaris'" class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Provinsi <span class="text-muted">(*Ahli
+          Waris)</span></label>
+      <div class="col-sm-4">
+        <select (change)="onChangeProv(dataKerabat, 'provinsiAhliWaris', 5)" class="form-control option"
+          formControlName="provinsiAhliWaris">
+          <option value="">Select a category</option>
+          <option *ngFor='let prv of province' [selected]="prv.id === item.value" [value]="prv.id">{{prv.nama}}</option>
+        </select>
+      </div>
+
+      <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab. <span class="text-muted">(*Ahli
+          Waris)</span></label>
+      <div class="col-sm-4">
+        <select (change)="onChangeCity(dataKerabat, 'kabupatenAhliWaris', 5)" class="form-control option"
+          formControlName="kabupatenAhliWaris">
+          <option value="">Select a category</option>
+          <option *ngFor='let ct of kabkot5' [selected]="ct.id === item.value" [value]="ct.id">{{ct.nama}}</option>
+        </select>
+      </div>
+
+      <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan <span class="text-muted">(*Ahli
+          Waris)</span></label>
+      <div class="col-sm-4">
+        <select (change)="onChangeDist(dataKerabat, 'kecamatanAhliWaris', 5)" class="form-control option"
+          formControlName="kecamatanAhliWaris">
+          <option value="">Select a category</option>
+          <option *ngFor='let kc of dataKec5' [selected]="kc.id === item.value" [value]="kc.id">{{kc.nama}}</option>
+        </select>
+      </div>
+
+      <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan <span class="text-muted">(*Ahli
+          Waris)</span></label>
+      <div class="col-sm-4">
+        <select (change)="onChangeVill(dataKerabat, 'kelurahanAhliWaris', 5)" class="form-control option"
+          formControlName="kelurahanAhliWaris">
+          <option value="">Select a category</option>
+          <option *ngFor='let kl of dataKel5' [selected]="kl.id === item.value" [value]="kl.id">{{kl.nama}}</option>
+        </select>
+      </div>
+    </div>
 
 
   </ng-container>
-
-
 </form>
 
 <mat-dialog-content class="mat-typography">

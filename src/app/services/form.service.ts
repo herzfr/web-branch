@@ -21,12 +21,12 @@ export class FormService {
         return this.http.get(this.apiUrl + 'api/kabupaten/byProvinsi?idProvinsi=' + idProv);
     }
 
-    getVillage(idCity) {
+    getDistrict(idCity) {
         // https://localhost:8443/api/kecamatan/byKabupaten
         return this.http.get(this.apiUrl + 'api/kecamatan/byKabupaten?idKabupaten=' + idCity);
     }
 
-    getDistrict(idVillage) {
+    getVillage(idVillage) {
         // https://localhost:8443/api/kelurahan/byKecamatan
         return this.http.get(this.apiUrl + 'api/kelurahan/byKecamatan?idKecamatan=' + idVillage);
     }
