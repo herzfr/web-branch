@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import { NasabahService } from 'src/app/services/nasabah.service';
 
 @Component({
   selector: 'app-verify-dialog',
@@ -21,13 +22,15 @@ export class VerifyDialogComponent implements OnInit {
   private dataForm4;
 
 
-  constructor(private dialogRef: MatDialogRef<VerifyDialogComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog) {
+  constructor(private dialogRef: MatDialogRef<VerifyDialogComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog,
+    private nasabahServ: NasabahService) {
     console.log(data.data);
 
   }
 
   ngOnInit() {
     this.initializeWebSocketConnection('nasabahbiometric')
+    this.nasabahServ.callNasabahVerify().subscribe()
   }
 
   initializeWebSocketConnection(socket) {
@@ -41,11 +44,13 @@ export class VerifyDialogComponent implements OnInit {
 
         if (message.body) {
           const body = JSON.parse(message.body);
+          console.log(body);
+
 
           if (body.success) {
             that.stompClient.disconnect();
             that.dialogRef.close('reload')
-            // console.log(body.token);
+            console.log(body);
           }
         }
 

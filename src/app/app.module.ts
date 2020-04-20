@@ -37,6 +37,7 @@ import { UserDataService } from './services/user-data.service';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { DialogNewCustomerComponent } from './dialog/dialog-new-customer/dialog-new-customer.component';
 import { VerifyDialogComponent } from './dialog/verify-dialog/verify-dialog.component';
+import { NasabahService } from './services/nasabah.service';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -78,7 +79,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   ],
   providers: [
     CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService,
-    TestService, TransactionService, SharedService, HeadService, UserDataService, NgxImageCompressService,
+    TestService, TransactionService, SharedService, HeadService, UserDataService, NgxImageCompressService, NasabahService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],
