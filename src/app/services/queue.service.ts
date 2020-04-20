@@ -38,6 +38,18 @@ export class QueueService {
     return this.http.get(this.apiUrl + 'api/queue/newqueue?' + params, this.httpOptions)
   }
 
+  getNewQueueCS(brch: string, status1: string, status2: string) {
+    const params = new HttpParams()
+      .set('branchcode', brch)
+      .set('status1', status1)
+      .set('status2', status2);
+    // https://10.62.10.28:8443/api/queue/newqueuecs
+    return this.http.get(this.apiUrl + 'api/queue/newqueuecs?' + params, this.httpOptions)
+      .pipe(
+
+      )
+  }
+
   getDataQueByNo(brch: string, stus: number, que: number) {
     let body = "?branchcode=" + brch + "&status=" + stus + "&queueno=" + que;
 
