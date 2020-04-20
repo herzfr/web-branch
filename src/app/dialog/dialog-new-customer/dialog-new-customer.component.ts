@@ -1,8 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { FormGroup, FormControl, FormArray } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material';
+import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { FormService } from 'src/app/services/form.service';
 import * as moment from 'moment';
+import { VerifyDialogComponent } from '../verify-dialog/verify-dialog.component';
 declare var $: any;
 
 @Component({
@@ -45,6 +46,8 @@ export class DialogNewCustomerComponent implements OnInit {
   // DATA RELIGION
   private dataEdu: any;
 
+  submitted = false;
+
 
   constructor(private dialogRef: MatDialogRef<DialogNewCustomerComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog,
     private formServ: FormService) {
@@ -58,9 +61,6 @@ export class DialogNewCustomerComponent implements OnInit {
     this.dataKerabat = this.getdataKerabat()
     this.getDataLocation()
 
-
-
-
     // GET DATA EDUCATION
     this.formServ.getEducation().subscribe(e => {
       // console.log(e);
@@ -68,6 +68,11 @@ export class DialogNewCustomerComponent implements OnInit {
     })
 
   }
+
+  get form0() { return this.productInfo.controls; }
+  get form1() { return this.dataPemohon.controls; }
+  get form2() { return this.dataPekerjaan.controls; }
+  get form3() { return this.dataKerabat.controls; }
 
   ngOnInit() {
     setTimeout(() => {
@@ -83,8 +88,8 @@ export class DialogNewCustomerComponent implements OnInit {
       }
     })
 
-
   }
+
 
 
   getproductInfo() {
@@ -95,7 +100,7 @@ export class DialogNewCustomerComponent implements OnInit {
     for (const key in dataTransbuff.produkInfo) {
       if (dataTransbuff.produkInfo.hasOwnProperty(key)) {
         const element = dataTransbuff.produkInfo[key];
-        group[key] = new FormControl(element)
+        group[key] = new FormControl(element, Validators.required)
       }
     }
     return new FormGroup(group);
@@ -121,17 +126,36 @@ export class DialogNewCustomerComponent implements OnInit {
               group[key] = new FormControl(new Date(NaN));
             }
             break;
+          case 'noHandphone':
+            group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
+            break;
+          case 'telpRumah':
+            group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
+            break;
+          case 'telpDomisili':
+            group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
+            break;
+          case 'noNpwp':
+            group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/), Validators.min(100000000000000), Validators.max(999999999999999)]);
+            break;
+          case 'tempatLahir':
+            group[key] = new FormControl(element, [Validators.required, Validators.pattern('[a-zA-Z ]*')]);
+            break;
+          case 'kodePos':
+            group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
+            break;
+          case 'kodePosDomisili':
+            group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
+            break;
           default:
-            group[key] = new FormControl(element)
+            group[key] = new FormControl(element, Validators.required)
             break;
         }
       }
     }
-    return new FormGroup(group);
-  }
+    console.log(group);
 
-  test() {
-    console.log(this.dataPemohon.get('tanggalLahir').value);
+    return new FormGroup(group);
   }
 
   getdataPekerjaan() {
@@ -141,7 +165,18 @@ export class DialogNewCustomerComponent implements OnInit {
     for (const key in dataTransbuff.dataPekerjaan) {
       if (dataTransbuff.dataPekerjaan.hasOwnProperty(key)) {
         const element = dataTransbuff.dataPekerjaan[key];
-        group[key] = new FormControl(element)
+        switch (key) {
+          case 'kodePos':
+            group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
+            break;
+          case 'telp':
+            group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
+            break;
+          default:
+            group[key] = new FormControl(element, Validators.required)
+            break;
+        }
+
       }
     }
     return new FormGroup(group);
@@ -155,6 +190,24 @@ export class DialogNewCustomerComponent implements OnInit {
       if (dataTransbuff.dataKerabat.hasOwnProperty(key)) {
         const element = dataTransbuff.dataKerabat[key];
         group[key] = new FormControl(element)
+
+        switch (key) {
+          case 'telpKerabat':
+            group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
+            break;
+          case 'telpAhliWaris':
+            group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
+            break;
+          case 'kodePosKerabat':
+            group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
+            break;
+          case 'kodePosAhliWaris':
+            group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
+            break;
+          default:
+            group[key] = new FormControl(element, Validators.required)
+            break;
+        }
       }
     }
     return new FormGroup(group);
@@ -438,6 +491,29 @@ export class DialogNewCustomerComponent implements OnInit {
       console.log(e);
       return e;
     })
+  }
+
+  requestNew() {
+    console.log(JSON.stringify(this.productInfo.value));
+    console.log(JSON.stringify(this.dataPemohon.value));
+    console.log(JSON.stringify(this.dataPekerjaan.value));
+    console.log(JSON.stringify(this.dataKerabat.value));
+
+    this.validatorDialog(this.productInfo.value, this.dataPemohon.value, this.dataPekerjaan.value, this.dataKerabat.value)
+  }
+
+
+  validatorDialog(data, data2, data3, data4) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      id: 0,
+      data: [data, data2, data3, data4],
+    }
+    dialogConfig.backdropClass = 'backdropBackground';
+    dialogConfig.disableClose = true;
+    dialogConfig.width = '1200px';
+
+    this.dialog.open(VerifyDialogComponent, dialogConfig)
   }
 
 

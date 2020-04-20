@@ -31,15 +31,50 @@
     <p class="h6 pt-1 mb-0 ">Info Produk</p>
   </div>
 
-  <div *ngFor="let item of productInfo.controls | keyvalue" class="form-group row mb-1">
-    <label *ngIf="item.key === 'email'" class="col-sm-2 col-form-label font-weight-bold">Email</label>
-    <label *ngIf="item.key === 'tipeKartu'" class="col-sm-2 col-form-label font-weight-bold">Tipe Kartu</label>
-    <label *ngIf="item.key === 'produk'" class="col-sm-2 col-form-label font-weight-bold">Produk</label>
-    <label *ngIf="item.key === 'tujuan'" class="col-sm-2 col-form-label font-weight-bold">Tujuan</label>
-    <div class="col-sm-6">
-      <input type="text" class="form-control" formControlName="{{item.key}}">
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Produk</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form0.produk.errors }" type="text" class="form-control"
+        formControlName="produk">
     </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form0.produk.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
   </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Tipe Kartu</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form0.tipeKartu.errors }" type="text" class="form-control"
+        formControlName="tipeKartu">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form0.tipeKartu.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Tujuan</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form0.tujuan.errors }" type="text" class="form-control"
+        formControlName="tujuan">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form0.tujuan.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Email</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form0.email.errors }" type="text" class="form-control" formControlName="email">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form0.email.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
 </form>
 
 <form [formGroup]="dataPemohon">
@@ -47,251 +82,343 @@
     <p class="h6 pt-1 mb-0 ">Data Pemohon</p>
   </div>
 
-  <ng-container *ngFor="let item of dataPemohon.controls | keyvalue">
-
-    <div *ngIf="item.key ==='identitas'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Identitas yang Digunakan </label>
-      <div class="col-sm-6 col-form-label">
-        :
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="{{item.key}}" id="inlineRadio1" value="ktp"
-            formControlName="{{item.key}}">
-          <label class="form-check-label" for="inlineRadio1">KTP</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="{{item.key}}" id="inlineRadio2" value="passpor"
-            formControlName="{{item.key}}">
-          <label class="form-check-label" for="inlineRadio2">Passpor</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="{{item.key}}" id="inlineRadio3" value="lainnya"
-            formControlName="{{item.key}}">
-          <label class="form-check-label" for="inlineRadio3">Lainnya</label>
-        </div>
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Identitas yang Digunakan </label>
+    <div class="col-sm-6 col-form-label">
+      :
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="inlineRadio1" value="ktp" formControlName="identitas">
+        <label class="form-check-label" for="inlineRadio1">KTP</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="inlineRadio2" value="passpor" formControlName="identitas">
+        <label class="form-check-label" for="inlineRadio2">Passpor</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="inlineRadio3" value="lainnya" formControlName="identitas">
+        <label class="form-check-label" for="inlineRadio3">Lainnya</label>
       </div>
     </div>
+  </div>
 
-    <div *ngIf="item.key ==='noIdentitas'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">No Identitas</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="noIdentitas">
-      </div>
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">No Identitas</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form1.noIdentitas.errors }" type="text" class="form-control"
+        formControlName="noIdentitas">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form1.noIdentitas.errors">
+      Id belum lengkap <span class="font-italic">(No Id tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Nama Lengkap</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form1.namaLengkap.errors }" type="text" class="form-control"
+        formControlName="namaLengkap">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form1.namaLengkap.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Nama Ibu</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form1.namaIbu.errors }" type="text" class="form-control"
+        formControlName="namaIbu">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form1.namaIbu.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">No Handphone</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form1.noHandphone.errors }" type="text" class="form-control"
+        formControlName="noHandphone">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form1.noHandphone.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">No NPWP</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form1.noNpwp.errors }" type="text" class="form-control"
+        formControlName="noNpwp">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form1.noNpwp.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong, Min/Max 15)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Alamat (Sesuai Identitas)</label>
+    <div class="col-sm-6">
+      <input [ngClass]="{ 'is-invalid': form1.alamat.errors }" type="text" class="form-control"
+        formControlName="alamat">
+    </div>
+    <mat-error class="text-danger col-sm-4" *ngIf="form1.alamat.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">RT/RW</label>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form1.noRt.errors }" type="text" class="form-control" formControlName="noRt">
+    </div>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form1.noRw.errors }" type="text" class="form-control" formControlName="noRw">
+    </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kodepos</label>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form1.kodePos.errors }" type="text" class="form-control"
+        formControlName="kodePos">
+    </div>
+  </div>
+
+  <div *ngIf="form1.noRt.errors && form1.noRw.errors || form1.kodePos.errors" class="row">
+    <mat-error class="text-danger col-sm-4 offset-sm-2" *ngIf="form1.noRt.errors && form1.noRw.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+    <mat-error class="text-danger col-sm-4 offset-sm-2" *ngIf="form1.kodePos.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong, Min/Max 5 Angka)</span>
+    </mat-error>
+  </div>
+
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Provinsi</label>
+    <div class="col-sm-4">
+      <select (change)="onChangeProv(dataPemohon, 'provinsi', 1)" class="form-control option"
+        formControlName="provinsi">
+        <option *ngFor='let prv of province' [selected]="provinsi" [value]="prv.id">{{prv.nama}}
+        </option>
+      </select>
     </div>
 
-    <div *ngIf="item.key ==='namaLengkap'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Nama Lengkap</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="namaLengkap">
-      </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab.</label>
+    <div class="col-sm-4">
+      <select (change)="onChangeCity(dataPemohon, 'kabupaten', 1)" class="form-control option"
+        formControlName="kabupaten">
+        <option *ngFor='let ct of kabkot' [selected]="kabupaten" [value]="ct.id">{{ct.nama}}</option>
+      </select>
     </div>
 
-    <div *ngIf="item.key ==='namaIbu'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Nama Ibu</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="namaIbu">
-      </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan</label>
+    <div class="col-sm-4">
+      <select (change)="onChangeDist(dataPemohon, 'kecamatan', 1)" class="form-control option"
+        formControlName="kecamatan">
+        <option *ngFor='let kc of dataKec' [selected]="kecamatan" [value]="kc.id">{{kc.nama}}</option>
+      </select>
     </div>
 
-    <div *ngIf="item.key ==='noHandphone'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">No Handphone</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="noHandphone">
-      </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan</label>
+    <div class="col-sm-4">
+      <select (change)="onChangeVill(dataPemohon, 'kelurahan', 1)" class="form-control option"
+        formControlName="kelurahan">
+        <option *ngFor='let kl of dataKel' [selected]="kelurahan" [value]="kl.id">{{kl.nama}}</option>
+      </select>
+    </div>
+    <mat-error class="text-danger col-sm-12" *ngIf="form1.kelurahan.errors">
+      Data belum lengkap <span class="font-italic">(data lokasi masih ada yang kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Telp Rumah</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form1.telpRumah.errors }" type="text" class="form-control"
+        formControlName="telpRumah">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form1.telpRumah.errors">
+      Data belum lengkap <span class="font-italic">(data masih kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Alamat Domisili</label>
+    <div class="col-sm-6">
+      <input [ngClass]="{ 'is-invalid': form1.alamatDomisili.errors }" type="text" class="form-control"
+        formControlName="alamatDomisili">
+    </div>
+    <mat-error class="text-danger col-sm-4" *ngIf="form1.alamatDomisili.errors">
+      Data belum lengkap <span class="font-italic">(data masih kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">RT/RW</label>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form1.noRtDomisili.errors }" type="text" class="form-control"
+        formControlName="noRtDomisili">
+    </div>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form1.noRwDomisili.errors }" type="text" class="form-control"
+        formControlName="noRwDomisili">
+    </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kodepos</label>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form1.kodePosDomisili.errors }" type="text" class="form-control"
+        formControlName="kodePosDomisili">
+    </div>
+  </div>
+
+  <div *ngIf="form1.noRtDomisili.errors && form1.noRwDomisili.errors || form1.kodePosDomisili.errors" class="row">
+    <mat-error class="text-danger col-sm-4 offset-sm-2" *ngIf="form1.noRtDomisili.errors && form1.noRwDomisili.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+    <mat-error class="text-danger col-sm-4 offset-sm-2" *ngIf="form1.kodePosDomisili.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong, Min/Max 5 Angka)</span>
+    </mat-error>
+  </div>
+
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Provinsi Domisili</label>
+    <div class="col-sm-4">
+      <select (change)="onChangeProv(dataPemohon, 'provinsiDomisili', 2)" class="form-control option"
+        formControlName="provinsiDomisili">
+        <option value="">Select a category</option>
+        <option *ngFor='let prv of province' [selected]="provinsiDomisili" [value]="prv.id">{{prv.nama}}</option>
+      </select>
     </div>
 
-    <div *ngIf="item.key ==='noNpwp'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">No NPWP</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="noNpwp">
-      </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab. Domisili</label>
+    <div class="col-sm-4">
+      <select (change)="onChangeCity(dataPemohon, 'kabupatenDomisili', 2)" class="form-control option"
+        formControlName="kabupatenDomisili">
+        <option value="">Select a category</option>
+        <option *ngFor='let ct of kabkot2' [selected]="kabupatenDomisili" [value]="ct.id">{{ct.nama}}</option>
+      </select>
     </div>
 
-    <div *ngIf="item.key ==='alamat'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Alamat (Sesuai Identitas)</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="alamat">
-      </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan Domisili</label>
+    <div class="col-sm-4">
+      <select (change)="onChangeDist(dataPemohon, 'kecamatanDomisili', 2)" class="form-control option"
+        formControlName="kecamatanDomisili">
+        <option value="">Select a category</option>
+        <option *ngFor='let kc of dataKec2' [selected]="kecamatanDomisili" [value]="kc.id">{{kc.nama}}</option>
+      </select>
     </div>
 
+    <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan Domisili</label>
+    <div class="col-sm-4">
+      <select (change)="onChangeVill(dataPemohon, 'kelurahanDomisili', 2)" class="form-control option"
+        formControlName="kelurahanDomisili">
+        <option value="">Select a category</option>
+        <option *ngFor='let kl of dataKel2' [selected]="kelurahanDomisili" [value]="kl.id">{{kl.nama}}</option>
+      </select>
+    </div>
+  </div>
 
-    <div *ngIf="item.key === 'noRt'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">RT/RW</label>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" formControlName="noRt">
-      </div>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" formControlName="noRw">
-      </div>
-      <label class="col-sm-2 col-form-label font-weight-bold">Kodepos</label>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" formControlName="kodePos">
-      </div>
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Telp Rumah Domisili</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form1.telpDomisili.errors }" type="text" class="form-control"
+        formControlName="telpDomisili">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form1.telpDomisili.errors">
+      Data belum lengkap <span class="font-italic">(data masih kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Tempat Lahir</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form1.tempatLahir.errors }" type="text" class="form-control"
+        formControlName="tempatLahir">
     </div>
 
+    <label class="col-sm-2 col-form-label font-weight-bold">Tanggal Lahir</label>
+    <div class="col-sm-3 d-flex align-items-center">
+      <input type="text" class="form-control" formControlName="tanggalLahir" [matDatepicker]="picker">
+    </div>
+    <div class="col-sm-1">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </div>
+    <!-- <button (click)="test()">TEST</button> -->
+  </div>
 
-    <div *ngIf="item.key ==='provinsi'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Provinsi</label>
-      <div class="col-sm-4">
-        <select (change)="onChangeProv(dataPemohon, 'provinsi', 1)" class="form-control option"
-          formControlName="provinsi">
-          <option *ngFor='let prv of province' [selected]="prv.id === item.value" [value]="prv.id">{{prv.nama}}</option>
-        </select>
+  <div *ngIf="form1.tempatLahir.errors || form1.tanggalLahir.errors" class="row">
+    <mat-error class="text-danger col-sm-4 offset-sm-2" *ngIf="form1.tempatLahir.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+    <mat-error class="text-danger col-sm-4 offset-sm-2" *ngIf="form1.tanggalLahir.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Kewarganegaraan </label>
+    <div class="col-sm-6 col-form-label">
+      :
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="kewarganegaraanRadio1" value="1"
+          formControlName="kewarganegaraan">
+        <label class="form-check-label" for="kewarganegaraanRadio1">WNI</label>
       </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab.</label>
-      <div class="col-sm-4">
-        <select (change)="onChangeCity(dataPemohon, 'kabupaten', 1)" class="form-control option"
-          formControlName="kabupaten">
-          <option *ngFor='let ct of kabkot' [selected]="ct.id === item.value" [value]="ct.id">{{ct.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan</label>
-      <div class="col-sm-4">
-        <select (change)="onChangeDist(dataPemohon, 'kecamatan', 1)" class="form-control option"
-          formControlName="kecamatan">
-          <option *ngFor='let kc of dataKec' [selected]="kc.id === item.value" [value]="kc.id">{{kc.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan</label>
-      <div class="col-sm-4">
-        <select (change)="onChangeVill(dataPemohon, 'kelurahan', 1)" class="form-control option"
-          formControlName="kelurahan">
-          <option *ngFor='let kl of dataKel' [selected]="kl.id === item.value" [value]="kl.id">{{kl.nama}}</option>
-        </select>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="kewarganegaraanRadio2" value="0"
+          formControlName="kewarganegaraan">
+        <label class="form-check-label" for="kewarganegaraanRadio2">WNA</label>
       </div>
     </div>
+    <mat-error class="text-danger col-sm-4" *ngIf="form1.kewarganegaraan.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
 
-    <div *ngIf="item.key ==='telpRumah'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Telp Rumah</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="telpRumah">
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Jenis Kelamin </label>
+    <div class="col-sm-6 col-form-label">
+      :
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="jenisKelaminRadio1" value="0" formControlName="jenisKelamin">
+        <label class="form-check-label" for="jenisKelaminRadio1">Pria</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="jenisKelaminRadio2" value="1" formControlName="jenisKelamin">
+        <label class="form-check-label" for="jenisKelaminRadio2">Wanita</label>
       </div>
     </div>
+    <mat-error class="text-danger col-sm-4" *ngIf="form1.jenisKelamin.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
 
-    <div *ngIf="item.key ==='alamatDomisili'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Alamat Domisili</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="alamatDomisili">
-      </div>
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Agama</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form1.agama.errors }" type="text" class="form-control" formControlName="agama">
     </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form1.agama.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
 
-    <div *ngIf="item.key ==='provinsiDomisili'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Provinsi Domisili</label>
-      <div class="col-sm-4">
-        <select (change)="onChangeProv(dataPemohon, 'provinsiDomisili', 2)" class="form-control option"
-          formControlName="provinsiDomisili">
-          <option value="">Select a category</option>
-          <option *ngFor='let prv of province' [selected]="prv.id === item.value" [value]="prv.id">{{prv.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab. Domisili</label>
-      <div class="col-sm-4">
-        <select (change)="onChangeCity(dataPemohon, 'kabupatenDomisili', 2)" class="form-control option"
-          formControlName="kabupatenDomisili">
-          <option value="">Select a category</option>
-          <option *ngFor='let ct of kabkot2' [selected]="ct.id === item.value" [value]="ct.id">{{ct.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan Domisili</label>
-      <div class="col-sm-4">
-        <select (change)="onChangeDist(dataPemohon, 'kecamatanDomisili', 2)" class="form-control option"
-          formControlName="kecamatanDomisili">
-          <option value="">Select a category</option>
-          <option *ngFor='let kc of dataKec2' [selected]="kc.id === item.value" [value]="kc.id">{{kc.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan Domisili</label>
-      <div class="col-sm-4">
-        <select (change)="onChangeVill(dataPemohon, 'kelurahanDomisili', 2)" class="form-control option"
-          formControlName="kelurahanDomisili">
-          <option value="">Select a category</option>
-          <option *ngFor='let kl of dataKel2' [selected]="kl.id === item.value" [value]="kl.id">{{kl.nama}}</option>
-        </select>
-      </div>
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Pendidikan</label>
+    <div class="col-sm-4">
+      <select [ngClass]="{ 'is-invalid': form1.pendidikan.errors }" class="form-control option"
+        formControlName="pendidikan">
+        <option value="">Select a category</option>
+        <option *ngFor='let edu of dataEdu' [selected]="pendidikan" [value]="edu.id">{{edu.name}}
+        </option>
+      </select>
     </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form1.pendidikan.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
 
-    <div *ngIf="item.key ==='telpDomisili'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Telp Rumah Domisili</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="telpDomisili">
-      </div>
-    </div>
-
-    <div *ngIf="item.key ==='tempatLahir'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Tempat Lahir</label>
-      <div class="col-sm-4">
-        <input type="text" class="form-control" formControlName="tempatLahir">
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Tanggal Lahir</label>
-      <div class="col-sm-3 d-flex align-items-center">
-        <input type="text" class="form-control" formControlName="tanggalLahir" [matDatepicker]="picker">
-      </div>
-      <div class="col-sm-1">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </div>
-      <!-- <button (click)="test()">TEST</button> -->
-    </div>
-
-    <div *ngIf="item.key ==='kewarganegaraan'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Kewarganegaraan </label>
-      <div class="col-sm-6 col-form-label">
-        :
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="{{item.key}}" id="kewarganegaraanRadio1" value="1"
-            formControlName="{{item.key}}">
-          <label class="form-check-label" for="kewarganegaraanRadio1">WNI</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="{{item.key}}" id="kewarganegaraanRadio2" value="0"
-            formControlName="{{item.key}}">
-          <label class="form-check-label" for="kewarganegaraanRadio2">WNA</label>
-        </div>
-      </div>
-    </div>
-
-    <div *ngIf="item.key ==='jenisKelamin'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Jenis Kelamin </label>
-      <div class="col-sm-6 col-form-label">
-        :
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="{{item.key}}" id="jenisKelaminRadio1" value="0"
-            formControlName="{{item.key}}">
-          <label class="form-check-label" for="jenisKelaminRadio1">Pria</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="{{item.key}}" id="jenisKelaminRadio2" value="1"
-            formControlName="{{item.key}}">
-          <label class="form-check-label" for="jenisKelaminRadio2">Wanita</label>
-        </div>
-      </div>
-    </div>
-
-    <div *ngIf="item.key ==='agama'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Agama</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="agama">
-      </div>
-    </div>
-
-    <div *ngIf="item.key ==='pendidikan'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Pendidikan</label>
-      <div class="col-sm-4">
-        <select class="form-control option" formControlName="pendidikan">
-          <option value="">Select a category</option>
-          <option *ngFor='let edu of dataEdu' [selected]="edu.id === item.value" [value]="edu.id">{{edu.name}}
-          </option>
-        </select>
-      </div>
-    </div>
-
-  </ng-container>
 </form>
 
 <form [formGroup]="dataPekerjaan">
@@ -299,141 +426,166 @@
     <p class="h6 pt-1 mb-0 ">Data Pekerjaan</p>
   </div>
 
-  <ng-container *ngFor="let item of dataPekerjaan.controls | keyvalue">
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Pekerjaan</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form2.pekerjaan.errors }" type="text" class="form-control"
+        formControlName="pekerjaan">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form2.pekerjaan.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
 
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Nama Kantor</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form2.namaKantor.errors }" type="text" class="form-control"
+        formControlName="namaKantor">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form2.namaKantor.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
 
-    <div *ngIf="item.key == 'pekerjaan'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Pekerjaan</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="{{ item.key }}">
-      </div>
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Jabatan</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form2.jabatan.errors }" type="text" class="form-control"
+        formControlName="jabatan">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form2.jabatan.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Alamat (kantor)</label>
+    <div class="col-sm-6">
+      <input [ngClass]="{ 'is-invalid': form2.alamat.errors }" type="text" class="form-control"
+        formControlName="alamat">
+    </div>
+    <mat-error class="text-danger col-sm-4" *ngIf="form2.alamat.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">RT/RW</label>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form2.noRtKantor.errors }" type="text" class="form-control"
+        formControlName="noRtKantor">
+    </div>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form2.noRwKantor.errors }" type="text" class="form-control"
+        formControlName="noRwKantor">
+    </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kodepos</label>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form2.kodePos.errors }" type="text" class="form-control"
+        formControlName="kodePos">
+    </div>
+  </div>
+
+  <div *ngIf="form2.noRtKantor.errors && form2.noRwKantor.errors || form2.kodePos.errors" class="row">
+    <mat-error class="text-danger col-sm-4 offset-sm-2" *ngIf="form2.noRtKantor.errors && form2.noRwKantor.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+    <mat-error class="text-danger col-sm-4 offset-sm-2" *ngIf="form2.kodePos.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong, Min/Max 5 Angka)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Provinsi</label>
+    <div class="col-sm-4">
+      <select (change)="onChangeProv(dataPekerjaan, 'provinsi', 3)" class="form-control option"
+        formControlName="provinsi">
+        <option value="">Select a category</option>
+        <option *ngFor='let prv of province' [selected]="provinsi" [value]="prv.id">provinsi</option>
+      </select>
     </div>
 
-    <div *ngIf="item.key == 'namaKantor'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Nama Kantor</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="{{ item.key }}">
-      </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab.</label>
+    <div class="col-sm-4">
+      <select (change)="onChangeCity(dataPekerjaan, 'kabupaten', 3)" class="form-control option"
+        formControlName="kabupaten">
+        <option value="">Select a category</option>
+        <option *ngFor='let ct of kabkot3' [selected]="kabupaten" [value]="ct.id">{{ct.nama}}</option>
+      </select>
     </div>
 
-    <div *ngIf="item.key == 'jabatan'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Jabatan</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="{{ item.key }}">
-      </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan</label>
+    <div class="col-sm-4">
+      <select (change)="onChangeDist(dataPekerjaan, 'kecamatan', 3)" class="form-control option"
+        formControlName="kecamatan">
+        <option value="">Select a category</option>
+        <option *ngFor='let kc of dataKec3' [selected]="kecamatan" [value]="kc.id">{{kc.nama}}</option>
+      </select>
     </div>
 
-    <div *ngIf="item.key == 'alamat'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Alamat (kantor)</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="{{ item.key }}">
+    <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan</label>
+    <div class="col-sm-4">
+      <select (change)="onChangeVill(dataPekerjaan, 'kelurahan', 3)" class="form-control option"
+        formControlName="kelurahan">
+        <option value="">Select a category</option>
+        <option *ngFor='let kl of dataKel3' [selected]="kelurahan" [value]="kl.id">{{kl.nama}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Sumber Gaji</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form2.sumber.errors }" type="text" class="form-control"
+        formControlName="sumber">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form2.sumber.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Penghasilan </label>
+    <div class="col-sm-6 col-form-label">
+      :
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="penghasilanRadio1" value="1" formControlName="penghasilan">
+        <label class="form-check-label" for="penghasilanRadio1">&le; 5 Juta</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="penghasilanRadio2" value="2" formControlName="penghasilan">
+        <label class="form-check-label" for="penghasilanRadio2">5 - 10 Juta</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="penghasilanRadio3" value="3" formControlName="penghasilan">
+        <label class="form-check-label" for="penghasilanRadio3">&ge; 10 Juta </label>
       </div>
     </div>
+  </div>
 
-    <div *ngIf="item.key === 'noRtKantor'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">RT/RW</label>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" formControlName="noRtKantor">
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Penghasilan Lainnya</label>
+    <div class="col-sm-6 col-form-label">
+      :
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="penghasilanLainRadio1" value="1"
+          formControlName="penghasilanLain">
+        <label class="form-check-label" for="penghasilanLainRadio1">&le; 5 Juta</label>
       </div>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" formControlName="noRwKantor">
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="penghasilanLainRadio2" value="2"
+          formControlName="penghasilanLain">
+        <label class="form-check-label" for="penghasilanLainRadio2">5 - 10 Juta</label>
       </div>
-      <label class="col-sm-2 col-form-label font-weight-bold">Kodepos</label>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" formControlName="kodePos">
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="penghasilanLainRadio3" value="3"
+          formControlName="penghasilanLain">
+        <label class="form-check-label" for="penghasilanLainRadio3">&ge; 10 Juta </label>
       </div>
     </div>
+  </div>
 
-
-    <div *ngIf="item.key ==='provinsi'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Provinsi</label>
-      <div class="col-sm-4">
-        <select (change)="onChangeProv(dataPekerjaan, 'provinsi', 3)" class="form-control option"
-          formControlName="provinsi">
-          <option value="">Select a category</option>
-          <option *ngFor='let prv of province' [selected]="prv.id === item.value" [value]="prv.id">{{prv.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab.</label>
-      <div class="col-sm-4">
-        <select (change)="onChangeCity(dataPekerjaan, 'kabupaten', 3)" class="form-control option"
-          formControlName="kabupaten">
-          <option value="">Select a category</option>
-          <option *ngFor='let ct of kabkot3' [selected]="ct.id === item.value" [value]="ct.id">{{ct.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan</label>
-      <div class="col-sm-4">
-        <select (change)="onChangeDist(dataPekerjaan, 'kecamatan', 3)" class="form-control option"
-          formControlName="kecamatan">
-          <option value="">Select a category</option>
-          <option *ngFor='let kc of dataKec3' [selected]="kc.id === item.value" [value]="kc.id">{{kc.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan</label>
-      <div class="col-sm-4">
-        <select (change)="onChangeVill(dataPekerjaan, 'kelurahan', 3)" class="form-control option"
-          formControlName="kelurahan">
-          <option value="">Select a category</option>
-          <option *ngFor='let kl of dataKel3' [selected]="kl.id === item.value" [value]="kl.id">{{kl.nama}}</option>
-        </select>
-      </div>
-    </div>
-
-    <div *ngIf="item.key == 'sumber'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Sumber Gaji</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="{{ item.key }}">
-      </div>
-    </div>
-
-    <div *ngIf="item.key ==='penghasilan'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Penghasilan </label>
-      <div class="col-sm-6 col-form-label">
-        :
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="{{item.key}}" id="penghasilanRadio1" value="1"
-            formControlName="{{item.key}}">
-          <label class="form-check-label" for="penghasilanRadio1">&le; 5 Juta</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="{{item.key}}" id="penghasilanRadio2" value="2"
-            formControlName="{{item.key}}">
-          <label class="form-check-label" for="penghasilanRadio2">5 - 10 Juta</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="{{item.key}}" id="penghasilanRadio3" value="3"
-            formControlName="{{item.key}}">
-          <label class="form-check-label" for="penghasilanRadio3">&ge; 10 Juta </label>
-        </div>
-      </div>
-    </div>
-
-    <div *ngIf="item.key ==='penghasilanLain'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Penghasilan Lainnya</label>
-      <div class="col-sm-6 col-form-label">
-        :
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="{{item.key}}" id="penghasilanLainRadio1" value="1"
-            formControlName="{{item.key}}">
-          <label class="form-check-label" for="penghasilanLainRadio1">&le; 5 Juta</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="{{item.key}}" id="penghasilanLainRadio2" value="2"
-            formControlName="{{item.key}}">
-          <label class="form-check-label" for="penghasilanLainRadio2">5 - 10 Juta</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="{{item.key}}" id="penghasilanLainRadio3" value="3"
-            formControlName="{{item.key}}">
-          <label class="form-check-label" for="penghasilanLainRadio3">&ge; 10 Juta </label>
-        </div>
-      </div>
-    </div>
-  </ng-container>
 </form>
 
 <form [formGroup]="dataKerabat">
@@ -441,164 +593,207 @@
     <p class="h6 pt-1 mb-0 ">Data Kerabat dan Ahli Waris</p>
   </div>
 
-  <ng-container *ngFor="let item of dataKerabat.controls | keyvalue">
 
-    <div *ngIf="item.key == 'namaKerabat'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Nama Kerabat</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="{{ item.key }}">
-      </div>
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Nama Kerabat</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form3.namaKerabat.errors }" type="text" class="form-control"
+        formControlName="namaKerabat">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form3.namaKerabat.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Alamat Kerabat</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form3.alamatKerabat.errors }" type="text" class="form-control"
+        formControlName="alamatKerabat">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form3.alamatKerabat.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Telp Kerabat</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form3.telpKerabat.errors }" type="text" class="form-control"
+        formControlName="telpKerabat">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form3.telpKerabat.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">RT/RW</label>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form3.noRtKerabat.errors }" type="text" class="form-control"
+        formControlName="noRtKerabat">
+    </div>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form3.noRwKerabat.errors }" type="text" class="form-control"
+        formControlName="noRwKerabat">
+    </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kodepos</label>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form3.kodePosKerabat.errors }" type="text" class="form-control"
+        formControlName="kodePosKerabat">
+    </div>
+  </div>
+
+  <div *ngIf="form3.noRtKerabat.errors && form3.noRwKerabat.errors || form3.kodePosKerabat.errors" class="row">
+    <mat-error class="text-danger col-sm-4 offset-sm-2" *ngIf="form3.noRtKerabat.errors && form3.noRwKerabat.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+    <mat-error class="text-danger col-sm-4 offset-sm-2" *ngIf="form3.kodePosKerabat.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong, Min/Max 5 Angka)</span>
+    </mat-error>
+  </div>
+
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Provinsi <span class="text-muted">(*Kerabat)</span></label>
+    <div class="col-sm-4">
+      <select (change)="onChangeProv(dataKerabat, 'provinsiKerabat', 4)" class="form-control option"
+        formControlName="provinsiKerabat">
+        <option value="">Select a category</option>
+        <option *ngFor='let prv of province' [selected]="provinsiKerabat" [value]="prv.id">{{prv.nama}}</option>
+      </select>
     </div>
 
-    <div *ngIf="item.key == 'alamatKerabat'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Alamat Kerabat</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="{{ item.key }}">
-      </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab. <span class="text-muted">(*Kerabat)</span></label>
+    <div class="col-sm-4">
+      <select (change)="onChangeCity(dataKerabat, 'kabupatenKerabat', 4)" class="form-control option"
+        formControlName="kabupatenKerabat">
+        <option value="">Select a category</option>
+        <option *ngFor='let ct of kabkot4' [selected]="kabupatenKerabat" [value]="ct.id">{{ct.nama}}</option>
+      </select>
     </div>
 
-    <div *ngIf="item.key == 'telpKerabat'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Telp Kerabat</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="{{ item.key }}">
-      </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan <span class="text-muted">(*Kerabat)</span></label>
+    <div class="col-sm-4">
+      <select (change)="onChangeDist(dataKerabat, 'kecamatanKerabat', 4)" class="form-control option"
+        formControlName="kecamatanKerabat">
+        <option value="">Select a category</option>
+        <option *ngFor='let kc of dataKec4' [selected]="kecamatanKerabat" [value]="kc.id">{{kc.nama}}</option>
+      </select>
     </div>
 
-    <div *ngIf="item.key === 'noRtKerabat'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">RT/RW</label>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" formControlName="noRtKerabat">
-      </div>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" formControlName="noRwKerabat">
-      </div>
-      <label class="col-sm-2 col-form-label font-weight-bold">Kodepos</label>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" formControlName="kodePosKerabat">
-      </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan <span class="text-muted">(*Kerabat)</span></label>
+    <div class="col-sm-4">
+      <select (change)="onChangeVill(dataKerabat, 'kelurahanKerabat', 4)" class="form-control option"
+        formControlName="kelurahanKerabat">
+        <option value="">Select a category</option>
+        <option *ngFor='let kl of dataKel4' [selected]="kelurahanKerabat" [value]="kl.id">{{kl.nama}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Nama Ahli Waris</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form3.kodePosKerabat.errors }" type="text" class="form-control"
+        formControlName="namaAhliWaris">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form3.namaAhliWaris.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Alamat Ahli Waris</label>
+    <div class="col-sm-6">
+      <input [ngClass]="{ 'is-invalid': form3.alamatAhliWaris.errors }" type="text" class="form-control"
+        formControlName="alamatAhliWaris">
+    </div>
+    <mat-error class="text-danger col-sm-4" *ngIf="form3.alamatAhliWaris.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Telp Ahli Waris</label>
+    <div class="col-sm-4">
+      <input [ngClass]="{ 'is-invalid': form3.telpAhliWaris.errors }" type="text" class="form-control"
+        formControlName="telpAhliWaris">
+    </div>
+    <mat-error class="text-danger col-sm-6" *ngIf="form3.telpAhliWaris.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">RT/RW</label>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form3.noRtAhliWaris.errors }" type="text" class="form-control"
+        formControlName="noRtAhliWaris">
+    </div>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form3.noRwAhliWaris.errors }" type="text" class="form-control"
+        formControlName="noRwAhliWaris">
+    </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kodepos</label>
+    <div class="col-sm-2">
+      <input [ngClass]="{ 'is-invalid': form3.kodePosAhliWaris.errors }" type="text" class="form-control"
+        formControlName="kodePosAhliWaris">
+    </div>
+  </div>
+
+  <div *ngIf="form3.noRtAhliWaris.errors && form3.noRwAhliWaris.errors || form3.kodePosAhliWaris.errors" class="row">
+    <mat-error class="text-danger col-sm-4 offset-sm-2"
+      *ngIf="form3.noRtAhliWaris.errors && form3.noRwAhliWaris.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+    </mat-error>
+    <mat-error class="text-danger col-sm-4 offset-sm-2" *ngIf="form3.kodePosAhliWaris.errors">
+      Data belum lengkap <span class="font-italic">(data tidak boleh kosong, Min/Max 5 Angka)</span>
+    </mat-error>
+  </div>
+
+  <div class="form-group row mb-1">
+    <label class="col-sm-2 col-form-label font-weight-bold">Provinsi <span class="text-muted">(*Ahli
+        Waris)</span></label>
+    <div class="col-sm-4">
+      <select (change)="onChangeProv(dataKerabat, 'provinsiAhliWaris', 5)" class="form-control option"
+        formControlName="provinsiAhliWaris">
+        <option value="">Select a category</option>
+        <option *ngFor='let prv of province' [selected]="provinsiAhliWaris" [value]="prv.id">{{prv.nama}}</option>
+      </select>
     </div>
 
-    <div *ngIf="item.key ==='provinsiKerabat'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Provinsi <span
-          class="text-muted">(*Kerabat)</span></label>
-      <div class="col-sm-4">
-        <select (change)="onChangeProv(dataKerabat, 'provinsiKerabat', 4)" class="form-control option"
-          formControlName="provinsiKerabat">
-          <option value="">Select a category</option>
-          <option *ngFor='let prv of province' [selected]="prv.id === item.value" [value]="prv.id">{{prv.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab. <span
-          class="text-muted">(*Kerabat)</span></label>
-      <div class="col-sm-4">
-        <select (change)="onChangeCity(dataKerabat, 'kabupatenKerabat', 4)" class="form-control option"
-          formControlName="kabupatenKerabat">
-          <option value="">Select a category</option>
-          <option *ngFor='let ct of kabkot4' [selected]="ct.id === item.value" [value]="ct.id">{{ct.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan <span
-          class="text-muted">(*Kerabat)</span></label>
-      <div class="col-sm-4">
-        <select (change)="onChangeDist(dataKerabat, 'kecamatanKerabat', 4)" class="form-control option"
-          formControlName="kecamatanKerabat">
-          <option value="">Select a category</option>
-          <option *ngFor='let kc of dataKec4' [selected]="kc.id === item.value" [value]="kc.id">{{kc.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan <span
-          class="text-muted">(*Kerabat)</span></label>
-      <div class="col-sm-4">
-        <select (change)="onChangeVill(dataKerabat, 'kelurahanKerabat', 4)" class="form-control option"
-          formControlName="kelurahanKerabat">
-          <option value="">Select a category</option>
-          <option *ngFor='let kl of dataKel4' [selected]="kl.id === item.value" [value]="kl.id">{{kl.nama}}</option>
-        </select>
-      </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab. <span class="text-muted">(*Ahli
+        Waris)</span></label>
+    <div class="col-sm-4">
+      <select (change)="onChangeCity(dataKerabat, 'kabupatenAhliWaris', 5)" class="form-control option"
+        formControlName="kabupatenAhliWaris">
+        <option value="">Select a category</option>
+        <option *ngFor='let ct of kabkot5' [selected]="kabupatenAhliWaris" [value]="ct.id">{{ct.nama}}</option>
+      </select>
     </div>
 
-    <div *ngIf="item.key == 'namaAhliWaris'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Nama Ahli Waris</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="{{ item.key }}">
-      </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan <span class="text-muted">(*Ahli
+        Waris)</span></label>
+    <div class="col-sm-4">
+      <select (change)="onChangeDist(dataKerabat, 'kecamatanAhliWaris', 5)" class="form-control option"
+        formControlName="kecamatanAhliWaris">
+        <option value="">Select a category</option>
+        <option *ngFor='let kc of dataKec5' [selected]="kecamatanAhliWaris" [value]="kc.id">{{kc.nama}}</option>
+      </select>
     </div>
 
-    <div *ngIf="item.key == 'alamatAhliWaris'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Alamat Ahli Waris</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="{{ item.key }}">
-      </div>
+    <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan <span class="text-muted">(*Ahli
+        Waris)</span></label>
+    <div class="col-sm-4">
+      <select (change)="onChangeVill(dataKerabat, 'kelurahanAhliWaris', 5)" class="form-control option"
+        formControlName="kelurahanAhliWaris">
+        <option value="">Select a category</option>
+        <option *ngFor='let kl of dataKel5' [selected]="kelurahanAhliWaris" [value]="kl.id">{{kl.nama}}</option>
+      </select>
     </div>
+  </div>
 
-    <div *ngIf="item.key == 'telpAhliWaris'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Telp Ahli Waris</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" formControlName="{{ item.key }}">
-      </div>
-    </div>
-
-    <div *ngIf="item.key === 'noRtAhliWaris'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">RT/RW</label>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" formControlName="noRtAhliWaris">
-      </div>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" formControlName="noRwAhliWaris">
-      </div>
-      <!-- <label class="col-sm-2 col-form-label font-weight-bold">Kodepos</label>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" formControlName="kodePosKerabat">
-      </div> -->
-    </div>
-
-    <div *ngIf="item.key ==='provinsiAhliWaris'" class="form-group row mb-1">
-      <label class="col-sm-2 col-form-label font-weight-bold">Provinsi <span class="text-muted">(*Ahli
-          Waris)</span></label>
-      <div class="col-sm-4">
-        <select (change)="onChangeProv(dataKerabat, 'provinsiAhliWaris', 5)" class="form-control option"
-          formControlName="provinsiAhliWaris">
-          <option value="">Select a category</option>
-          <option *ngFor='let prv of province' [selected]="prv.id === item.value" [value]="prv.id">{{prv.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kota/Kab. <span class="text-muted">(*Ahli
-          Waris)</span></label>
-      <div class="col-sm-4">
-        <select (change)="onChangeCity(dataKerabat, 'kabupatenAhliWaris', 5)" class="form-control option"
-          formControlName="kabupatenAhliWaris">
-          <option value="">Select a category</option>
-          <option *ngFor='let ct of kabkot5' [selected]="ct.id === item.value" [value]="ct.id">{{ct.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kecamatan <span class="text-muted">(*Ahli
-          Waris)</span></label>
-      <div class="col-sm-4">
-        <select (change)="onChangeDist(dataKerabat, 'kecamatanAhliWaris', 5)" class="form-control option"
-          formControlName="kecamatanAhliWaris">
-          <option value="">Select a category</option>
-          <option *ngFor='let kc of dataKec5' [selected]="kc.id === item.value" [value]="kc.id">{{kc.nama}}</option>
-        </select>
-      </div>
-
-      <label class="col-sm-2 col-form-label font-weight-bold">Kelurahan <span class="text-muted">(*Ahli
-          Waris)</span></label>
-      <div class="col-sm-4">
-        <select (change)="onChangeVill(dataKerabat, 'kelurahanAhliWaris', 5)" class="form-control option"
-          formControlName="kelurahanAhliWaris">
-          <option value="">Select a category</option>
-          <option *ngFor='let kl of dataKel5' [selected]="kl.id === item.value" [value]="kl.id">{{kl.nama}}</option>
-        </select>
-      </div>
-    </div>
-
-
-  </ng-container>
 </form>
 
 <mat-dialog-content class="mat-typography">
@@ -612,7 +807,7 @@
     <button class="batal" mat-button mat-dialog-close>Batal</button>
     <button class="skip" mat-button mat-dialog-close>Skip</button>
   </div>
-  <button class="proses" mat-button mat-dialog-close>Selesai</button>
+  <button class="proses" (click)="requestNew()" mat-button>Selesai</button>
   <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
 </mat-dialog-actions>
 

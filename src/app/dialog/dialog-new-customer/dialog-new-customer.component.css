@@ -143,3 +143,8 @@ select.form-control:not([size]):not([multiple]) {
   transition: all 0.7s ease;
   box-shadow: 0px 3px 10px 2px rgba(62, 62, 62, 0.29);
 }
+
+
+.mat-error {
+  font-size: 14px;
+}
