@@ -11,6 +11,7 @@ import { ChangeUserDialogComponent } from '../dialog/change-user-dialog/change-u
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataBranchServices } from '../services/data-branch.service';
 import * as moment from 'moment';
+import { UserBiometricComponent } from '../dialog/user-biometric/user-biometric.component';
 
 // created by Dwi S
 
@@ -53,15 +54,7 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     { role: "Head CS", value: "headcs" },
   ];
 
-
   private enabledValue = 1;
-
-  favoriteSeason: string = 'Winter';
-
-  seasons = [
-    1,
-    0,
-  ];
 
   @ViewChild('sidenavEdit', { static: true }) sidenavEdit: MatSidenav;
   @ViewChild('sidenavChange', { static: true }) sidenavChange: MatSidenav;
@@ -82,6 +75,11 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       branchcode: new FormControl(null, Validators.required),
       roles: new FormControl(null, Validators.required),
       enabledF: new FormControl(null, Validators.required),
+      userbranch: new FormControl(null),
+      usercapem: new FormControl(null),
+      userkas: new FormControl(null),
+      userppoint: new FormControl(null),
+      userother: new FormControl(null),
     });
   }
 
@@ -108,7 +106,6 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-
   }
 
   getServerData(event) {
@@ -131,9 +128,7 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   addUser() {
-    console.log("run add user ");
     const dialogConfig = new MatDialogConfig();
-
     dialogConfig.backdropClass = 'backdropBackground';
     dialogConfig.disableClose = true;
     dialogConfig.width = '1000px';
@@ -144,13 +139,11 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     this.subDialog = this.dialog.open(AddUserDialogComponent, dialogConfig).afterClosed().subscribe(resBack => {
-      console.log(resBack);
       if (resBack.reload) {
         this.getAllUsersData("", 5, 0);
       }
     });
   }
-
 
   deleteUser(value) {
     const dialogConfig = new MatDialogConfig();
@@ -162,7 +155,6 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       value: value
     };
     this.subDialog = this.dialog.open(DeleteUserDialogComponent, dialogConfig).afterClosed().subscribe(resBack => {
-      console.log(resBack.delete);
       if (resBack.delete) {
         this.confirmDelete(resBack)
       }
@@ -170,11 +162,8 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   confirmDelete(value) {
-    // var pageIndex = this.paginator.pageIndex;
     var pageSize = this.paginator.pageSize;
     this.subUserDelete = this.usersService.deleteUser(value).subscribe(res => {
-      console.log("back ", res);
-
       if (res['success']) {
         this.getAllUsersData("", pageSize, 0);
       } else {
@@ -195,7 +184,6 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-
   errorDialog(message, message2) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
@@ -215,7 +203,6 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       case 'edit':
         this.sidenavEdit.open();
         this.dataBrch.getBranchAll().subscribe(e => {
-          console.log(e);
           this.dataAllBrch = e;
         })
         break;
@@ -250,16 +237,11 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       };
       dialogConfig.backdropClass = 'backdropBackground';
       this.dialog.open(ChangeUserDialogComponent, dialogConfig).afterClosed().subscribe(res => {
-        console.log(res);
         if (res) {
           let obj: any = new Object();
           obj.password = this.formPassword.value.password;
           obj.userId = this.userIDChange;
-          console.log(obj);
-          // this.sidenav.close()
-
           this.usersService.changePass(obj).subscribe(e => {
-            console.log(e);
             if (e['success']) {
               const dialogConfig = new MatDialogConfig();
               dialogConfig.data = {
@@ -269,12 +251,10 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
               };
               dialogConfig.backdropClass = 'backdropBackground';
               this.dialog.open(ChangeUserDialogComponent, dialogConfig).afterClosed().subscribe(res => {
-                // console.log(res);
                 if (res === 'exit') {
                   this.sidenavChange.close()
                   this.formPassword.reset()
                   this.getAllUsersData("", 5, 0);
-                  // window.location.reload()
                 }
               })
             }
@@ -289,13 +269,8 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getUserEdit(event) {
-    console.log("run edit ");
-
     this.enabledValue = event['enabled'];
-    console.log("data : ", this.enabledValue);
-    // var dateValidate = moment(event['birthday']).isValid() || moment(event['birthday'], "DD/MM/YYYY").isValid() ? true : false;
     const date = moment(event['birthday'], 'DD-MM-YYYY').toISOString();
-    console.log(date);
 
     this.formEditUser.get('user_ID').setValue(event['userid']);
     this.formEditUser.get('firstname').setValue(event['firstname']);
@@ -305,6 +280,12 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     this.formEditUser.get('branchcode').setValue(event['branchcode']);
     this.formEditUser.get('roles').setValue(event['roles']);
     this.formEditUser.get('enabledF').setValue(event['enabled']);
+    this.formEditUser.get('userbranch').setValue(event['userbranch']);
+    this.formEditUser.get('usercapem').setValue(event['usercapem']);
+    this.formEditUser.get('userkas').setValue(event['userkas']);
+    this.formEditUser.get('userppoint').setValue(event['userppoint']);
+    this.formEditUser.get('userother').setValue(event['userother']);
+
   }
 
   get fname() { return this.formEditUser.get('firstname'); }
@@ -316,7 +297,12 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   get enb() { return this.formEditUser.get('enabledF'); }
 
   saveEdit() {
-    // console.log(this.formEditUser.value);
+
+    var userBranch = (this.formEditUser.value.userbranch) ? 1 : 0;
+    var userCapem = (this.formEditUser.value.usercapem) ? 1 : 0;
+    var userKas = (this.formEditUser.value.userkas) ? 1 : 0;
+    var userPpoint = (this.formEditUser.value.userppoint) ? 1 : 0;
+    var userOther = (this.formEditUser.value.userother) ? 1 : 0;
 
     let obj = {
       "userid": this.formEditUser.value.user_ID,
@@ -326,14 +312,16 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       "email": this.formEditUser.value.email,
       "birthday": moment(this.formEditUser.value.birthday).format('DD-MM-YYYY'),
       "enabled": this.formEditUser.value.enabledF,
+      "usercapem": userCapem,
+      "userbranch": userBranch,
+      "userkas": userKas,
+      "userppoint": userPpoint,
+      "userother": userOther,
       "roles":
         this.formEditUser.value.roles
     }
-    // console.log(obj);
     this.usersService.editUser(obj).subscribe(e => {
-      console.log(e);
       if (e['success']) {
-        console.log(e['message']);
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
           id: 1,
@@ -342,18 +330,42 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
         };
         dialogConfig.backdropClass = 'backdropBackground';
         this.dialog.open(ChangeUserDialogComponent, dialogConfig).afterClosed().subscribe(res => {
-          // console.log(res);
           if (res === 'exit') {
             this.sidenavEdit.close()
             this.formEditUser.reset()
             this.getAllUsersData("", 5, 0);
-            // window.location.reload()
           }
         })
       }
     })
+  }
 
+  editBiometric(value) {
+    console.log(value['imageid']);
 
+    this.usersService.getDataBiometri(value['imageid']).subscribe(e => {
+      console.log(e);
+      if (e['success']) {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+          id: 1,
+          data: e['data']
+        };
+        dialogConfig.minWidth = '700px'
+        dialogConfig.minHeight = '500px'
+        dialogConfig.maxWidth = '750px'
+        dialogConfig.maxHeight = '1000px'
+        dialogConfig.backdropClass = 'backdropBackground'
+        this.dialog.open(UserBiometricComponent, dialogConfig).afterClosed().subscribe(e => {
+          console.log(e);
+          if (e === 'reload') {
+            this.editBiometric(value)
+          }
+        });
+      } else {
+        console.log('data tidak ada');
+      }
+    })
 
 
   }

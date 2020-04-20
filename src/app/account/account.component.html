@@ -74,6 +74,10 @@
                   <mat-icon>vpn_key</mat-icon>
                 </button>
 
+                <button mat-icon-button color="primary" (click)="editBiometric(element)" matTooltip="Edit Biomettric">
+                  <mat-icon>fingerprint</mat-icon>
+                </button>
+
                 <button mat-icon-button color="warn" matTooltip="Delete User" (click)="deleteUser(element)">
                   <mat-icon>delete_forever</mat-icon>
                 </button>
@@ -122,7 +126,6 @@
               <mat-label>Email</mat-label>
               <input matInput [errorStateMatcher]="matcher" value="jksakdha@skjdkfsd.com"
                 placeholder="contoh nama@gmail.com" formControlName="email">
-              <mat-hint>Errors appear instantly!</mat-hint>
               <mat-error *ngIf="formEditUser.hasError('email') && !formEditUser.hasError('required')">
                 Please enter a valid email address
               </mat-error>
@@ -147,7 +150,6 @@
               </mat-select>
             </mat-form-field>
 
-
             <mat-radio-group formControlName="enabledF">
               <mat-radio-button class="material-radio ml-2 mr-2" [value]="1" [checked]="enabledValue === 1">Enabled
               </mat-radio-button>
@@ -155,8 +157,22 @@
               </mat-radio-button>
             </mat-radio-group>
 
-            <div class="container-fluid mt-3">
-              <button (click)="saveEdit()" class="mat-save" mat-button>Save</button>
+            <div>
+              <label class="ml-2 mt-2" color="primary">User Scope</label><br>
+              <mat-checkbox class="ml-2 mt-3" color="primary" formControlName="userbranch">User Cabang</mat-checkbox>
+              <br>
+              <mat-checkbox class="ml-2 mt-3" color="primary" formControlName="usercapem">User Cabang Pembantu
+              </mat-checkbox><br>
+              <mat-checkbox class="ml-2 mt-3" color="primary" formControlName="userkas">User Kantor Kas</mat-checkbox>
+              <br>
+              <mat-checkbox class="ml-2 mt-3" color="primary" formControlName="userppoint">User PaymentPoint
+              </mat-checkbox><br>
+              <mat-checkbox class="ml-2 mt-3" color="primary" formControlName="userother">Lainnya</mat-checkbox>
+            </div>
+
+
+            <div class="container-fluid mt-4">
+              <button (click)="saveEdit()" class="mat-save mb-3" mat-button>Save</button>
             </div>
 
           </form>

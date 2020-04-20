@@ -1,28 +1,28 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { NavItem } from '../models/nav-item';
-import { MatPaginator, MatTableDataSource, MatDialog, MatDialogConfig } from '@angular/material';
-import { DialogService } from '../services/dialog.service';
-import { WebsocketService } from '../services/websocket.service';
+
+
+
 import * as moment from 'moment';
+import * as Stomp from 'stompjs';
+import * as SockJS from 'sockjs-client';
+import * as SecureLS from 'secure-ls';
+import { MatTableDataSource, MatPaginator, MatDialog, MatDialogConfig } from '@angular/material';
+import { QTable } from '../models/queue-table';
+import { DialogService } from '../services/dialog.service';
+import { QueueService } from '../services/queue.service';
+import { AppConfiguration } from '../models/app.configuration';
+import { SharedService } from '../services/shared.service';
+import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
+import { DialogNewCustomerComponent } from '../dialog/dialog-new-customer/dialog-new-customer.component';
 declare var $: any;
 declare var jQuery: any;
 
-import * as Stomp from 'stompjs';
-import * as SockJS from 'sockjs-client';
-import { QueueService } from '../services/queue.service';
-import { QTable } from '../models/queue-table';
-import { AppConfiguration } from '../models/app.configuration';
-import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
-import * as SecureLS from 'secure-ls';
-import { SharedService } from '../services/shared.service';
-
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  selector: 'app-dashboard-cs',
+  templateUrl: './dashboard-cs.component.html',
+  styleUrls: ['./dashboard-cs.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardCsComponent implements OnInit {
 
   private waitingCall: string = '999';
   private outCall: string = '998';
@@ -48,7 +48,6 @@ export class DashboardComponent implements OnInit {
     private appConfig: AppConfiguration, private sharedService: SharedService) {
     this.serverUrl = appConfig.ipSocketServer + "socket";
     console.log("dashboar socket : ", this.serverUrl);
-
   }
 
   ngOnInit() {
@@ -56,7 +55,6 @@ export class DashboardComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.connect();
   }
-
 
   getDataTableQ() {
 
@@ -165,63 +163,72 @@ export class DashboardComponent implements OnInit {
   }
 
   nextQueue() {
-    this.queueServ.getLatestQue('034', 998).subscribe(res => {
 
-      if (res['success'] == true) {
-        let datares = res['record']
-        console.log(datares);
+    let TypeNasabah = 'non';
 
-        res['record'].forEach(element => {
-          element.transbuff = '[' + element.transbuff + ']'
-          let parse = JSON.parse(element.transbuff)
-          element.transbuff = parse;
-        });
+    if (TypeNasabah === 'non') {
+      console.log('test');
+      this.queueServ.getNewQueueCS(this.branchCode, "998", "999").subscribe(e => {
+        console.log(e[0]);
+        this.transactionDialogNon(e[0])
+      })
+    } else {
+      this.queueServ.getLatestQue(this.branchCode, 998).subscribe(res => {
 
-        this.transactionDialog(res['record'])
+        if (res['success'] == true) {
+          let datares = res['record']
+          console.log(datares);
 
-      } else if (res['success'] == false) {
+          res['record'].forEach(element => {
+            element.transbuff = '[' + element.transbuff + ']'
+            let parse = JSON.parse(element.transbuff)
+            element.transbuff = parse;
+          });
 
-        this.queueServ.getLatestQue('034', 999).subscribe(res => {
+          this.transactionDialog(res['record'])
 
-          if (res['success'] == true) {
-            let datares = res['record']
-            console.log(datares);
+        } else if (res['success'] == false) {
 
-            res['record'].forEach(element => {
-              element.transbuff = '[' + element.transbuff + ']'
-              let parse = JSON.parse(element.transbuff)
-              element.transbuff = parse;
-            });
+          this.queueServ.getLatestQue(this.branchCode, 999).subscribe(res => {
 
-            this.transactionDialog(res['record'])
-          } else {
-            console.log('data tidak ada');
+            if (res['success'] == true) {
+              let datares = res['record']
+              console.log(datares);
 
-            if (localStorage.getItem('skip') !== null) {
+              res['record'].forEach(element => {
+                element.transbuff = '[' + element.transbuff + ']'
+                let parse = JSON.parse(element.transbuff)
+                element.transbuff = parse;
+              });
 
-              var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
-              this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
-                console.log(eco);
+              this.transactionDialog(res['record'])
+            } else {
+              console.log('data tidak ada');
 
-                if (eco['successId0']) {
-                  this.queueServ.refreshQ(this.branchCode).subscribe()
-                  localStorage.removeItem('skip')
-                } else {
-                  this.queueServ.refreshQ(this.branchCode).subscribe()
-                }
+              if (localStorage.getItem('skip') !== null) {
 
-              })
+                var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+                this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
+                  console.log(eco);
+
+                  if (eco['successId0']) {
+                    this.queueServ.refreshQ(this.branchCode).subscribe()
+                    localStorage.removeItem('skip')
+                  } else {
+                    this.queueServ.refreshQ(this.branchCode).subscribe()
+                  }
+
+                })
+              }
             }
-          }
-        })
+          })
 
-      } else {
-        console.log('DATA TIDAK ADA');
-      }
+        } else {
+          console.log('DATA TIDAK ADA');
+        }
 
-    })
-
-
+      })
+    }
 
     // function disableF5(e) { if ((e.which || e.keyCode) == 116) e.preventDefault(); };
     // $(document).on("keydown", disableF5);
@@ -240,6 +247,19 @@ export class DashboardComponent implements OnInit {
     //   });
 
 
+  }
+
+  transactionDialogNon(event) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      id: 1,
+      data: event,
+    }
+    dialogConfig.backdropClass = 'backdropBackground';
+    dialogConfig.disableClose = true;
+    dialogConfig.width = '1200px';
+
+    this.dlg.open(DialogNewCustomerComponent, dialogConfig)
   }
 
   transactionDialog(datas) {
@@ -393,12 +413,7 @@ export class DashboardComponent implements OnInit {
     this.stompClient.disconnect();
   }
 
-
-
-
-
 }
-
 
 
 

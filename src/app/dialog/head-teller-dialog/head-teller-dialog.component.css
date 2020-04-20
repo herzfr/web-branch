@@ -1,0 +1,11 @@
+.btn-close {
+  color: #133764;
+  border: 0px solid transparent;
+  outline: none;
+}
+
+
+p,
+label {
+  color: #133764;
+}

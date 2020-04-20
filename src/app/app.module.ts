@@ -33,7 +33,10 @@ import { TransactionService } from './services/transaction.service';
 import { SharedService } from './services/shared.service';
 import { HeadTellerDialogComponent } from './dialog/head-teller-dialog/head-teller-dialog.component';
 import { HeadService } from './services/head.service';
-// import { CurrencySetting } from './config/currency-setting';
+import { UserDataService } from './services/user-data.service';
+import { NgxImageCompressService } from 'ngx-image-compress';
+import { DialogNewCustomerComponent } from './dialog/dialog-new-customer/dialog-new-customer.component';
+import { VerifyDialogComponent } from './dialog/verify-dialog/verify-dialog.component';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -53,9 +56,10 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     DialogTransactionComponent,
     TestComponent,
     HeadTellerDialogComponent,
-
+    DialogNewCustomerComponent,
+    VerifyDialogComponent,
   ],
-  entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent],
+  entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent, DialogNewCustomerComponent, VerifyDialogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -74,7 +78,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   ],
   providers: [
     CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService,
-    TestService, TransactionService, SharedService, HeadService,
+    TestService, TransactionService, SharedService, HeadService, UserDataService, NgxImageCompressService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],

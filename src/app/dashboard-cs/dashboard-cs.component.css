@@ -1,17 +1,8 @@
-h1,
-p {
-  color: #133764 !important;
-}
-
 .mat-toolbar.mat-toolbar-single-row {
   height: 100px !important;
   background: linear-gradient(267.67deg, #FCFCFC 0%, #B6C4D1 100.7%);
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
 }
-
-
-
-
 
 /* .togle {} */
 
@@ -118,7 +109,7 @@ p {
 .example-container {
   position: absolute;
   /* top: 100px;
-  bottom: 60px; */
+    bottom: 60px; */
   left: 0;
   right: 0;
 }
@@ -318,8 +309,8 @@ table {
 
 .marquee {
   /* padding-left: 35px;
-  padding-right: 35px;
-  background: lightblue; */
+    padding-right: 35px;
+    background: lightblue; */
   font-size: 20px;
 }
 
