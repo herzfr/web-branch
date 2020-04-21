@@ -23,15 +23,23 @@
 
   </div>
 
-  <!-- Signature -->
-
+  <!-- Finger -->
   <div class="row justify-content-center">
+    <mat-card class="m-1 col"><img [src]="finger1()" class="img-thumbnail"></mat-card>
+    <mat-card class="m-1 col"><img [src]="finger2()" class="img-thumbnail"></mat-card>
+    <mat-card class="m-1 col"><img [src]="finger3()" class="img-thumbnail"></mat-card>
+    <mat-card class="m-1 col"><img [src]="finger4()" class="img-thumbnail"></mat-card>
+    <mat-card class="m-1 col"><img [src]="finger5()" class="img-thumbnail"></mat-card>
 
+  </div>
 
+  <!-- Signature -->
+  <div class="row justify-content-center">
     <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" (onEndEvent)="drawComplete()">
-    </signature-pad><button (click)="clearSign()">Clear</button>
-
-
+    </signature-pad>
+  </div>
+  <div class="row justify-content-center">
+    <button (click)="clearSign()">Clear Sign</button>
   </div>
 
 </mat-dialog-content>

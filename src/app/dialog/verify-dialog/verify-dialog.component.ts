@@ -6,6 +6,7 @@ import * as SockJS from 'sockjs-client';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { SignaturePad } from 'angular2-signaturepad/signature-pad';
+import { NasabahService } from 'src/app/services/nasabah.service';
 
 @Component({
   selector: 'app-verify-dialog',
@@ -24,12 +25,14 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   private dataForm4;
 
 
+  private allFinger: any;
+  private Signature: string;
+  private photoImage: string;
 
-  imgResultBeforeCompress: string;
-  imgResultAfterCompress: string;
+  // imgResultBeforeCompress: string;
+  // imgResultAfterCompress: string;
 
   ctx: CanvasRenderingContext2D;
-  photoImage: string;
 
   @ViewChild('video', { static: false }) videoElement: ElementRef;
   @ViewChild('canvas', { static: false }) canvas: ElementRef;
@@ -38,7 +41,8 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   private signaturePadOptions: Object = { // passed through to szimek/signature_pad constructor
     'minWidth': 5,
     'canvasWidth': 500,
-    'canvasHeight': 300
+    'canvasHeight': 300,
+    'penColor': "rgb(66, 133, 244)"
   };
 
 
@@ -57,13 +61,14 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
 
 
   constructor(private dialogRef: MatDialogRef<VerifyDialogComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog,
-    private sanitizer: DomSanitizer, private renderer: Renderer2, private imageCompress: NgxImageCompressService) {
+    private sanitizer: DomSanitizer, private renderer: Renderer2, private imageCompress: NgxImageCompressService, private nasabahServ: NasabahService) {
     console.log(data.data);
 
   }
 
   ngOnInit() {
     this.initializeWebSocketConnection('nasabahbiometric')
+    this.nasabahServ.callRegisterBiometric().subscribe()
     this.startCamera()
   }
 
@@ -74,7 +79,6 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   }
 
   drawComplete() {
-    // will be notified of szimek/signature_pad's onEnd event
     console.log(this.signaturePad.toDataURL());
   }
 
@@ -98,6 +102,8 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
 
         if (message.body) {
           const body = JSON.parse(message.body);
+          console.log(body);
+          that.allFinger = body;
 
           if (body.success) {
             that.stompClient.disconnect();
@@ -142,8 +148,6 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
     this.renderer.setProperty(this.canvas.nativeElement, 'width', this.videoWidth);
     this.renderer.setProperty(this.canvas.nativeElement, 'height', this.videoHeight);
     this.canvas.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
-
-
 
     captureImgBeforeCompress = this.canvas.nativeElement.toDataURL("image/png")
     // console.log(captureImg);
@@ -193,6 +197,56 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
       );
 
     });
+  }
+
+  finger1() {
+    console.log(this.allFinger);
+
+    if (this.allFinger === undefined) {
+      return 'assets/svgs/finger-empty.svg';
+    } else {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger1);
+    }
+  }
+
+  finger2() {
+    console.log(this.allFinger);
+
+    if (this.allFinger === undefined) {
+      return 'assets/svgs/finger-empty.svg';
+    } else {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger2);
+    }
+  }
+
+  finger3() {
+    console.log(this.allFinger);
+
+    if (this.allFinger === undefined) {
+      return 'assets/svgs/finger-empty.svg';
+    } else {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger3);
+    }
+  }
+
+  finger4() {
+    console.log(this.allFinger);
+
+    if (this.allFinger === undefined) {
+      return 'assets/svgs/finger-empty.svg';
+    } else {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger4);
+    }
+  }
+
+  finger5() {
+    console.log(this.allFinger);
+
+    if (this.allFinger === undefined) {
+      return 'assets/svgs/finger-empty.svg';
+    } else {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger5);
+    }
   }
 
 
