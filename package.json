@@ -23,6 +23,7 @@
     "@angular/router": "~8.2.14",
     "@ng-bootstrap/ng-bootstrap": "^5.2.2",
     "@ng-plus/signature-pad": "0.0.5",
+    "angular2-signaturepad": "^2.11.0",
     "bootstrap": "^4.4.1",
     "bootstrap-pincode-input": "^2.0.1",
     "crypto-js": "^4.0.0",

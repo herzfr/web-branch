@@ -166,17 +166,20 @@ export class LoginComponent implements OnInit, OnDestroy {
   onChangeBranch() {
     this.subData = this.dataBranch.getTerminalId(this.selectedBranch).subscribe(res => {
       this.terminal = res;
+      this.isChossed = false
     }, err => {
       this.isChossed = true;
     })
 
-    setTimeout(() => {
-      if (this.terminal.length > 0) {
-        this.isChossed = false;
-      } else {
-        this.isChossed = true;
-      }
-    }, 100)
+    // console.log(this.terminal.length);
+
+    // setTimeout(() => {
+    //   if (this.terminal.length > 0) {
+    //     this.isChossed = false;
+    //   } else {
+    //     this.isChossed = true;
+    //   }
+    // }, 100)
   }
 
   postTerm() {

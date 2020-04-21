@@ -1,1 +1,43 @@
-<p>validation-dialog works!</p>
+<div mat-dialog-title class="d-flex justify-content-between align-items-center">
+  <p class="h4 mb-0">Data Biometri Nasabah</p>
+  <button (click)="close()" class="btn"><i class="fad fa-times fa-2x"></i></button>
+</div>
+<mat-dialog-content class="mat-typography">
+
+  <!-- Images -->
+  <div class="row justify-content-center">
+
+    <div class="col-sm-5 d-flex justify-content-center">
+      <video #video class="vid" autoplay></video>
+    </div>
+    <div class="col-sm-2">
+      <button mat-raised-button class="container-fluid card-capt justify-content-center align-items-center mb-2"
+        (click)="capture()"><i class="fad fa-camera-alt fa-2x"></i></button>
+
+      <button mat-raised-button class="container-fluid card-capt justify-content-center align-items-center mb-2"
+        (click)="compressFile()"><i class="fad fa-upload fa-2x"></i></button>
+    </div>
+    <div class="col-sm-5 d-flex justify-content-center">
+      <canvas #canvas class="vid"></canvas>
+    </div>
+
+  </div>
+
+  <!-- Signature -->
+
+  <div class="row justify-content-center">
+
+
+    <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" (onEndEvent)="drawComplete()">
+    </signature-pad><button (click)="clearSign()">Clear</button>
+
+
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-center">
+  <div class="button_cont">
+    <button (click)="finish()" mat-raised-button>OK</button>
+  </div>
+</mat-dialog-actions>
