@@ -35,6 +35,10 @@ import { HeadTellerDialogComponent } from './dialog/head-teller-dialog/head-tell
 import { HeadService } from './services/head.service';
 import { UserDataService } from './services/user-data.service';
 import { NgxImageCompressService } from 'ngx-image-compress';
+import { DialogNewCustomerComponent } from './dialog/dialog-new-customer/dialog-new-customer.component';
+import { VerifyDialogComponent } from './dialog/verify-dialog/verify-dialog.component';
+import { SignaturePadModule } from 'angular2-signaturepad';
+import { NasabahService } from './services/nasabah.service';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -54,8 +58,10 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     DialogTransactionComponent,
     TestComponent,
     HeadTellerDialogComponent,
+    DialogNewCustomerComponent,
+    VerifyDialogComponent,
   ],
-  entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent],
+  entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent, DialogNewCustomerComponent, VerifyDialogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -71,10 +77,11 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     MatTableModule,
     NgOtpInputModule,
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
+    SignaturePadModule
   ],
   providers: [
     CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService,
-    TestService, TransactionService, SharedService, HeadService, UserDataService, NgxImageCompressService,
+    TestService, TransactionService, SharedService, HeadService, UserDataService, NgxImageCompressService, NasabahService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],

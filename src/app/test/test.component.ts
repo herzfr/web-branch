@@ -20,82 +20,41 @@ declare var $: any;
 })
 export class TestComponent implements OnInit {
 
-  private serverUrl = 'https://192.168.43.91:8444/socket';
+  private serverUrl = 'http://localhost:1111/socket';
   private stompClient;
 
-  ls = new SecureLS({ encodingType: 'aes' });
-
-  @ViewChild('form', { static: false }) form: NgForm;
-
-  private secretKey: string;
-  private userNameModel: any = {};
-
-  private name = new FormControl('');
-  message: string;
-
-  userId: String;
-
-  submit() {
-    console.log(this.form.submitted);
-  }
-
-  @ViewChild('UserNameForm', { static: false }) UserNameForm: NgForm;
+  data: any = null;
+  show: boolean = false;
 
   constructor(private testService: TestService) {
-    var dateNow = btoa(moment(new Date()).format("DDMMYYYYDDMM"));
-    var key = crypto.enc.Utf8.parse(dateNow);
-    this.secretKey = key;
-
-    let user = JSON.parse(this.ls.get('data'));
-    this.userId = user.userid;
-
-    console.log("user", user);
-    console.log("user id ", this.userId);
-
-    
   }
 
   ngOnInit() {
 
-    console.log();
-
-    this.initializeWebSocketConnection("vldspv083890446796250320200958400001");
-
-
+    this.initializeWebSocketConnection("nasabahbiometric");
 
   }
 
-  testing() {
-    var encrypted = this.encrypt(this.name.value);
-    console.log("encrypt aes : ", encrypted);
-    console.log("decrypt aes : ", this.decrypt(encrypted));
-
-    this.testService.testSending(btoa(encrypted)).subscribe(resp => {
-      console.log(resp);
-    });
-  }
-
-  encrypt(word) {
-    var someDate = moment(new Date()).format("DDMMYYYY");
-    var srcs = crypto.enc.Utf8.parse(word);
-    var encrypted = crypto.AES.encrypt(srcs, this.secretKey, { mode: crypto.mode.ECB, padding: crypto.pad.Pkcs7 });
-    return encrypted.toString();
-  }
-
-  decrypt(word) {
-    var decrypt = crypto.AES.decrypt(word, this.secretKey, { mode: crypto.mode.ECB, padding: crypto.pad.Pkcs7 });
-    return crypto.enc.Utf8.stringify(decrypt).toString();
-  }
 
   initializeWebSocketConnection(socket) {
     let ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(ws);
     let that = this;
-    this.stompClient.connect({ "testing": "testaja" }, function (frame) {
-      // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
+    this.stompClient.connect({}, function (frame) {
 
       that.stompClient.subscribe("/" + socket, (message) => {
+
         if (message.body) {
+
+          let data = JSON.parse(message.body);
+
+          that.data = 'data:image/jpeg;base64,' + data.imageFinger1;
+
+          console.log(data);
+
+          that.show = true;
+
+
           return message.body;
         }
 

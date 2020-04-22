@@ -356,7 +356,12 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
         dialogConfig.maxWidth = '750px'
         dialogConfig.maxHeight = '1000px'
         dialogConfig.backdropClass = 'backdropBackground'
-        this.dialog.open(UserBiometricComponent, dialogConfig);
+        this.dialog.open(UserBiometricComponent, dialogConfig).afterClosed().subscribe(e => {
+          console.log(e);
+          if (e === 'reload') {
+            this.editBiometric(value)
+          }
+        });
       } else {
         console.log('data tidak ada');
       }

@@ -8,10 +8,11 @@ import { HeadTellerComponent } from '../head-teller/head-teller.component';
 import { RejectTransactionComponent } from '../dialog/reject-transaction/reject-transaction.component';
 import { LottieModule } from 'ngx-lottie';
 import { ConfirmTransactionComponent } from '../dialog/confirm-transaction/confirm-transaction.component';
+import { DashboardCsComponent } from '../dashboard-cs/dashboard-cs.component';
 
 
 @NgModule({
-  declarations: [DashboardComponent, HeadTellerComponent, RejectTransactionComponent, ConfirmTransactionComponent],
+  declarations: [DashboardComponent, HeadTellerComponent, RejectTransactionComponent, ConfirmTransactionComponent, DashboardCsComponent],
   entryComponents: [RejectTransactionComponent, ConfirmTransactionComponent],
   imports: [
     CommonModule,

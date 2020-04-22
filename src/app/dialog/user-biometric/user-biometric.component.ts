@@ -5,6 +5,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { UserService } from 'src/app/services/user.service';
 
+import * as Stomp from 'stompjs';
+import * as SockJS from 'sockjs-client';
+
 
 @Component({
   selector: 'app-user-biometric',
@@ -13,18 +16,23 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class UserBiometricComponent implements OnInit, AfterViewInit {
 
+  private serverUrl = 'http://localhost:1111/socket'
+  private stompClient;
+
   private value: any;
   private returnValue: any = {};
 
   points = [];
   signatureImage: string;
   photoImage: string;
+  reqsuccess: string;
 
   isChangePictAndSign: boolean = false;
   ctx: CanvasRenderingContext2D;
 
-  @ViewChild('video', { static: true }) videoElement: ElementRef = null;
-  @ViewChild('canvas', { static: true }) canvas: ElementRef = null;
+  @ViewChild('video', { static: false }) videoElement: ElementRef;
+  @ViewChild('canvas', { static: false }) canvas: ElementRef;
+
 
   constraints = {
     video: {
@@ -40,17 +48,24 @@ export class UserBiometricComponent implements OnInit, AfterViewInit {
   constructor(private dialogRef: MatDialogRef<UserBiometricComponent>, @Inject(MAT_DIALOG_DATA) data, private sanitizer: DomSanitizer,
     private renderer: Renderer2, private imageCompress: NgxImageCompressService, private userServ: UserService) {
     this.value = data.data;
+    this.photoImage = data.data['imagepict']
+    this.signatureImage = data.data['imagesign']
     console.log("sending value : ", this.value);
 
   }
   ngAfterViewInit(): void {
     console.log("afterinit");
+    // console.log(this.videoElement.nativeElement.focus()); // mayo
+    // this.isChangePictAndSign = !this.isChangePictAndSign;
+
   }
 
   ngOnDestroy(): void {
   }
 
   ngOnInit() {
+    // this.startCamera()
+    this.initializeWebSocketConnection('userbiometric')
   }
 
 
@@ -63,10 +78,11 @@ export class UserBiometricComponent implements OnInit, AfterViewInit {
   }
 
   handleError(error) {
-    console.log('Error: ', error);
+    // console.log('Error: ', error);
   }
 
   attachVideo(stream) {
+    console.log(stream);
     this.renderer.setProperty(this.videoElement.nativeElement, 'srcObject', stream);
     this.renderer.listen(this.videoElement.nativeElement, 'play', (event) => {
       this.videoHeight = this.videoElement.nativeElement.videoHeight;
@@ -105,16 +121,34 @@ export class UserBiometricComponent implements OnInit, AfterViewInit {
         // console.log(result);
         this.signatureImage = result;
         console.warn('Size in bytes is now:', this.imageCompress.byteCount(result))
+        if (result !== null || result !== undefined) {
+          var strImage = this.photoImage.replace(/^data:image\/[a-z]+;base64,/, "");
+          var strSign = this.signatureImage.replace(/^data:image\/[a-z]+;base64,/, "");
+
+          var obj = {
+            "imageid": this.value['imageid'],
+            "imagepict": strImage,
+            "imagesign": strSign
+          }
+          this.userServ.updateDataPict(obj).subscribe(e => {
+            console.log(e);
+            if (e['success']) {
+              this.dialogRef.close()
+              this.reqsuccess = 'Sukses'
+            } else {
+              console.log(e['message']);
+            }
+
+          })
+        }
       }
     );
 
   }
 
   changePictAndSign() {
-    this.isChangePictAndSign = true;
+    this.isChangePictAndSign = !this.isChangePictAndSign;
     this.startCamera()
-    // console.log(this.photoImage);
-    // console.log(this.signatureImage);
   }
 
   compressFile() {
@@ -151,29 +185,42 @@ export class UserBiometricComponent implements OnInit, AfterViewInit {
   }
 
   changeFinger() {
-    var strImage = this.photoImage.replace(/^data:image\/[a-z]+;base64,/, "");
-    var strSign = this.signatureImage.replace(/^data:image\/[a-z]+;base64,/, "");
-
-    var obj = {
-      "imageid": this.value['imageid'],
-      "imagepict": strImage,
-      "imagesign": strSign
-    }
-    this.userServ.updateDataPict(obj).subscribe(e => {
-      console.log(e);
-      if (e['success']) {
-        this.dialogRef.close()
-      } else {
-        console.log(e['message']);
-      }
-
-    })
+    this.userServ.updateDataBiometric(this.value['username']).subscribe()
   }
+
+  initializeWebSocketConnection(socket) {
+    let ws = new SockJS(this.serverUrl);
+    this.stompClient = Stomp.over(ws);
+    let that = this;
+    this.stompClient.connect({ "testing": "testaja" }, function (frame) {
+
+
+      that.stompClient.subscribe("/" + socket, (message) => {
+
+        if (message.body) {
+          const body = JSON.parse(message.body);
+
+          if (body.success) {
+            that.stompClient.disconnect();
+            that.dialogRef.close('reload')
+            // console.log(body.token);
+          }
+        }
+
+      }, () => {
+        // that.dialog.errorDialog("Error", "Koneksi Terputus");
+      });
+    }, err => {
+      // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
+    });
+  }
+
 
   close() {
     this.returnValue.isRejected = false;
     this.dialogRef.close(this.returnValue);
   }
+
 
   imagesPict() {
     if (this.value['imagepict'] === null) {
@@ -231,5 +278,7 @@ export class UserBiometricComponent implements OnInit, AfterViewInit {
       return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.value['imagefinger5']);
     }
   }
+
+
 
 }
