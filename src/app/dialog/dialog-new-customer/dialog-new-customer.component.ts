@@ -2,10 +2,14 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { FormService } from 'src/app/services/form.service';
-import * as moment from 'moment';
 import { VerifyDialogComponent } from '../verify-dialog/verify-dialog.component';
 import { DomSanitizer } from '@angular/platform-browser';
+import * as moment from 'moment';
+import * as securels from 'secure-ls';
+import { NasabahService } from 'src/app/services/nasabah.service';
+import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
 declare var $: any;
+
 
 @Component({
   selector: 'app-dialog-new-customer',
@@ -19,7 +23,12 @@ export class DialogNewCustomerComponent implements OnInit {
   private dataPemohon: FormGroup;
   private dataPekerjaan: FormGroup;
   private dataKerabat: FormGroup;
-  private FormArr: FormArray;
+  private dataBiometri: any;
+
+  // HEAD CS
+  private headCS: any;
+  // DATA SELECTED HEADCS
+  private headSelected: any;
 
   // MAIN LOCATION DATA
   private province: any;
@@ -47,15 +56,18 @@ export class DialogNewCustomerComponent implements OnInit {
   // DATA RELIGION
   private dataEdu: any;
 
-  submitted = false;
+  private submitted = false;
 
+  // BIOMETRI
   private photoImage: string;
   private signatureImage: string;
   private allFinger: any;
 
+  // ENCODE / DECODE
+  private ls = new securels({ encodingType: 'aes' });
 
   constructor(private dialogRef: MatDialogRef<DialogNewCustomerComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog,
-    private formServ: FormService, private sanitizer: DomSanitizer) {
+    private formServ: FormService, private sanitizer: DomSanitizer, private nasabahServ: NasabahService) {
     // DATA AWAL
     this.dataLs = data.data;
 
@@ -70,6 +82,15 @@ export class DialogNewCustomerComponent implements OnInit {
     this.formServ.getEducation().subscribe(e => {
       // console.log(e);
       this.dataEdu = e;
+    })
+
+    this.nasabahServ.headCSList("headcs", this.dataLs.branchcode).subscribe(e => {
+      console.log(e);
+      if (e['success']) {
+        this.headCS = e['record']
+      } else {
+        this.headCS = null;
+      }
     })
 
   }
@@ -519,10 +540,27 @@ export class DialogNewCustomerComponent implements OnInit {
     dialogConfig.width = '1200px';
 
     this.dialog.open(VerifyDialogComponent, dialogConfig).afterClosed().subscribe(e => {
-      // console.log(e);
+      console.log(e);
       this.allFinger = e.finger;
       this.photoImage = e.photo;
       this.signatureImage = e.signature;
+      this.dataBiometri = {
+        "fingertemplate1": this.allFinger.fingerTemplate1,
+        "fingertemplate2": this.allFinger.fingerTemplate2,
+        "fingertemplate3": this.allFinger.fingerTemplate3,
+        "fingertemplate4": this.allFinger.fingerTemplate4,
+        "fingertemplate5": this.allFinger.fingerTemplate5,
+        "imagefinger1": this.allFinger.imageFinger1,
+        "imagefinger2": this.allFinger.imageFinger2,
+        "imagefinger3": this.allFinger.imageFinger3,
+        "imagefinger4": this.allFinger.imageFinger4,
+        "imagefinger5": this.allFinger.imageFinger5,
+        "name": this.dataPemohon.get('namaLengkap').value,
+        "imagepict": this.photoImage,
+        "imagesign": this.signatureImage,
+        "imageid": 123456789012
+      }
+
     })
   }
 
@@ -589,6 +627,98 @@ export class DialogNewCustomerComponent implements OnInit {
       return 'assets/svgs/finger-empty.svg';
     } else {
       return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger5);
+    }
+  }
+
+  selectHead(event) {
+    // console.log(event);
+    this.headSelected = event;
+  }
+
+  sendConfirmation() {
+
+    console.log(this.headSelected);
+
+    if (this.headSelected !== undefined && this.headSelected !== "") {
+      // console.log(this.productInfo.valid);
+      // console.log(this.dataPemohon.valid);
+      // console.log(this.dataPekerjaan.valid);
+      // console.log(this.productInfo.valid);
+      if (this.productInfo.valid) {
+        if (this.dataPemohon.valid) {
+          if (this.dataPekerjaan.valid) {
+            if (this.dataKerabat.valid) {
+
+              let TERMINAL = JSON.parse(this.ls.get('terminal'))
+              let TERMINALUSER = JSON.parse(this.ls.get('termdata'))
+
+              let dataTransbuff = {
+                "produkInfo": this.productInfo.value,
+                "dataPemohon": this.dataPemohon.value,
+                "dataPekerjaan": this.dataPekerjaan.value,
+                "dataKerabat": this.productInfo.value,
+                "wbimage": this.dataBiometri,
+              }
+
+              const dataProsesApi = {
+                "transid": this.dataLs.transid,
+                "branchcode": this.dataLs.branchcode,
+                "terminalid": TERMINAL.terminalID,
+                "queuedate": this.dataLs.queuedate,
+                "queuecode": this.dataLs.queuecode,
+                "queueno": this.dataLs.queueno.toString(),
+                "timestampentry": this.dataLs.timestampentry,
+                "userid": this.dataLs.userid,
+                "userterminal": TERMINALUSER,
+                "trntype": "nac",
+                "transcnt": this.dataLs.transcnt,
+                "transeq": this.dataLs.transeq,
+                "isCash": this.dataLs.isCash,
+                "iscustomer": this.dataLs.iscustomer,
+                "id": this.dataLs.id,
+                // "status": "999",
+                "transbuff": JSON.stringify(dataTransbuff),
+              }
+
+              console.log(dataProsesApi);
+
+              this.nasabahServ.accValidationNewAccount(this.headSelected, dataProsesApi).subscribe(e => {
+                console.log(e);
+                console.log(e['success']);
+                // if (e[''])
+
+                const dialogConfig = new MatDialogConfig();
+                dialogConfig.data = {
+                  id: 0,
+                  data: e
+                }
+                dialogConfig.backdropClass = 'backdropBackground';
+                dialogConfig.disableClose = true;
+                // dialogConfig.width = '1200px';
+
+                this.dialog.open(DialogSuccessComponent, dialogConfig).afterClosed().subscribe(e => {
+                  if (e) {
+                    this.dialogRef.close()
+                  }
+
+                })
+              })
+
+            } else {
+              alert('Data Kerabat belum valid')
+            }
+          } else {
+            alert('Data Pekerjaan belum valid')
+          }
+        } else {
+          alert('Data Pemohon belum valid')
+        }
+      } else {
+        alert('Data Product Info belum valid!')
+      }
+
+    } else {
+      alert('Head CS belum dipilih')
     }
   }
 
