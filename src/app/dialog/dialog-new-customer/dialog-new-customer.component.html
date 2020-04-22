@@ -795,21 +795,52 @@
       </select>
     </div>
   </div>
-
 </form>
 
-<mat-dialog-content class="mat-typography">
+<form>
+  <div id="line1" class="row justify-content-center mb-3">
+    <p class="h6 pt-1 mb-0 ">Data Biometri</p>
+  </div>
 
 
 
-</mat-dialog-content>
+  <div class="row">
+    <div class="col-sm-4">
+      <img class="img-responsive" [src]="photoImg()" alt="">
+    </div>
+    <div class="col-sm-8">
+      <img class="img-responsive" [src]="signImg()" alt="">
+    </div>
+  </div>
+
+  <div class="row justify-content-center mb-3">
+    <mat-card class="m-1 col"><img [src]="finger1()" class="img-thumbnail"></mat-card>
+    <mat-card class="m-1 col"><img [src]="finger2()" class="img-thumbnail"></mat-card>
+    <mat-card class="m-1 col"><img [src]="finger3()" class="img-thumbnail"></mat-card>
+    <mat-card class="m-1 col"><img [src]="finger4()" class="img-thumbnail"></mat-card>
+    <mat-card class="m-1 col"><img [src]="finger5()" class="img-thumbnail"></mat-card>
+  </div>
+
+  <div class="row justify-content-center mb-3">
+    <!-- <button (click)="registerBio()" class="btn btn-after btn-animated">Daftar Biometri</button> -->
+    <div (click)="registerBio()" id="btn" class="button-animated">
+      <div id="circle"></div>
+      <!-- <a href="#">Let's Go!</a> -->
+      Daftar Biometri
+    </div>
+  </div>
+</form>
+
+
+<!-- <mat-dialog-content class="mat-typography">
+</mat-dialog-content> -->
 
 <mat-dialog-actions class="justify-content-center">
   <div class="container-fluid justify-content-between d-flex m-0">
-    <button class="batal" mat-button mat-dialog-close>Batal</button>
-    <button class="skip" mat-button mat-dialog-close>Skip</button>
+    <button class="btn-batal" mat-button mat-dialog-close>Batal</button>
+    <button class="btn-skip" mat-button mat-dialog-close>Skip</button>
   </div>
-  <button class="proses" (click)="requestNew()" mat-button>Selesai</button>
+  <button class="btn-proses" mat-button>Selesai</button>
   <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
 </mat-dialog-actions>
 
