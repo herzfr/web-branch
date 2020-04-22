@@ -750,7 +750,6 @@ export class DialogNewCustomerComponent implements OnInit {
       } else {
         alert('Data Product Info belum valid!')
       }
-
     } else {
       alert('Head CS belum dipilih')
     }
