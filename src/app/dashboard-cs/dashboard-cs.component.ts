@@ -242,7 +242,15 @@ export class DashboardCsComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.width = '1200px';
 
-    this.dlg.open(DialogNewCustomerComponent, dialogConfig)
+    this.dlg.open(DialogNewCustomerComponent, dialogConfig).afterClosed().subscribe(e => {
+      console.log(e);
+      this.queueServ.changeStatusTransactionQ(e).subscribe(res => {
+        console.log(res);
+        if (res['successId0']) {
+          this.queueServ.refreshQCS(this.branchCode).subscribe()
+        }
+      })
+    })
   }
 
   transactionDialog(datas) {

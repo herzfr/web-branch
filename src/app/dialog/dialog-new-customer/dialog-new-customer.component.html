@@ -804,13 +804,15 @@
 
 
 
-  <div class="row">
+  <div class="row justify-content-between">
     <div class="col-sm-4">
-      <img class="img-responsive" [src]="photoImg()" alt="">
+      <img id="photo" class="img-responsive" [src]="photoImg()" alt="">
+      <p class="lead text-center">Photo Nasabah</p>
     </div>
-    <div class="col-sm-8">
-      <img class="img-responsive" [src]="signImg()" alt="">
-    </div>
+    <mat-card class="col-sm-8">
+      <img id="signature" class="img-responsive" [src]="signImg()" alt="">
+      <p class="lead text-center">Tanda Tangan Nasabah</p>
+    </mat-card>
   </div>
 
   <div class="row justify-content-center mb-3">
@@ -820,6 +822,7 @@
     <mat-card class="m-1 col"><img [src]="finger4()" class="img-thumbnail"></mat-card>
     <mat-card class="m-1 col"><img [src]="finger5()" class="img-thumbnail"></mat-card>
   </div>
+  <p class="lead text-center">Biometri Nasabah</p>
 
   <div class="row justify-content-center mb-3">
     <!-- <button (click)="registerBio()" class="btn btn-after btn-animated">Daftar Biometri</button> -->
@@ -831,6 +834,24 @@
   </div>
 </form>
 
+<form>
+  <div id="line1" class="row justify-content-center mb-3">
+    <p class="h6 pt-1 mb-0 ">Head Customer Service Validation</p>
+  </div>
+
+  <div class="form-group row mb-3">
+    <label class="col-sm-2 col-form-label font-weight-bold">Head CS</label>
+    <div class="col-sm-4">
+      <select (change)="selectHead($event.target.value)" class="form-control option">
+        <option value="">Select a category</option>
+        <option *ngFor='let head of headCS' [value]="head.username">{{head.firstname}} - {{head.lastname}}
+        </option>
+      </select>
+    </div>
+  </div>
+
+</form>
+
 
 <!-- <mat-dialog-content class="mat-typography">
 </mat-dialog-content> -->
@@ -840,7 +861,7 @@
     <button class="btn-batal" mat-button mat-dialog-close>Batal</button>
     <button class="btn-skip" mat-button mat-dialog-close>Skip</button>
   </div>
-  <button class="btn-proses" (click)="send()" mat-button>Selesai</button>
+  <button (click)="sendConfirmation()" class="btn-proses" mat-button>Selesai</button>
   <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
 </mat-dialog-actions>
 

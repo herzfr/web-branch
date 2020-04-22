@@ -151,6 +151,12 @@ select.form-control:not([size]):not([multiple]) {
 
 .img-responsive {
   width: inherit;
+  max-height: 370px;
+  min-height: 370px;
+}
+
+#photo {
+  border-radius: 200px;
 }
 
 /* Third Button */
