@@ -702,7 +702,7 @@ export class DialogNewCustomerComponent implements OnInit {
                 "isCash": this.dataLs.isCash,
                 "iscustomer": this.dataLs.iscustomer,
                 "id": this.dataLs.id,
-                // "status": "999",
+                "status": "999",
                 "transbuff": JSON.stringify(dataTransbuff),
               }
 
@@ -724,7 +724,15 @@ export class DialogNewCustomerComponent implements OnInit {
 
                 this.dialog.open(DialogSuccessComponent, dialogConfig).afterClosed().subscribe(e => {
                   if (e) {
-                    this.dialogRef.close()
+
+                    let postStat = new Array;
+
+                    let obj: any = new Object();
+                    obj.transId = this.dataLs.transid;
+                    obj.status = '000';
+                    postStat.push(obj)
+
+                    this.dialogRef.close(postStat)
                   }
 
                 })
