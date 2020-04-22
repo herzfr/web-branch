@@ -549,6 +549,8 @@ export class DialogNewCustomerComponent implements OnInit {
       this.allFinger = e.finger;
       this.photoImage = e.photo;
       this.signatureImage = e.signature;
+
+
     })
   }
 
@@ -616,6 +618,22 @@ export class DialogNewCustomerComponent implements OnInit {
     } else {
       return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger5);
     }
+  }
+
+  send() {
+    console.log("send :");
+
+    let buff =
+      "{\"productInfo\":" + JSON.stringify(this.productInfo.value) +
+      ",\"dataPemohon\":" + JSON.stringify(this.dataPemohon.value) +
+      ",\"dataPekerjaan\":" + JSON.stringify(this.dataPekerjaan.value) +
+      ",\"dataKerabat\":" + JSON.stringify(this.dataKerabat.value) +
+      "}"
+
+
+    console.log(this.dataLs);
+
+
   }
 
 

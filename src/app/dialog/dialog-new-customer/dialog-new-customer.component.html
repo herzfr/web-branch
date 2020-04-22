@@ -840,7 +840,7 @@
     <button class="btn-batal" mat-button mat-dialog-close>Batal</button>
     <button class="btn-skip" mat-button mat-dialog-close>Skip</button>
   </div>
-  <button class="btn-proses" mat-button>Selesai</button>
+  <button class="btn-proses" (click)="send()" mat-button>Selesai</button>
   <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
 </mat-dialog-actions>
 

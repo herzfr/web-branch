@@ -62,7 +62,7 @@ export class DashboardCsComponent implements OnInit {
     let branch = JSON.parse(this.secureLs.get("terminal"));
     this.branchCode = branch.branchCode;
 
-    this.queueServ.getNewQueue(this.branchCode, this.waitingCall, this.outCall).subscribe(res => {
+    this.queueServ.getNewQueueCS(this.branchCode, this.waitingCall, this.outCall).subscribe(res => {
       console.log(res);
       let data = new Array;
       for (const key in res) {
@@ -73,21 +73,14 @@ export class DashboardCsComponent implements OnInit {
           // let transf = new Array;
           // this.DataTableQ.push(element)
 
-          // console.log(element);  
+          console.log(element);
 
 
-          switch (transBf.tp) {
-            case 'trk':
-              transBf.tp = 'Tarik Tunai';
-              break;
-            case 'str':
-              transBf.tp = 'Setor Tunai';
-              break;
-            case 'tar':
-              transBf.tp = 'Transfer Antar Rekening';
-              break;
-            case 'tab':
-              transBf.tp = 'Transfer Antar Bank';
+
+
+          switch (element.trntype) {
+            case 'nac':
+              transBf.tp = 'Pembukaan Rekening Baru';
               break;
             default:
               break;
@@ -316,12 +309,6 @@ export class DashboardCsComponent implements OnInit {
           localStorage.setItem('skip', JSON.stringify(oldItems));
           console.log(JSON.stringify(oldItems));
 
-
-          // this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
-          //   console.log(res);
-          //   this.queueServ.refreshQ(this.branchCode).subscribe()
-          // })
-
         } else if (resBack[0].batal) {
           console.log('batal jalan');
 
@@ -367,19 +354,14 @@ export class DashboardCsComponent implements OnInit {
           })
         }
       }
-
-
-
-
-
-    })
+    });
 
   }
 
   connect() {
     let ls = JSON.parse(this.secureLs.get("terminal"));
     const branchCode = ls.branchCode;
-    const socketChannel = "/tlrx" + branchCode;
+    const socketChannel = "/csx" + branchCode;
     this.initializeWebSocketConnection(socketChannel);
   }
 
@@ -387,7 +369,7 @@ export class DashboardCsComponent implements OnInit {
     let ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(ws);
     let that = this;
-    this.stompClient.connect({ "testing": "testaja" }, function (frame) {
+    this.stompClient.connect({}, function (frame) {
       // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
 
       that.stompClient.subscribe(socket, (message) => {
