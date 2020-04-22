@@ -29,7 +29,7 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
 
 
   private allFinger: any;
-  private Signature: string;
+  private signatureImage: string;
   private photoImage: string;
   private fingerObject: any = {};
   private custName: string;
@@ -63,6 +63,9 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   videoWidth = 0;
   videoHeight = 0;
 
+  points = [];
+
+
 
   constructor(private dialogRef: MatDialogRef<VerifyDialogComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog,
     private sanitizer: DomSanitizer, private renderer: Renderer2, private imageCompress: NgxImageCompressService, private nasabahServ: NasabahService) {
@@ -78,23 +81,7 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // this.signaturePad is now available
-    this.signaturePad.set('minWidth', 5); // set szimek/signature_pad options at runtime
-    this.signaturePad.clear(); // invoke functions from szimek/signature_pad API
-  }
 
-  drawComplete() {
-    console.log(this.signaturePad.toDataURL());
-    this.Signature = this.signaturePad.toDataURL();
-  }
-
-  clearSign() {
-    this.signaturePad.clear();
-  }
-
-  drawStart() {
-    // will be notified of szimek/signature_pad's onBegin event
-    console.log('begin drawing');
   }
 
   initializeWebSocketConnection(socket) {
@@ -114,7 +101,7 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
           if (body.success) {
             that.stompClient.disconnect();
             that.dialogRef.close('reload')
-            // console.log(body.token);
+            console.log(body);
           }
         }
 
@@ -159,7 +146,7 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
     // console.log(captureImg);
 
     // console.warn('Size in bytes was:', this.imageCompress.byteCount(captureImg));
-    this.imageCompress.compressFile(captureImgBeforeCompress, 50, 50).then(
+    this.imageCompress.compressFile(captureImgBeforeCompress, 100, 100).then(
       result => {
         // console.log(result);
         captureImgAfterCompress = result;
@@ -174,6 +161,18 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
     );
 
   }
+
+  showImage(data) {
+    this.imageCompress.compressFile(data, 100, 100).then(
+      result => {
+        // console.log(result.replace(/^data:image\/[a-z]+;base64,/, ""));
+        this.signatureImage = result;
+        console.warn('Size in bytes is now:', this.imageCompress.byteCount(result))
+      }
+    );
+  }
+
+
 
   compressFile() {
     var imgResultBeforeCompress: string;
@@ -260,58 +259,32 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   }
 
 
+  closeDial() {
+    this.dialogRef.close()
+  }
 
   finish() {
 
-    let succes = false;
-    // console.log(this.allFinger);
-    try {
-      this.fingerObject.fingertemplate1 = this.allFinger.fingerTemplate1;
-      this.fingerObject.fingertemplate2 = this.allFinger.fingerTemplate2;
-      this.fingerObject.fingertemplate3 = this.allFinger.fingerTemplate3;
-      this.fingerObject.fingertemplate4 = this.allFinger.fingerTemplate4;
-      this.fingerObject.fingertemplate5 = this.allFinger.fingerTemplate5;
-      this.fingerObject.imagefinger1 = this.allFinger.imageFinger1;
-      this.fingerObject.imagefinger2 = this.allFinger.imageFinger2;
-      this.fingerObject.imagefinger3 = this.allFinger.imageFinger3;
-      this.fingerObject.imagefinger4 = this.allFinger.imageFinger4;
-      this.fingerObject.imagefinger5 = this.allFinger.imageFinger5;
-      this.fingerObject.name = this.custName;
+    console.log(this.photoImage);
+    console.log(this.signatureImage);
 
-      if (this.photoImage) {
-        this.fingerObject.imagepict = this.photoImage.split(',').pop();
-      } else { this.biometricWarn(); }
 
-      if (this.Signature) {
-        this.fingerObject.imagesign = this.Signature.split(',').pop();
-      } else { this.biometricWarn(); }
 
-      this.fingerObject.succes = true;
+    if (this.allFinger === undefined || this.photoImage === undefined || this.signatureImage === undefined) {
+      alert('Data masih ada yang kosong, ilahkan isi terlebih dahulu')
+    } else {
+      var biometric = {
+        finger: this.allFinger,
+        signature: this.signatureImage.replace(/^data:image\/[a-z]+;base64,/, ""),
+        photo: this.photoImage.replace(/^data:image\/[a-z]+;base64,/, "")
+      }
+      console.log(this.allFinger);
+      console.log(this.signatureImage);
+      console.log(this.photoImage);
 
-      succes = true;
-      console.log("fingerObject : ", this.fingerObject);
-
-    } catch (error) {
-      this.fingerObject.succes = false;
-      succes = false;
-      this.biometricWarn();
+      this.dialogRef.close(biometric)
     }
 
-
-    if (succes) {
-      this.dialogRef.close(this.fingerObject);
-    }
-
-
-
-  }
-
-  biometricWarn() {
-    alert("Ada data biometric yang kosong");
-  }
-
-  close() {
-    this.dialogRef.close();
   }
 
 }

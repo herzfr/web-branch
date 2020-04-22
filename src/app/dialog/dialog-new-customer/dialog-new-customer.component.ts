@@ -4,6 +4,7 @@ import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { FormService } from 'src/app/services/form.service';
 import * as moment from 'moment';
 import { VerifyDialogComponent } from '../verify-dialog/verify-dialog.component';
+import { DomSanitizer } from '@angular/platform-browser';
 declare var $: any;
 
 @Component({
@@ -57,9 +58,13 @@ export class DialogNewCustomerComponent implements OnInit {
 
   submitted = false;
 
+  private photoImage: string;
+  private signatureImage: string;
+  private allFinger: any;
+
 
   constructor(private dialogRef: MatDialogRef<DialogNewCustomerComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog,
-    private formServ: FormService) {
+    private formServ: FormService, private sanitizer: DomSanitizer) {
     // DATA AWAL
     this.dataLs = data.data;
 
@@ -505,7 +510,7 @@ export class DialogNewCustomerComponent implements OnInit {
     })
   }
 
-  requestNew() {
+  registerBio() {
     console.log(JSON.stringify(this.productInfo.value));
     console.log(JSON.stringify(this.dataPemohon.value));
     console.log(JSON.stringify(this.dataPekerjaan.value));
@@ -540,47 +545,77 @@ export class DialogNewCustomerComponent implements OnInit {
     dialogConfig.width = '1200px';
 
     this.dialog.open(VerifyDialogComponent, dialogConfig).afterClosed().subscribe(e => {
-      console.log(e.succes);
-      if (e.succes) {
-        this.showSend = true;
-        this.biometricData = e;
-      } else {
-        this.biometricData = null;
-      }
-
-    });
+      // console.log(e);
+      this.allFinger = e.finger;
+      this.photoImage = e.photo;
+      this.signatureImage = e.signature;
+    })
   }
 
-
-  sendForm() {
-
-    this.biometricData.imageid = this.dataPemohon.value.noIdentitas;
-    const dataProsesApi = {
-      "transid": this.dataLs.transid,
-      "branchcode": this.dataLs.branchcode,
-      "terminalid": "harus terminal id login",
-      "queuedate": this.dataLs.queuedate,
-      "queuecode": this.dataLs.queuecode,
-      "queueno": this.dataLs.queueno.toString(),
-      "timestampentry": this.dataLs.timestampentry,
-      "userid": this.dataLs.userid,
-      "userterminal": "belum diisi",
-      "trntype": "nac",
-      "transcnt": this.dataLs.transcnt,
-      "transeq": this.dataLs.transeq,
-      "isCash": this.dataLs.isCash,
-      "iscustomer": this.dataLs.iscustomer,
-      "id": this.dataLs.id,
-      // "status": "999",
-      "transbuff": this.formBuff,
+  photoImg() {
+    if (this.photoImage === undefined) {
+      return 'assets/png/avatar.png';
+    } else {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.photoImage);
     }
+  }
 
-    console.log("data : ", dataProsesApi);
-    console.log("biometric : ", this.biometricData);
+  signImg() {
+    if (this.signatureImage === undefined) {
+      return 'assets/png/signature.png';
+    } else {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.signatureImage);
+    }
+  }
 
+  finger1() {
+    // console.log(this.allFinger);
 
+    if (this.allFinger === undefined) {
+      return 'assets/svgs/finger-empty.svg';
+    } else {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger1);
+    }
+  }
 
+  finger2() {
+    // console.log(this.allFinger);
 
+    if (this.allFinger === undefined) {
+      return 'assets/svgs/finger-empty.svg';
+    } else {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger2);
+    }
+  }
+
+  finger3() {
+    // console.log(this.allFinger);
+
+    if (this.allFinger === undefined) {
+      return 'assets/svgs/finger-empty.svg';
+    } else {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger3);
+    }
+  }
+
+  finger4() {
+    // console.log(this.allFinger);
+
+    if (this.allFinger === undefined) {
+      return 'assets/svgs/finger-empty.svg';
+    } else {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger4);
+    }
+  }
+
+  finger5() {
+    // console.log(this.allFinger);
+
+    if (this.allFinger === undefined) {
+      return 'assets/svgs/finger-empty.svg';
+    } else {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger5);
+    }
   }
 
 
