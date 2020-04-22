@@ -37,6 +37,7 @@ import { UserDataService } from './services/user-data.service';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { DialogNewCustomerComponent } from './dialog/dialog-new-customer/dialog-new-customer.component';
 import { VerifyDialogComponent } from './dialog/verify-dialog/verify-dialog.component';
+import { SignaturePadModule } from 'angular2-signaturepad';
 import { NasabahService } from './services/nasabah.service';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
@@ -76,6 +77,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     MatTableModule,
     NgOtpInputModule,
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
+    SignaturePadModule
   ],
   providers: [
     CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService,

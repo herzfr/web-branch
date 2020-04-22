@@ -38,9 +38,11 @@
       <input [ngClass]="{ 'is-invalid': form0.produk.errors }" type="text" class="form-control"
         formControlName="produk">
     </div>
-    <mat-error class="text-danger col-sm-6" *ngIf="form0.produk.errors">
-      Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
-    </mat-error>
+    <div class="col-sm-4" *ngIf="form0.produk.invalid && (form0.produk.dirty || form0.produk.touched)">
+      <mat-error class="text-danger" *ngIf="form0.produk.errors">
+        Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+      </mat-error>
+    </div>
   </div>
 
   <div class="form-group row mb-1">

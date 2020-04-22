@@ -6,15 +6,13 @@ import { HttpClient } from '@angular/common/http';
 })
 export class NasabahService {
 
-  private apiUrl
-  private apiSocket = 'http://localhost:1111/';
-
-
   // http://localhost:1111/api/wbservice/newNasabahBiometric
+  private apiUrl = 'http://localhost:1111/'
 
   constructor(private http: HttpClient) { }
 
-  callNasabahVerify() {
-    return this.http.get(this.apiSocket + 'api/wbservice/newNasabahBiometric')
+
+  callRegisterBiometric() {
+    return this.http.get(this.apiUrl + 'api/wbservice/newNasabahBiometric')
   }
 }
