@@ -73,11 +73,6 @@ export class DashboardCsComponent implements OnInit {
           // let transf = new Array;
           // this.DataTableQ.push(element)
 
-          console.log(element);
-
-
-
-
           switch (element.trntype) {
             case 'nac':
               transBf.tp = 'Pembukaan Rekening Baru';
