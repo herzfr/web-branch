@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
-
-
 import * as moment from 'moment';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';

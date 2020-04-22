@@ -20,6 +20,15 @@ export class DialogNewCustomerComponent implements OnInit {
   private dataKerabat: FormGroup;
   private FormArr: FormArray;
 
+  // dialog return value properties
+  private returnValue: any = {};
+
+  showBiometric: boolean = true;
+  showSend: boolean = false;
+  formBuff: any;
+
+  private biometricData: any;
+
   // MAIN LOCATION DATA
   private province: any;
   // DATA LOCATION PART I
@@ -53,6 +62,9 @@ export class DialogNewCustomerComponent implements OnInit {
     private formServ: FormService) {
     // DATA AWAL
     this.dataLs = data.data;
+
+    console.log("data awal", data);
+
 
     // INIT FORM GROUP
     this.productInfo = this.getproductInfo()
@@ -499,6 +511,20 @@ export class DialogNewCustomerComponent implements OnInit {
     console.log(JSON.stringify(this.dataPekerjaan.value));
     console.log(JSON.stringify(this.dataKerabat.value));
 
+    let buff =
+      "{\"productInfo\":" + JSON.stringify(this.productInfo.value) +
+      ",\"dataPemohon\":" + JSON.stringify(this.dataPemohon.value) +
+      ",\"dataPekerjaan\":" + JSON.stringify(this.dataPekerjaan.value) +
+      ",\"dataKerabat\":" + JSON.stringify(this.dataKerabat.value) +
+      "}"
+
+    console.log("isi buff :", buff);
+    console.log("isi buff parse :", JSON.parse(buff));
+
+    this.formBuff = buff;
+
+
+
     this.validatorDialog(this.productInfo.value, this.dataPemohon.value, this.dataPekerjaan.value, this.dataKerabat.value)
   }
 
@@ -513,7 +539,48 @@ export class DialogNewCustomerComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.width = '1200px';
 
-    this.dialog.open(VerifyDialogComponent, dialogConfig)
+    this.dialog.open(VerifyDialogComponent, dialogConfig).afterClosed().subscribe(e => {
+      console.log(e.succes);
+      if (e.succes) {
+        this.showSend = true;
+        this.biometricData = e;
+      } else {
+        this.biometricData = null;
+      }
+
+    });
+  }
+
+
+  sendForm() {
+
+    this.biometricData.imageid = this.dataPemohon.value.noIdentitas;
+    const dataProsesApi = {
+      "transid": this.dataLs.transid,
+      "branchcode": this.dataLs.branchcode,
+      "terminalid": "harus terminal id login",
+      "queuedate": this.dataLs.queuedate,
+      "queuecode": this.dataLs.queuecode,
+      "queueno": this.dataLs.queueno.toString(),
+      "timestampentry": this.dataLs.timestampentry,
+      "userid": this.dataLs.userid,
+      "userterminal": "belum diisi",
+      "trntype": "nac",
+      "transcnt": this.dataLs.transcnt,
+      "transeq": this.dataLs.transeq,
+      "isCash": this.dataLs.isCash,
+      "iscustomer": this.dataLs.iscustomer,
+      "id": this.dataLs.id,
+      // "status": "999",
+      "transbuff": this.formBuff,
+    }
+
+    console.log("data : ", dataProsesApi);
+    console.log("biometric : ", this.biometricData);
+
+
+
+
   }
 
 

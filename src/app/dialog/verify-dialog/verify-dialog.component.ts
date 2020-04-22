@@ -18,6 +18,9 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   private serverUrl = 'http://localhost:1111/socket'
   private stompClient;
 
+  // dialog return value 
+  private returnValue: any = {};
+  private dataBiometric: any = {};
 
   private dataForm0;
   private dataForm1;
@@ -28,6 +31,8 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   private allFinger: any;
   private Signature: string;
   private photoImage: string;
+  private fingerObject: any = {};
+  private custName: string;
 
   // imgResultBeforeCompress: string;
   // imgResultAfterCompress: string;
@@ -59,10 +64,10 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   videoHeight = 0;
 
 
-
   constructor(private dialogRef: MatDialogRef<VerifyDialogComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog,
     private sanitizer: DomSanitizer, private renderer: Renderer2, private imageCompress: NgxImageCompressService, private nasabahServ: NasabahService) {
-    console.log(data.data);
+    // console.log(data.data[1].namaLengkap);
+    this.custName = data.data[1].namaLengkap;
 
   }
 
@@ -80,6 +85,7 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
 
   drawComplete() {
     console.log(this.signaturePad.toDataURL());
+    this.Signature = this.signaturePad.toDataURL();
   }
 
   clearSign() {
@@ -158,16 +164,18 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
         // console.log(result);
         captureImgAfterCompress = result;
         this.photoImage = result;
+
+        console.log("image byte : ", result);
+
+
+
         console.warn('Size in bytes is now:', this.imageCompress.byteCount(result))
       }
     );
 
   }
 
-
-
   compressFile() {
-
     var imgResultBeforeCompress: string;
 
     this.imageCompress.uploadFile().then(({ image, orientation }) => {
@@ -191,7 +199,9 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
             this.ctx.drawImage(image, 0, 0, 500, 500);
           }
           image.src = result
-          console.log(image.src);
+          // this.photoImage = image.src;\
+          console.log(image.src.split(',').pop());
+
 
         }
       );
@@ -200,7 +210,7 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   }
 
   finger1() {
-    console.log(this.allFinger);
+    // console.log(this.allFinger);
 
     if (this.allFinger === undefined) {
       return 'assets/svgs/finger-empty.svg';
@@ -210,7 +220,7 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   }
 
   finger2() {
-    console.log(this.allFinger);
+    // console.log(this.allFinger);
 
     if (this.allFinger === undefined) {
       return 'assets/svgs/finger-empty.svg';
@@ -220,7 +230,7 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   }
 
   finger3() {
-    console.log(this.allFinger);
+    // console.log(this.allFinger);
 
     if (this.allFinger === undefined) {
       return 'assets/svgs/finger-empty.svg';
@@ -230,7 +240,7 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   }
 
   finger4() {
-    console.log(this.allFinger);
+    // console.log(this.allFinger);
 
     if (this.allFinger === undefined) {
       return 'assets/svgs/finger-empty.svg';
@@ -240,7 +250,7 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   }
 
   finger5() {
-    console.log(this.allFinger);
+    // console.log(this.allFinger);
 
     if (this.allFinger === undefined) {
       return 'assets/svgs/finger-empty.svg';
@@ -252,7 +262,56 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
 
 
   finish() {
-    this.dialogRef.close()
+
+    let succes = false;
+    // console.log(this.allFinger);
+    try {
+      this.fingerObject.fingertemplate1 = this.allFinger.fingerTemplate1;
+      this.fingerObject.fingertemplate2 = this.allFinger.fingerTemplate2;
+      this.fingerObject.fingertemplate3 = this.allFinger.fingerTemplate3;
+      this.fingerObject.fingertemplate4 = this.allFinger.fingerTemplate4;
+      this.fingerObject.fingertemplate5 = this.allFinger.fingerTemplate5;
+      this.fingerObject.imagefinger1 = this.allFinger.imageFinger1;
+      this.fingerObject.imagefinger2 = this.allFinger.imageFinger2;
+      this.fingerObject.imagefinger3 = this.allFinger.imageFinger3;
+      this.fingerObject.imagefinger4 = this.allFinger.imageFinger4;
+      this.fingerObject.imagefinger5 = this.allFinger.imageFinger5;
+      this.fingerObject.name = this.custName;
+
+      if (this.photoImage) {
+        this.fingerObject.imagepict = this.photoImage.split(',').pop();
+      } else { this.biometricWarn(); }
+
+      if (this.Signature) {
+        this.fingerObject.imagesign = this.Signature.split(',').pop();
+      } else { this.biometricWarn(); }
+
+      this.fingerObject.succes = true;
+
+      succes = true;
+      console.log("fingerObject : ", this.fingerObject);
+
+    } catch (error) {
+      this.fingerObject.succes = false;
+      succes = false;
+      this.biometricWarn();
+    }
+
+
+    if (succes) {
+      this.dialogRef.close(this.fingerObject);
+    }
+
+
+
+  }
+
+  biometricWarn() {
+    alert("Ada data biometric yang kosong");
+  }
+
+  close() {
+    this.dialogRef.close();
   }
 
 }

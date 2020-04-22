@@ -809,15 +809,13 @@
     <button class="batal" mat-button mat-dialog-close>Batal</button>
     <button class="skip" mat-button mat-dialog-close>Skip</button>
   </div>
-  <button class="proses" (click)="requestNew()" mat-button>Selesai</button>
+  <button class="proses" (click)="sendForm()" mat-button *ngIf="showSend">Selesai</button>
+  <button class="proses" (click)="requestNew()" mat-button *ngIf="showBiometric">Daftar Biometric</button>
   <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
 </mat-dialog-actions>
 
 
-
-
-
-<!-- <div class="form-group row">
+<!-- <div class="form-group row"> 
       <label class="col-sm-4 col-form-label font-weight-bold">Identitas yang Digunakan </label>
       <div class="col-sm-8 col-form-label">
         :
