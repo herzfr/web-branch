@@ -30,6 +30,15 @@ export class DialogNewCustomerComponent implements OnInit {
   // DATA SELECTED HEADCS
   private headSelected: any;
 
+  // dialog return value properties
+  private returnValue: any = {};
+
+  showBiometric: boolean = true;
+  showSend: boolean = false;
+  formBuff: any;
+
+  private biometricData: any;
+
   // MAIN LOCATION DATA
   private province: any;
   // DATA LOCATION PART I
@@ -70,6 +79,9 @@ export class DialogNewCustomerComponent implements OnInit {
     private formServ: FormService, private sanitizer: DomSanitizer, private nasabahServ: NasabahService) {
     // DATA AWAL
     this.dataLs = data.data;
+
+    console.log("data awal", data);
+
 
     // INIT FORM GROUP
     this.productInfo = this.getproductInfo()
@@ -524,6 +536,20 @@ export class DialogNewCustomerComponent implements OnInit {
     console.log(JSON.stringify(this.dataPemohon.value));
     console.log(JSON.stringify(this.dataPekerjaan.value));
     console.log(JSON.stringify(this.dataKerabat.value));
+
+    let buff =
+      "{\"productInfo\":" + JSON.stringify(this.productInfo.value) +
+      ",\"dataPemohon\":" + JSON.stringify(this.dataPemohon.value) +
+      ",\"dataPekerjaan\":" + JSON.stringify(this.dataPekerjaan.value) +
+      ",\"dataKerabat\":" + JSON.stringify(this.dataKerabat.value) +
+      "}"
+
+    console.log("isi buff :", buff);
+    console.log("isi buff parse :", JSON.parse(buff));
+
+    this.formBuff = buff;
+
+
 
     this.validatorDialog(this.productInfo.value, this.dataPemohon.value, this.dataPekerjaan.value, this.dataKerabat.value)
   }

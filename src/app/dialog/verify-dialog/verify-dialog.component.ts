@@ -18,6 +18,9 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   private serverUrl = 'http://localhost:1111/socket'
   private stompClient;
 
+  // dialog return value 
+  private returnValue: any = {};
+  private dataBiometric: any = {};
 
   private dataForm0;
   private dataForm1;
@@ -28,6 +31,8 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
   private allFinger: any;
   private signatureImage: string;
   private photoImage: string;
+  private fingerObject: any = {};
+  private custName: string;
 
   // imgResultBeforeCompress: string;
   // imgResultAfterCompress: string;
@@ -62,10 +67,10 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
 
 
 
-
   constructor(private dialogRef: MatDialogRef<VerifyDialogComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog,
     private sanitizer: DomSanitizer, private renderer: Renderer2, private imageCompress: NgxImageCompressService, private nasabahServ: NasabahService) {
-    console.log(data.data);
+    // console.log(data.data[1].namaLengkap);
+    this.custName = data.data[1].namaLengkap;
 
   }
 
@@ -146,6 +151,11 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
         // console.log(result);
         captureImgAfterCompress = result;
         this.photoImage = result;
+
+        console.log("image byte : ", result);
+
+
+
         console.warn('Size in bytes is now:', this.imageCompress.byteCount(result))
       }
     );
@@ -165,7 +175,6 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
 
 
   compressFile() {
-
     var imgResultBeforeCompress: string;
 
     this.imageCompress.uploadFile().then(({ image, orientation }) => {
@@ -189,7 +198,9 @@ export class VerifyDialogComponent implements OnInit, AfterViewInit {
             this.ctx.drawImage(image, 0, 0, 500, 500);
           }
           image.src = result
-          console.log(image.src);
+          // this.photoImage = image.src;\
+          console.log(image.src.split(',').pop());
+
 
         }
       );

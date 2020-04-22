@@ -21,7 +21,6 @@ export class WebsocketService {
     this.stompClient = Stomp.over(ws);
     let that = this;
     this.stompClient.connect({ "testing": "testaja" }, function (frame) {
-      // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
 
       that.stompClient.subscribe("/" + socket, (message) => {
         if (message.body) {

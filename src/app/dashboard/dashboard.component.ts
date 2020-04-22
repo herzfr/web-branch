@@ -350,11 +350,7 @@ export class DashboardComponent implements OnInit {
         }
       }
 
-
-
-
-
-    })
+    });
 
   }
 
@@ -370,7 +366,6 @@ export class DashboardComponent implements OnInit {
     this.stompClient = Stomp.over(ws);
     let that = this;
     this.stompClient.connect({ "testing": "testaja" }, function (frame) {
-      // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
 
       that.stompClient.subscribe(socket, (message) => {
         if (message.body) {
@@ -392,10 +387,6 @@ export class DashboardComponent implements OnInit {
   disconnect() {
     this.stompClient.disconnect();
   }
-
-
-
-
 
 }
 
