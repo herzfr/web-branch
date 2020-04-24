@@ -1,0 +1,32 @@
+<mat-dialog-content>
+
+  <ng-lottie [options]="options">
+  </ng-lottie>
+
+  <p class="text-center"><strong> Konfirmasi Transaksi</strong></p>
+  <p class="text-center"><strong>Pindai Sidik Jari Anda</strong></p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-center">
+  <div class="container">
+    <div class="row justify-content-md-center">
+      <div class="col col-lg-2">
+
+      </div>
+      <div class="col-md-auto" *ngIf="isFingerSuccess">
+        <button mat-raised-button color="primary" (click)="approve()">Approve</button>
+        <button mat-raised-button color="warn" (click)="reject()">Reject</button>
+      </div>
+      <div class="col col-lg-2">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3 mx-auto mt-3">
+        <div class="text-center">
+          <button mat-raised-button color="warn" (click)="close()">Batal </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-actions>
