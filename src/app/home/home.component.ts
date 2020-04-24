@@ -179,6 +179,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // get user data 
   userVoid() {
+    this.checkSessionIat();
     const data = JSON.parse(this.secureLs.get("data"));
 
     this.branchSub = this.branchService.getBranchByCode(data.branchcode).subscribe(res => {
@@ -208,6 +209,24 @@ export class HomeComponent implements OnInit, OnDestroy {
     }, 2000);
   }
 
+  checkSessionIat() {
+
+    try {
+      const iat = this.secureLs.get('iat');
+      let ms = moment(Date.now()).diff(iat);
+      let d = moment.duration(ms);
+      let dif = Math.floor(d.asHours());
+      if (dif > 8) {
+        alert("Sesion anda sudah berakhir, mohon login kembali");
+        this.logout();
+      }
+    } catch (error) {
+      alert("Sesion anda sudah berakhir, mohon login kembali");
+      this.logout();
+    }
+
+  }
+
   setInfoNavbar() {
     var log = new Date();
     var last = new Date();
@@ -223,6 +242,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   logout() {
     localStorage.removeItem('data');
     localStorage.removeItem('termdata');
+    localStorage.removeItem('iat');
     this.route.navigate(['/login']);
   }
 

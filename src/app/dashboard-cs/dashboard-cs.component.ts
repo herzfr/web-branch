@@ -73,11 +73,6 @@ export class DashboardCsComponent implements OnInit {
           // let transf = new Array;
           // this.DataTableQ.push(element)
 
-          console.log(element);
-
-
-
-
           switch (element.trntype) {
             case 'nac':
               transBf.tp = 'Pembukaan Rekening Baru';
@@ -113,8 +108,6 @@ export class DashboardCsComponent implements OnInit {
           }
         }
 
-        // console.log(_data);
-
         for (const key in _data) {
           if (_data.hasOwnProperty(key)) {
             const element = _data[key];
@@ -125,7 +118,6 @@ export class DashboardCsComponent implements OnInit {
           }
         }
 
-        // console.log(_data);
         this.DataTableQ = _data;
         this.dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
 

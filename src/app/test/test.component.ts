@@ -20,7 +20,7 @@ declare var $: any;
 })
 export class TestComponent implements OnInit {
 
-  private serverUrl = 'http://localhost:1111/socket';
+  private serverUrl = 'https://10.62.10.28:8444/socket'
   private stompClient;
 
   data: any = null;
@@ -31,7 +31,8 @@ export class TestComponent implements OnInit {
 
   ngOnInit() {
 
-    this.initializeWebSocketConnection("nasabahbiometric");
+    const username = "herza";
+    this.initializeWebSocketConnection("vldspvcs" + username);
 
   }
 
@@ -43,31 +44,21 @@ export class TestComponent implements OnInit {
     this.stompClient.connect({}, function (frame) {
 
       that.stompClient.subscribe("/" + socket, (message) => {
-
         if (message.body) {
+          console.log("body : ", message.body);
 
-          let data = JSON.parse(message.body);
-
-          that.data = 'data:image/jpeg;base64,' + data.imageFinger1;
-
-          console.log(data);
-
-          that.show = true;
-
-
-          return message.body;
         }
-
       }, () => {
-        // that.dialog.errorDialog("Error", "Koneksi Terputus");
-        console.log("koneksi terputus");
+
 
       });
     }, err => {
-      console.log("gagal menghubungkan ke server ");
 
-      // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
     });
+  }
+
+  disconectSocket() {
+    this.stompClient.disconnect();
   }
 
   disconnect() {
