@@ -63,7 +63,6 @@ export class HeadTellerComponent implements OnInit, OnDestroy {
     }
   }
 
-
   getData() {
     this.headServ.getDataReqOtorisation(0, 60).subscribe(e => {
       // console.log(e);
