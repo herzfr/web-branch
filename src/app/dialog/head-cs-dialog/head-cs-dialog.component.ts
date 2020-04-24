@@ -66,9 +66,7 @@ export class HeadCsDialogComponent implements OnInit {
   private submitted = false;
 
   // BIOMETRI
-  private photoImage: string;
-  private signatureImage: string;
-  private allFinger: any;
+  private allImage: any;
 
   // ENCODE / DECODE
   private ls = new securels({ encodingType: 'aes' });
@@ -77,6 +75,10 @@ export class HeadCsDialogComponent implements OnInit {
     private sanitizer: DomSanitizer) {
     this.id = data.id
     this.dataLs = data.message;
+
+    console.log(this.dataLs.wbimage);
+
+    this.allImage = this.dataLs.wbimage
     console.log("data : ", this.dataLs);
 
     // INIT FORM GROUP
@@ -159,6 +161,9 @@ export class HeadCsDialogComponent implements OnInit {
             break;
           case 'kodePosDomisili':
             group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
+            break;
+          case 'pendidikan':
+            group[key] = new FormControl({ value: element, disabled: true }, Validators.required);
             break;
           default:
             group[key] = new FormControl(element, Validators.required)
@@ -286,10 +291,10 @@ export class HeadCsDialogComponent implements OnInit {
         })
       })
 
-      console.log(this.productInfo.controls);
-      console.log(this.dataPemohon.controls);
-      console.log(this.dataPekerjaan.controls);
-      console.log(this.dataKerabat.controls);
+      // console.log(this.productInfo.controls);
+      // console.log(this.dataPemohon.controls);
+      // console.log(this.dataPekerjaan.controls);
+      // console.log(this.dataKerabat.controls);
 
 
       // GET DATA DAERAH IV
@@ -325,8 +330,13 @@ export class HeadCsDialogComponent implements OnInit {
           })
         })
       })
-
     })
+
+    this.dataPemohon.get('provinsi').disable()
+    this.dataPemohon.get('provinsiDomisili').disable()
+    this.dataPekerjaan.get('provinsi').disable()
+    this.dataKerabat.get('provinsiKerabat').disable()
+    this.dataKerabat.get('provinsiAhliWaris').disable()
   }
 
   onChangeProv(formGroup, formcontrol, chapter) {
@@ -515,128 +525,68 @@ export class HeadCsDialogComponent implements OnInit {
     })
   }
 
-  // registerBio() {
-  //   console.log(JSON.stringify(this.productInfo.value));
-  //   console.log(JSON.stringify(this.dataPemohon.value));
-  //   console.log(JSON.stringify(this.dataPekerjaan.value));
-  //   console.log(JSON.stringify(this.dataKerabat.value));
-
-  //   let buff =
-  //     "{\"productInfo\":" + JSON.stringify(this.productInfo.value) +
-  //     ",\"dataPemohon\":" + JSON.stringify(this.dataPemohon.value) +
-  //     ",\"dataPekerjaan\":" + JSON.stringify(this.dataPekerjaan.value) +
-  //     ",\"dataKerabat\":" + JSON.stringify(this.dataKerabat.value) +
-  //     "}"
-
-  //   console.log("isi buff :", buff);
-  //   console.log("isi buff parse :", JSON.parse(buff));
-
-  //   this.formBuff = buff;
-
-
-
-  //   this.validatorDialog(this.productInfo.value, this.dataPemohon.value, this.dataPekerjaan.value, this.dataKerabat.value)
-  // }
-
-
-  // validatorDialog(data, data2, data3, data4) {
-  //   const dialogConfig = new MatDialogConfig();
-  //   dialogConfig.data = {
-  //     id: 0,
-  //     data: [data, data2, data3, data4],
-  //   }
-  //   dialogConfig.backdropClass = 'backdropBackground';
-  //   dialogConfig.disableClose = true;
-  //   dialogConfig.width = '1200px';
-
-  //   this.dialog.open(VerifyDialogComponent, dialogConfig).afterClosed().subscribe(e => {
-  //     console.log(e);
-  //     this.allFinger = e.finger;
-  //     this.photoImage = e.photo;
-  //     this.signatureImage = e.signature;
-  //     this.dataBiometri = {
-  //       "fingertemplate1": this.allFinger.fingerTemplate1,
-  //       "fingertemplate2": this.allFinger.fingerTemplate2,
-  //       "fingertemplate3": this.allFinger.fingerTemplate3,
-  //       "fingertemplate4": this.allFinger.fingerTemplate4,
-  //       "fingertemplate5": this.allFinger.fingerTemplate5,
-  //       "imagefinger1": this.allFinger.imageFinger1,
-  //       "imagefinger2": this.allFinger.imageFinger2,
-  //       "imagefinger3": this.allFinger.imageFinger3,
-  //       "imagefinger4": this.allFinger.imageFinger4,
-  //       "imagefinger5": this.allFinger.imageFinger5,
-  //       "name": this.dataPemohon.get('namaLengkap').value,
-  //       "imagepict": this.photoImage,
-  //       "imagesign": this.signatureImage,
-  //       "imageid": 123456789012
-  //     }
-
-  //   })
-  // }
 
   photoImg() {
-    if (this.photoImage === undefined) {
+    if (this.allImage.imagepict === undefined) {
       return 'assets/png/avatar.png';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.photoImage);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagepict);
     }
   }
 
   signImg() {
-    if (this.signatureImage === undefined) {
+    if (this.allImage.imagesign === undefined) {
       return 'assets/png/signature.png';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.signatureImage);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagesign);
     }
   }
 
   finger1() {
     // console.log(this.allFinger);
 
-    if (this.allFinger === undefined) {
+    if (this.allImage.imagefinger1 === undefined) {
       return 'assets/svgs/finger-empty.svg';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger1);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagefinger1);
     }
   }
 
   finger2() {
     // console.log(this.allFinger);
-
-    if (this.allFinger === undefined) {
+    if (this.allImage.imagefinger2 === undefined) {
       return 'assets/svgs/finger-empty.svg';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger2);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagefinger2);
     }
   }
 
   finger3() {
     // console.log(this.allFinger);
-
-    if (this.allFinger === undefined) {
+    if (this.allImage.imagefinger3 === undefined) {
       return 'assets/svgs/finger-empty.svg';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger3);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagefinger3);
     }
   }
 
   finger4() {
     // console.log(this.allFinger);
 
-    if (this.allFinger === undefined) {
+    if (this.allImage.imagefinger4 === undefined) {
       return 'assets/svgs/finger-empty.svg';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger4);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagefinger4);
     }
   }
 
   finger5() {
     // console.log(this.allFinger);
 
-    if (this.allFinger === undefined) {
+    if (this.allImage.imagefinger5 === undefined) {
       return 'assets/svgs/finger-empty.svg';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allFinger.imageFinger5);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagefinger5);
     }
   }
 
