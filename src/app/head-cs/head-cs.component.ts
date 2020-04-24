@@ -99,7 +99,7 @@ export class HeadCsComponent implements OnInit {
     }
     dialogConfig.backdropClass = 'backdropBackground';
     dialogConfig.disableClose = true;
-    dialogConfig.width = '1000px';
+    dialogConfig.width = '1200px';
 
     switch (num) {
       case '1':

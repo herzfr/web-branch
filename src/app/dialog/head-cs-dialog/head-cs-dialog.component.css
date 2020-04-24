@@ -180,84 +180,8 @@ select.form-control:not([size]):not([multiple]) {
   border-radius: 200px;
 }
 
-/* Third Button */
-
-#btn {
-  display: inline-flex;
-  height: 40px;
-  width: 150px;
-  border: 2px solid #192A59;
-  margin: 20px 20px 20px 20px;
-  color: #192A59;
-  text-transform: uppercase;
-  text-decoration: none;
-  font-size: .8em;
-  letter-spacing: 1.5px;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+.btn-cls {
+  min-width: 200px;
+  background: linear-gradient(#F2C94C, #F2994A);
+  color: #EEF3F8;
 }
-
-.button-animated {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.button-animated a {
-  position: relative;
-  transition: all .45s ease-Out;
-}
-
-#circle {
-  width: 0%;
-  height: 0%;
-  opacity: 0;
-  line-height: 40px;
-  border-radius: 50%;
-  background: #24acac;
-  position: absolute;
-  transition: all .5s ease-Out;
-  top: 20px;
-  left: 70px;
-}
-
-.button-animated:hover #circle {
-  width: 200%;
-  height: 500%;
-  opacity: 0.5;
-  top: -70px;
-  left: -70px;
-}
-
-.button-animated:hover a {
-  color: #2D3142;
-}
-
-
-.btn-batal,
-.btn-skip,
-.btn-proses {
-  width: 200px;
-  height: 50px;
-  color: #fff;
-}
-
-
-.btn-batal {
-  background: linear-gradient(265.14deg, #5f2c82 -4.48%, #ec008c 53.7%, #fc6767 125.93%);
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
-
-}
-
-.btn-skip {
-  background: linear-gradient(265.14deg, #16A085 -4.48%, #02AAB0 53.7%, #00CDAC 125.93%);
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
-}
-
-.btn-proses {
-  background: linear-gradient(265.14deg, #007991 -4.48%, #2E5676 53.7%, #78ffd6 125.93%);
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
-}
-
-/* .btn-bio {} */
