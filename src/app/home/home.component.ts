@@ -50,6 +50,12 @@ export class HomeComponent implements OnInit, OnDestroy {
           children: []
         },
         {
+          displayName: 'CS DashBoard',
+          iconName: 'chevron_right',
+          route: "/home/cs",
+          children: []
+        },
+        {
           displayName: 'Head Teller DashBoard',
           iconName: 'chevron_right',
           route: "/home/head-teller",
