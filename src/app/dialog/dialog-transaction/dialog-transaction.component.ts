@@ -741,11 +741,15 @@ export class DialogTransactionComponent implements OnInit {
             if (message.body) {
 
               let parse = JSON.parse(message.body).success
-              console.log(parse);
-
-
               if (parse) {
                 that.onFingerVerifyHead(parse, stepper, drawer, "onsite")
+
+                this.dataFormHeadValidation.status = 999;
+        
+                this.dataFormHeadValidation.isRejected = 0
+                this.dataFormHeadValidation.isValidated = 1
+
+                console.log("data form", this.dataFormHeadValidation);
               }
 
             }
@@ -797,9 +801,6 @@ export class DialogTransactionComponent implements OnInit {
           console.log("rejected", receivedValue.rejected);
           console.log("success", receivedValue.success);
 
-
-
-
           if (receivedValue.rejected) {
             console.log("transaction rejected");
 
@@ -824,25 +825,19 @@ export class DialogTransactionComponent implements OnInit {
 
       }, () => {
         // that.dialog.errorDialog("Error", "Koneksi Terputus");
-
         console.log("koneksi terputus");
         console.log("Koneksi Ulang");
-
 
       });
     }, err => {
       console.log("gagal menghubungkan ke server ");
       console.log("Menghubungkan Ulang");
-
     });
 
   }
 
   disconnect() {
     this.stompClient.disconnect();
-  }
-
-  onOtorisationFinger(request, stepper) {
   }
 
   openSideNav() {
