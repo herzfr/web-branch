@@ -41,6 +41,7 @@ import { VerifyDialogComponent } from './dialog/verify-dialog/verify-dialog.comp
 import { NasabahService } from './services/nasabah.service';
 import { SignaturePadModule } from '@ng-plus/signature-pad';
 import { DialogSuccessComponent } from './dialog/dialog-success/dialog-success.component';
+import { HeadCsDialogComponent } from './dialog/head-cs-dialog/head-cs-dialog.component';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -63,8 +64,10 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     DialogNewCustomerComponent,
     VerifyDialogComponent,
     DialogSuccessComponent,
+    HeadCsDialogComponent,
   ],
-  entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent, DialogNewCustomerComponent, VerifyDialogComponent, DialogSuccessComponent],
+  entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent, DialogNewCustomerComponent, VerifyDialogComponent,
+    DialogSuccessComponent, HeadCsDialogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -504,7 +504,7 @@
       <select (change)="onChangeProv(dataPekerjaan, 'provinsi', 3)" class="form-control option"
         formControlName="provinsi">
         <option value="">Select a category</option>
-        <option *ngFor='let prv of province' [selected]="provinsi" [value]="prv.id">provinsi</option>
+        <option *ngFor='let prv of province' [selected]="provinsi === prv.id" [value]="prv.id">{{ prv.nama }}</option>
       </select>
     </div>
 
@@ -513,7 +513,7 @@
       <select (change)="onChangeCity(dataPekerjaan, 'kabupaten', 3)" class="form-control option"
         formControlName="kabupaten">
         <option value="">Select a category</option>
-        <option *ngFor='let ct of kabkot3' [selected]="kabupaten" [value]="ct.id">{{ct.nama}}</option>
+        <option *ngFor='let ct of kabkot3' [selected]="kabupaten === ct.id" [value]="ct.id">{{ct.nama}}</option>
       </select>
     </div>
 
@@ -522,7 +522,7 @@
       <select (change)="onChangeDist(dataPekerjaan, 'kecamatan', 3)" class="form-control option"
         formControlName="kecamatan">
         <option value="">Select a category</option>
-        <option *ngFor='let kc of dataKec3' [selected]="kecamatan" [value]="kc.id">{{kc.nama}}</option>
+        <option *ngFor='let kc of dataKec3' [selected]="kecamatan === kc.id" [value]="kc.id">{{kc.nama}}</option>
       </select>
     </div>
 
@@ -531,7 +531,7 @@
       <select (change)="onChangeVill(dataPekerjaan, 'kelurahan', 3)" class="form-control option"
         formControlName="kelurahan">
         <option value="">Select a category</option>
-        <option *ngFor='let kl of dataKel3' [selected]="kelurahan" [value]="kl.id">{{kl.nama}}</option>
+        <option *ngFor='let kl of dataKel3' [selected]="kelurahan === kl.nama" [value]="kl.id">{{kl.nama}}</option>
       </select>
     </div>
   </div>
