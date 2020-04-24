@@ -56,6 +56,12 @@ export class HomeComponent implements OnInit, OnDestroy {
           children: []
         },
         {
+          displayName: 'Head CS DashBoard',
+          iconName: 'chevron_right',
+          route: "/home/head-cs",
+          children: []
+        },
+        {
           displayName: 'Pembayaran dari Teller Lain',
           iconName: 'chevron_right',
           children: []

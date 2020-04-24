@@ -1,0 +1,66 @@
+<p *ngIf="id === 2 ">head-teller-dialog reject works!</p>
+<p *ngIf="id === 3 ">head-teller-dialog confirm works!</p>
+
+
+<div *ngIf="id === 1 " class="container-fluid mb-3">
+  <div class="row mb-3 justify-content-between align-items-center">
+    <img src="assets/svgs/logo-blue.svg" alt="">
+    <button (click)="closeInfo()" class="m-1 p-0 btn-close"><i class="fad fa-window-close fa-2x"></i></button>
+  </div>
+
+  <form [formGroup]="productInfo">
+    <div id="line1" class="row justify-content-center mb-3">
+      <p class="h6 pt-1 mb-0 ">Info Produk</p>
+    </div>
+
+
+    <div class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Produk</label>
+      <div class="col-sm-4">
+        <input [ngClass]="{ 'is-invalid': form0.produk.errors }" type="text" class="form-control"
+          formControlName="produk">
+      </div>
+      <div class="col-sm-4" *ngIf="form0.produk.invalid && (form0.produk.dirty || form0.produk.touched)">
+        <mat-error class="text-danger" *ngIf="form0.produk.errors">
+          Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+        </mat-error>
+      </div>
+    </div>
+
+    <div class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Tipe Kartu</label>
+      <div class="col-sm-4">
+        <input [ngClass]="{ 'is-invalid': form0.tipeKartu.errors }" type="text" class="form-control"
+          formControlName="tipeKartu">
+      </div>
+      <mat-error class="text-danger col-sm-6" *ngIf="form0.tipeKartu.errors">
+        Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+      </mat-error>
+    </div>
+
+    <div class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Tujuan</label>
+      <div class="col-sm-4">
+        <input [ngClass]="{ 'is-invalid': form0.tujuan.errors }" type="text" class="form-control"
+          formControlName="tujuan">
+      </div>
+      <mat-error class="text-danger col-sm-6" *ngIf="form0.tujuan.errors">
+        Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+      </mat-error>
+    </div>
+
+    <div class="form-group row mb-1">
+      <label class="col-sm-2 col-form-label font-weight-bold">Email</label>
+      <div class="col-sm-4">
+        <input [ngClass]="{ 'is-invalid': form0.email.errors }" type="text" class="form-control"
+          formControlName="email">
+      </div>
+      <mat-error class="text-danger col-sm-6" *ngIf="form0.email.errors">
+        Data belum lengkap <span class="font-italic">(data tidak boleh kosong)</span>
+      </mat-error>
+    </div>
+
+  </form>
+
+
+</div>
