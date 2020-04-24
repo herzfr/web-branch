@@ -47,5 +47,15 @@ export class NasabahService {
     return this.http.get(this.apiUrl + 'api/users/byroles?' + params, this.httpOptions)
   }
 
+  verifyFingerHead(username, token) {
+    const params = new HttpParams()
+      .set('username', username)
+      .set('token', token)
+    return this.http.get(this.apiUrlLocal + 'api/wbservice/validatehead?' + params, this.httpOptions)
+  }
+
   // https://10.62.10.28:8443/api/wbheadvalidation/newAccValidation
+  callApp() {
+    return this.http.get(this.apiUrlLocal + "api/wbservice/call");
+  }
 }

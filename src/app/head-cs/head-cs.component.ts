@@ -14,6 +14,7 @@ import { ConfirmTransactionComponent } from '../dialog/confirm-transaction/confi
 import { HeadTellerDialogComponent } from '../dialog/head-teller-dialog/head-teller-dialog.component';
 import { RejectTransactionComponent } from '../dialog/reject-transaction/reject-transaction.component';
 import { HeadCsDialogComponent } from '../dialog/head-cs-dialog/head-cs-dialog.component';
+import { HeadConfirmComponent } from '../dialog/head-confirm/head-confirm.component';
 
 @Component({
   selector: 'app-head-cs',
@@ -174,7 +175,7 @@ export class HeadCsComponent implements OnInit {
       id: 1,
       value: value
     };
-    this.subDialog = this.dialog.open(ConfirmTransactionComponent, dialogConfig).afterClosed().subscribe(resBack => {
+    this.subDialog = this.dialog.open(HeadConfirmComponent, dialogConfig).afterClosed().subscribe(resBack => {
       console.log("return value : ", resBack['returnType']);
 
       let valueReturn = resBack['returnType'];

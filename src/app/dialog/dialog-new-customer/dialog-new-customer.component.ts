@@ -706,8 +706,8 @@ export class DialogNewCustomerComponent implements OnInit {
                 "transbuff": JSON.stringify(dataTransbuff),
               }
 
-              // console.log(dataProsesApi);
-              // console.log(this.headSelected);
+              console.log(dataProsesApi);
+              console.log(this.headSelected);
 
               this.nasabahServ.accValidationNewAccount(this.headSelected, dataProsesApi).subscribe(e => {
                 console.log(e);
