@@ -703,10 +703,12 @@ export class DialogNewCustomerComponent implements OnInit {
                 "iscustomer": this.dataLs.iscustomer,
                 "id": this.dataLs.id,
                 "status": "999",
+                "username" : this.headSelected,
                 "transbuff": JSON.stringify(dataTransbuff),
               }
 
-              console.log(dataProsesApi);
+              // console.log(dataProsesApi);
+              // console.log(this.headSelected);
 
               this.nasabahServ.accValidationNewAccount(this.headSelected, dataProsesApi).subscribe(e => {
                 console.log(e);
@@ -736,7 +738,7 @@ export class DialogNewCustomerComponent implements OnInit {
                   }
 
                 })
-              })
+              });
 
             } else {
               alert('Data Kerabat belum valid')
