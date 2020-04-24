@@ -5,7 +5,7 @@
 <div *ngIf="id === 1 " class="container-fluid mb-3">
   <div class="row mb-3 justify-content-between align-items-center">
     <img src="assets/svgs/logo-blue.svg" alt="">
-    <button (click)="closeInfo()" class="m-1 p-0 btn-close"><i class="fad fa-window-close fa-2x"></i></button>
+    <button (click)="closeInfo()" class="m-1 p-0 btn-close">X</button>
   </div>
 
   <!-- PRODUCT INFO -->
@@ -807,12 +807,12 @@
 
 
     <div class="row justify-content-between">
-      <div class="col-sm-4">
-        <img id="photo" class="img-responsive" [src]="photoImg()" alt="">
+      <div class="col-sm-4 row justify-content-center">
+        <img id="photo" class="img-fluid" [src]="photoImg()" alt="">
         <p class="lead text-center">Photo Nasabah</p>
       </div>
       <mat-card class="col-sm-8">
-        <img id="signature" class="img-responsive" [src]="signImg()" alt="">
+        <img id="signature" class="img-fluid" [src]="signImg()" alt="">
         <p class="lead text-center">Tanda Tangan Nasabah</p>
       </mat-card>
     </div>
@@ -827,5 +827,9 @@
     <p class="lead text-center">Biometri Nasabah</p>
 
   </form>
+
+  <div class="row justify-content-center">
+    <button (click)="closeInfo()" class="btn-cls" mat-button>Close</button>
+  </div>
 
 </div>
