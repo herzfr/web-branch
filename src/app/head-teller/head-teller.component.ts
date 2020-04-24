@@ -14,8 +14,7 @@ import { Subscription } from 'rxjs';
 import { RejectTransactionComponent } from '../dialog/reject-transaction/reject-transaction.component';
 import { ConfirmTransactionComponent } from '../dialog/confirm-transaction/confirm-transaction.component';
 import { DialogService } from '../services/dialog.service';
-import { DomSanitizer } from '@angular/platform-browser';
-
+// import { DomSanitizer } from '@angular/platform-browser';
 // created by Dwi & Herza
 
 @Component({
@@ -46,8 +45,6 @@ export class HeadTellerComponent implements OnInit, OnDestroy {
     let user = this.userData.getUserData();
     this.userId = user['userid'];
     this.serverUrl = appConfig.ipSocketServer + "socket";
-
-
   }
 
   ngOnInit() {
@@ -69,23 +66,18 @@ export class HeadTellerComponent implements OnInit, OnDestroy {
 
   getData() {
     this.headServ.getDataReqOtorisation(0, 60).subscribe(e => {
-      console.log(e);
-
+      // console.log(e);
       let arr = new Array;
       for (const key in e) {
         if (e.hasOwnProperty(key)) {
           const el = e[key];
-
-          console.log(el.timeStampValidation);
+          // console.log(el.timeStampValidation);
           var s = moment.utc(el.timeStampValidation).format("DD/MM/YYYY HH:mm:ss");
           el.timeStampValidation = moment.utc(el.timeStampValidation).format("DD/MM/YY HH:mm:ss")
-
           arr.push(el);
         }
       }
-
       this.dataSource = new MatTableDataSource<OtoTable>(arr);
-
     })
 
   }
@@ -177,15 +169,14 @@ export class HeadTellerComponent implements OnInit, OnDestroy {
       console.log("return value : ", resBack['returnType']);
 
       let valueReturn = resBack['returnType'];
-
       if (valueReturn === 2) {
-        console.log("approve");
+        // console.log("approve");
         this.subService = this.headServ.setState(1, this.transId, 0, this.userId).subscribe(res => {
           this.getData();
         })
 
       } else if (valueReturn === 3) {
-        console.log("rejected ");
+        // console.log("rejected ");
         this.confirmRejected();
       }
 

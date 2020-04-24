@@ -376,9 +376,6 @@ export class DialogTransactionComponent implements OnInit {
       "transeq": this.data[index].transeq
     }
 
-    console.log("proses api: ", dataProsesApi);
-
-
     this.dataFormHeadValidation = dataProsesApi;
     this.queueServ.processTransactionDataQ(dataProsesApi).subscribe(res => {
       console.log(res);
@@ -405,7 +402,6 @@ export class DialogTransactionComponent implements OnInit {
       }
     })
 
-    console.log(this.dataSuccess);
   }
 
   findDataByTransactionId(key, object) {
@@ -425,11 +421,6 @@ export class DialogTransactionComponent implements OnInit {
       }
     }
   }
-
-  // setDataPrint(event) {
-  //   this._printData = JSON.parse(event.transbuff)
-  //   console.log(this._printData);
-  // }
 
   isDoor(event: number, event2: number, stepper: MatStepper): void {
     console.log(event);
@@ -490,7 +481,7 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   stepChanged(event, stepper) {
-    console.log(event, stepper.selected.interacted);
+    // console.log(event, stepper.selected.interacted);
     stepper.selected.interacted = false;
   }
 
@@ -499,14 +490,12 @@ export class DialogTransactionComponent implements OnInit {
     this.isHeadTeller = false
 
     if (this.dataSuccess.length === this.form.length) {
-      console.log('suses di isi semua');
+      // console.log('suses di isi semua');
       this.isDoneBtn = true;
     } else {
-      console.log('masih belum');
+      // console.log('masih belum');
     }
   }
-
-
 
   closeQDialog() {
     if (this.status_for_while === 999) {
@@ -515,16 +504,16 @@ export class DialogTransactionComponent implements OnInit {
       obj.transId = this.transID_for_while;
       obj.status = '998';
 
-      console.log(obj);
+      // console.log(obj);
       arr.push(obj)
 
       this.queueServ.changeStatusTransactionQ(arr).subscribe(e => {
-        console.log(e);
+        // console.log(e);
         if (e['successId0']) {
           if (localStorage.getItem('skip') !== null || localStorage.getItem('skip') != '') {
             var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
             this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
-              console.log(eco);
+              // console.log(eco);
               if (eco['successId0']) {
                 this.form.reset()
                 this.formGroup.reset()
@@ -540,7 +529,7 @@ export class DialogTransactionComponent implements OnInit {
 
             })
           } else {
-            console.log('localstorage null');
+            // console.log('localstorage null');
             this.form.reset()
             this.formGroup.reset()
             this.queueServ.refreshQ(this.TERMINAL['branchCode']).subscribe()
@@ -556,16 +545,16 @@ export class DialogTransactionComponent implements OnInit {
       obj.transId = this.transID_for_while;
       obj.status = '998';
 
-      console.log(obj);
+      // console.log(obj);
       arr.push(obj)
 
       this.queueServ.changeStatusTransactionQ(arr).subscribe(e => {
-        console.log(e);
+        // console.log(e);
         if (e['successId0']) {
           if (localStorage.getItem('skip') !== null || localStorage.getItem('skip') != '') {
             var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
             this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
-              console.log(eco);
+              // console.log(eco);
               if (eco['successId0']) {
                 this.form.reset()
                 this.formGroup.reset()
@@ -605,22 +594,22 @@ export class DialogTransactionComponent implements OnInit {
   onOtpChange(event: any, stepper: MatStepper) {
 
     if (event.length == 6) {
-      console.log('cukup');
+      // console.log('cukup');
       $('.otp-input').blur();
       $('.otp-input').prop('readonly', true);
-      console.log("car number yang dikirim : " + this.cardNum);
+      // console.log("car number yang dikirim : " + this.cardNum);
 
       this.transacServ.verifyCard(this.cardNum, event).subscribe(res => {
-        console.log(res);
+        // console.log(res);
         if (res['success']) {
-          console.log(res['message']);
+          // console.log(res['message']);
           this.isScanFinger = true;
           $('#scan-finger').addClass('blink')
           this.pinMessage = 'Pin Sukses'
           this.isPinMessageSuccess = true
           this.isPinMessageError = false
           this.transacServ.getInfoCardPerson(res['record']).subscribe(e => {
-            console.log(e);
+            // console.log(e);
             this.base64Image = 'data:image/png;base64,' + e['imagepict']
             this.base64Sign = 'data:image/png;base64,' + e['imagesign']
             this.NAME_CUST = e['name']
@@ -633,15 +622,15 @@ export class DialogTransactionComponent implements OnInit {
             })
           })
         } else {
-          console.log(res['message']);
-          console.log(this.ngOtpInputRef);
+          // console.log(res['message']);
+          // console.log(this.ngOtpInputRef);
           $('.otp-input').prop('readonly', false);
           this.pinMessage = 'PIN ' + res['message']
           this.isPinMessageError = true
         }
       })
     } else {
-      console.log('belum cukup');
+      // console.log('belum cukup');
       this.pinMessage = 'Pin Masih Kurang'
       this.isPinMessageError = true
     }
@@ -681,11 +670,11 @@ export class DialogTransactionComponent implements OnInit {
         this.isFingerError = false;
         this.isFingerSuccess = false;
         this.transacServ.headTellerList('headteller', this.TERMINAL['branchCode']).subscribe(list => {
-          console.log(list);
+          // console.log(list);
           if (list['success']) {
             this.nameHead = list['record']
           }
-          console.log(this.nameHead);
+          // console.log(this.nameHead);
         })
       }, 1000)
     } else {
@@ -697,8 +686,7 @@ export class DialogTransactionComponent implements OnInit {
 
   initializeWebSocketConnection(socket, stepper: MatStepper, drawer: MatDrawer) {
 
-    console.log(stepper);
-
+    // console.log(stepper);
     let ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(ws);
     let that = this;
@@ -707,16 +695,12 @@ export class DialogTransactionComponent implements OnInit {
       case 'vldnas':
         this.stompClient.connect({}, function (frame) {
           // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
-
           that.stompClient.subscribe("/" + socket, (message) => {
             if (message.body) {
-
               let parse = JSON.parse(message.body).success
-
               if (parse) {
                 that.onFingerVerify(parse, stepper)
               }
-
             }
 
           }, () => {
@@ -735,18 +719,15 @@ export class DialogTransactionComponent implements OnInit {
         });
         break;
       case 'vldspv':
-        console.log("runing validation supervisor");
-
+        // console.log("runing validation supervisor");
         this.stompClient.connect({}, function (frame) {
           // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
-
           that.stompClient.subscribe("/" + socket, (message) => {
             if (message.body) {
 
               let parse = JSON.parse(message.body).success
               if (parse) {
                 that.onFingerVerifyHead(parse, stepper, drawer, "onsite")
-
                 that.dataFormHeadValidation.status = 999;
 
                 if (that.dataFormHeadValidation.trntype === 'Tarik Tunai') {
@@ -765,23 +746,16 @@ export class DialogTransactionComponent implements OnInit {
 
                 that.dataFormHeadValidation.userterminal = JSON.parse(that.ls.get('data')).userterminal;
 
-
-                console.log("data send : ", that.dataFormHeadValidation);
-
-
                 that.transacServ.sendRemoteValidation(that.dataFormHeadValidation, that.headSelectTeller.userid).subscribe(resp => {
-                  console.log(resp);
-
-                })
-
+                  // console.log(resp);
+                });
               }
             }
 
           }, () => {
             // that.dialog.errorDialog("Error", "Koneksi Terputus");
-
-            console.log("koneksi terputus");
-            console.log("Koneksi Ulang");
+            // console.log("koneksi terputus");
+            // console.log("Koneksi Ulang");
 
             setTimeout(() => {
               that.initializeWebSocketConnection(socket, stepper, drawer);
@@ -789,7 +763,7 @@ export class DialogTransactionComponent implements OnInit {
 
           });
         }, err => {
-          console.log("gagal menghubungkan ke server ");
+          // console.log("gagal menghubungkan ke server ");
           // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
         });
         break;
@@ -800,18 +774,13 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   initializeWebSocketConnection2(socket, stepper: MatStepper, drawer: MatDrawer) {
-
-    console.log(stepper);
-    console.log(this.serverUrlSocket);
-
-
+    // console.log(stepper);
+    // console.log(this.serverUrlSocket);
     let ws = new SockJS(this.serverUrlSocket + "socket");
     this.stompClientSocket = Stomp.over(ws);
     let that = this;
 
-    console.log("koneksi ke : ", socket);
-
-
+    // console.log("koneksi ke : ", socket);
 
     this.stompClientSocket.connect({}, function (frame) {
       // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
