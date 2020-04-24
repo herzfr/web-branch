@@ -94,7 +94,7 @@
 
               <div class="d-flex justify-content-between">
                 <button (click)="transactionCancel(i, env.controls)" mat-button>Batal</button>
-                <button (click)="transactionProcess(env.controls)" mat-button matStepperNext>Proses</button>
+                <button (click)="transactionProcess(env.controls, i)" mat-button matStepperNext>Proses</button>
               </div>
             </mat-step>
 

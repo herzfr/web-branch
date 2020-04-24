@@ -709,35 +709,35 @@ export class DialogNewCustomerComponent implements OnInit {
               // console.log(dataProsesApi);
               // console.log(this.headSelected);
 
-              // this.nasabahServ.accValidationNewAccount(this.headSelected, dataProsesApi).subscribe(e => {
-              //   console.log(e);
-              //   console.log(e['success']);
-              //   // if (e[''])
+              this.nasabahServ.accValidationNewAccount(this.headSelected, dataProsesApi).subscribe(e => {
+                console.log(e);
+                console.log(e['success']);
+                // if (e[''])
 
-              //   const dialogConfig = new MatDialogConfig();
-              //   dialogConfig.data = {
-              //     id: 0,
-              //     data: e
-              //   }
-              //   dialogConfig.backdropClass = 'backdropBackground';
-              //   dialogConfig.disableClose = true;
-              //   // dialogConfig.width = '1200px';
+                const dialogConfig = new MatDialogConfig();
+                dialogConfig.data = {
+                  id: 0,
+                  data: e
+                }
+                dialogConfig.backdropClass = 'backdropBackground';
+                dialogConfig.disableClose = true;
+                // dialogConfig.width = '1200px';
 
-              //   this.dialog.open(DialogSuccessComponent, dialogConfig).afterClosed().subscribe(e => {
-              //     if (e) {
+                this.dialog.open(DialogSuccessComponent, dialogConfig).afterClosed().subscribe(e => {
+                  if (e) {
 
-              //       let postStat = new Array;
+                    let postStat = new Array;
 
-              //       let obj: any = new Object();
-              //       obj.transId = this.dataLs.transid;
-              //       obj.status = '000';
-              //       postStat.push(obj)
+                    let obj: any = new Object();
+                    obj.transId = this.dataLs.transid;
+                    obj.status = '000';
+                    postStat.push(obj)
 
-              //       this.dialogRef.close(postStat)
-              //     }
+                    this.dialogRef.close(postStat)
+                  }
 
-              //   })
-              // });
+                })
+              });
 
             } else {
               alert('Data Kerabat belum valid')

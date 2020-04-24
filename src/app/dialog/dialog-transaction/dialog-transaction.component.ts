@@ -55,7 +55,6 @@ export class DialogTransactionComponent implements OnInit {
   private dataFormHeadValidation: any;
 
   private isCloseDialog: boolean = true;
-
   private secureLs = new SecureLS({ encodingType: 'aes' });
   private config = {
     allowNumbersOnly: true,
@@ -218,14 +217,11 @@ export class DialogTransactionComponent implements OnInit {
     for (const key in this.dataForm) {
       if (this.dataForm.hasOwnProperty(key)) {
         const element = this.dataForm[key];
-        // console.log(element.transid);
         console.log(element);
         this.addItem(element.transbuff, element.transid);
       }
     }
     this.form.removeAt(0)
-    // console.log(this.formGroup);
-    // console.log(this.form);
   }
 
   init(event) {
@@ -339,7 +335,7 @@ export class DialogTransactionComponent implements OnInit {
     })
   }
 
-  transactionProcess(event) {
+  transactionProcess(event, index) {
     const accountNumber = event.Dari.value;
 
     if (accountNumber === "1001000002") {
@@ -359,7 +355,6 @@ export class DialogTransactionComponent implements OnInit {
     // console.log(dataObj);
     let Form = new FormGroup(event)
     let payLoad = JSON.stringify(Form.value);
-    // console.log(payLoad);
 
     const dataProsesApi = {
       "transid": transId,
@@ -374,7 +369,15 @@ export class DialogTransactionComponent implements OnInit {
       "trntype": event.Tipe.value,
       "status": "",
       "transbuff": payLoad,
+      "username": JSON.parse(this.secureLs.get('data')).username,
+      "id": this.data[index].username,
+      "isCash": this.data[index].isCash,
+      "transcnt": this.data[index].transcnt,
+      "transeq": this.data[index].transeq
     }
+
+    console.log("proses api: ", dataProsesApi);
+
 
     this.dataFormHeadValidation = dataProsesApi;
     this.queueServ.processTransactionDataQ(dataProsesApi).subscribe(res => {
@@ -744,14 +747,34 @@ export class DialogTransactionComponent implements OnInit {
               if (parse) {
                 that.onFingerVerifyHead(parse, stepper, drawer, "onsite")
 
-                this.dataFormHeadValidation.status = 999;
-        
-                this.dataFormHeadValidation.isRejected = 0
-                this.dataFormHeadValidation.isValidated = 1
+                that.dataFormHeadValidation.status = 999;
 
-                console.log("data form", this.dataFormHeadValidation);
+                if (that.dataFormHeadValidation.trntype === 'Tarik Tunai') {
+                  that.dataFormHeadValidation.trntype = 'trk'
+                } else if (that.dataFormHeadValidation.trntype === 'Setor Tunai') {
+                  that.dataFormHeadValidation.trntype = 'str'
+                } else if (that.dataFormHeadValidation.trntype === 'Transaksi Antar Rekening') {
+                  that.dataFormHeadValidation.trntype = 'tar'
+                } else if (that.dataFormHeadValidation.trntype === 'Transaksi Antar Bank') {
+                  that.dataFormHeadValidation.trntype = 'tab'
+                }
+
+                that.dataFormHeadValidation.isRejected = 0
+                that.dataFormHeadValidation.isValidated = 1
+                that.dataFormHeadValidation.timestampprocess = Date.now();
+
+                that.dataFormHeadValidation.userterminal = JSON.parse(that.ls.get('data')).userterminal;
+
+
+                console.log("data send : ", that.dataFormHeadValidation);
+
+
+                that.transacServ.sendRemoteValidation(that.dataFormHeadValidation, that.headSelectTeller.userid).subscribe(resp => {
+                  console.log(resp);
+
+                })
+
               }
-
             }
 
           }, () => {
