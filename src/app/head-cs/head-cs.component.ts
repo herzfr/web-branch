@@ -15,6 +15,7 @@ import { HeadTellerDialogComponent } from '../dialog/head-teller-dialog/head-tel
 import { RejectTransactionComponent } from '../dialog/reject-transaction/reject-transaction.component';
 import { HeadCsDialogComponent } from '../dialog/head-cs-dialog/head-cs-dialog.component';
 import { HeadConfirmComponent } from '../dialog/head-confirm/head-confirm.component';
+import { QueueService } from '../services/queue.service';
 
 @Component({
   selector: 'app-head-cs',
@@ -31,6 +32,7 @@ export class HeadCsComponent implements OnInit {
   private subService: Subscription;
   private transId = null;
   private detailHeadCS: any;
+  private formData: any;
 
   displayedColumns = ['teller', 'transacId', 'time', 'term', 'detail'];
   OtoTableData: any;
@@ -40,7 +42,7 @@ export class HeadCsComponent implements OnInit {
   ls = new SecureLS({ encodingType: 'aes' });
 
   constructor(public dialog: MatDialog, private headServ: HeadService, private appConfig: AppConfiguration,
-    private userData: UserDataService, private dialogService: DialogService) {
+    private userData: UserDataService, private dialogService: DialogService, private queueService: QueueService) {
     let user = this.userData.getUserData();
     this.detailHeadCS = this.userData.getUserData();
     this.userId = user['userid'];
@@ -86,6 +88,7 @@ export class HeadCsComponent implements OnInit {
   }
 
   MainFunction(event, num: string) {
+    this.formData = event;
     console.log("event value : ", event);
 
     const dialogConfig = new MatDialogConfig();
@@ -178,11 +181,44 @@ export class HeadCsComponent implements OnInit {
           if (res['success']) {
             this.subService = this.headServ.updateValidation("000", this.transId).subscribe(res => {
               if (res['success']) {
-                this.getData();
+
+                const dataProsesApi = {
+                  "transid": this.transId,
+                  "branchcode": this.formData.branchcode,
+                  "terminalid": this.formData.terminalid,
+                  "queuedate": this.formData.queuedate,
+                  "queuecode": this.formData.queuecode,
+                  "queueno": this.formData.queueno.toString(),
+                  "timestampentry": this.formData.timestampentry.toString(),
+                  "userid": this.formData.userid,
+                  "userterminal": this.formData.userterminal,
+                  "trntype": this.formData.trntype,
+                  "status": "000",
+                  "transbuff": this.formData.transbuff,
+                  "username": JSON.parse(this.ls.get('data')).username,
+                  "id": this.formData.username,
+                  "isCash": this.formData.isCash,
+                  "transcnt": this.formData.transcnt,
+                  "transeq": this.formData.transeq,
+                  "iscustomer": this.formData.iscustomer
+                }
+
+                console.log(dataProsesApi);
+
+                this.queueService.processTransactionDataQ(dataProsesApi).subscribe(res => {
+                  console.log(res);
+                  if (res['success']) {
+                    this.getData();
+                  }
+                });
+
+                
+
               }
             });
           }
         });
+
       } else if (valueReturn === 3) {
         console.log("rejected ");
         this.confirmRejected();
