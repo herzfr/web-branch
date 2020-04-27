@@ -153,7 +153,7 @@ export class DashboardCsComponent implements OnInit {
       console.log(res);
 
 
-      if (res['success'] == true) {
+      if (res['success']) {
         let datares = res['record']
         console.log(datares);
 
@@ -169,13 +169,13 @@ export class DashboardCsComponent implements OnInit {
           this.transactionDialog(res['record'])
         }
 
-      } else if (res['success'] == false) {
+      } else if (!res['success']) {
 
         this.queueServ.getLatestQueCS(this.branchCode, 999).subscribe(res => {
 
-          console.log(res['record'][0].trntype);
+          console.log(res);
 
-          if (res['success'] == true) {
+          if (res['success']) {
             let datares = res['record']
             console.log(datares);
 
@@ -249,6 +249,24 @@ export class DashboardCsComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.width = '1200px';
 
+    console.log(event.transid);
+
+
+    let postStat = new Array;
+
+    let obj: any = new Object();
+    obj.transId = event.transid;
+    obj.status = this.inCall;
+
+    postStat.push(obj)
+
+    this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
+      console.log(res);
+      if (res['successId0']) {
+        this.queueServ.refreshQ(this.branchCode).subscribe()
+      }
+    })
+
     this.dlg.open(DialogNewCustomerComponent, dialogConfig).afterClosed().subscribe(e => {
       console.log(e[0].type);
 
@@ -265,12 +283,24 @@ export class DashboardCsComponent implements OnInit {
           break;
         case 'skip':
           this.nextQueue()
+
+          // Get Local STORAGE
+          var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+
           delete e[0].type
+          oldItems.push(e[0]);
+
+          localStorage.setItem('skip', JSON.stringify(oldItems));
+          console.log(JSON.stringify(oldItems));
+
+          this.queueServ.refreshQCS(this.branchCode).subscribe()
+
+
           this.queueServ.changeStatusTransactionQCS(e).subscribe(res => {
             console.log(res);
-            // if (res['successId0']) {
-            //   this.queueServ.refreshQCS(this.branchCode).subscribe()
-            // }
+            if (res['successId0']) {
+              this.queueServ.refreshQCS(this.branchCode).subscribe()
+            }
           })
           break;
         case 'cancel':
