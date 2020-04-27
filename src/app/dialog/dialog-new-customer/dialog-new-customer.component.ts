@@ -80,7 +80,15 @@ export class DialogNewCustomerComponent implements OnInit {
     // DATA AWAL
     this.dataLs = data.data;
 
-    console.log("data awal", data);
+    for (const key in data.data.transbuff) {
+      if (data.data.transbuff.hasOwnProperty(key)) {
+        const element = data.data.transbuff[key];
+        console.log(element);
+        data.data.transbuff = JSON.stringify(element);
+      }
+    }
+
+    // console.log("data awal", data);
 
 
     // INIT FORM GROUP
