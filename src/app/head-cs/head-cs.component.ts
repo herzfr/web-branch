@@ -171,23 +171,13 @@ export class HeadCsComponent implements OnInit {
       value: value
     };
     this.subDialog = this.dialog.open(HeadConfirmComponent, dialogConfig).afterClosed().subscribe(resBack => {
-      console.log("return value dialog: ", resBack['returnType']);
-
-      console.log("form value : ");
-
-
       let valueReturn = resBack['returnType'];
-
       if (valueReturn === 2) {
         this.subService = this.headServ.updateValidation("000", this.transId).subscribe(res => {
           if (res['success']) {
             this.getData();
           }
-
         });
-
-
-
       } else if (valueReturn === 3) {
         console.log("rejected ");
         this.confirmRejected();
