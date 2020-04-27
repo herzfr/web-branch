@@ -84,7 +84,7 @@ export class HeadConfirmComponent implements OnInit {
       }
     });
   }
-
+ 
   callHeadValidation() {
     this.subVerify = this.nasabahServ.verifyFingerHead(this.userName, this.userToken).subscribe(res => {
       let value = res;
@@ -92,7 +92,7 @@ export class HeadConfirmComponent implements OnInit {
 
       if (value['success']) {
 
-        this.initializeWebSocketConnection("vldspvcs")
+        this.initializeWebSocketConnection("vldspv")
         setTimeout(() => {
           this.subVerify.unsubscribe();
         }, 1000);
@@ -101,6 +101,8 @@ export class HeadConfirmComponent implements OnInit {
   }
 
   initializeWebSocketConnection(socket) {
+    console.log("socke connection : ", socket);
+    
     let ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(ws);
     let that = this;

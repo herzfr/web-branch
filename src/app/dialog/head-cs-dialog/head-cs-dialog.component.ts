@@ -312,7 +312,7 @@ export class HeadCsDialogComponent implements OnInit {
             this.dataKerabat.get('kelurahanKerabat').disable()
           })
         })
-      })
+      }) 
 
       // GET DATA DAERAH V
       this.formServ.getCity(this.dataKerabat.get('provinsiAhliWaris').value).subscribe(e => {

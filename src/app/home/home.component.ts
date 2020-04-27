@@ -164,6 +164,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
     this.userVoid();
 
+    this.checkSessionIat();
+
     let dataRoles: any = this.userService.getUserRoles();
     console.log("isi roles ", dataRoles);
 

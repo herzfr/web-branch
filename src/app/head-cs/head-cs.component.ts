@@ -70,24 +70,19 @@ export class HeadCsComponent implements OnInit {
   getData() {
 
     this.headServ.getDataReqOtoHeadCS(this.detailHeadCS['username'], this.detailHeadCS['branchcode'], "999").subscribe(e => {
-      console.log(e);
-
       let arr = new Array;
       for (const key in e) {
         if (e.hasOwnProperty(key)) {
           const el = e[key];
-
-          console.log(el);
+          // console.log(el);
           var s = moment.utc(el.timeStampValidation).format("DD/MM/YYYY HH:mm:ss");
           el.timeStampValidation = moment.utc(el.timeStampValidation).format("DD/MM/YY HH:mm:ss")
-
           arr.push(el);
         }
       }
       // console.log(arr);
       this.dataSource = new MatTableDataSource<OtoTable>(arr);
-
-    })
+    });
 
   }
 
@@ -176,15 +171,21 @@ export class HeadCsComponent implements OnInit {
       value: value
     };
     this.subDialog = this.dialog.open(HeadConfirmComponent, dialogConfig).afterClosed().subscribe(resBack => {
-      console.log("return value : ", resBack['returnType']);
+      console.log("return value dialog: ", resBack['returnType']);
+
+      console.log("form value : ", );
+      
 
       let valueReturn = resBack['returnType'];
 
       if (valueReturn === 2) {
         console.log("approve");
         this.subService = this.headServ.setState(1, this.transId, 0, this.userId).subscribe(res => {
+          console.log("data set return : ", res);
+
           this.getData();
-        })
+        });
+      
 
       } else if (valueReturn === 3) {
         console.log("rejected ");
