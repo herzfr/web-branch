@@ -268,9 +268,9 @@ export class DashboardCsComponent implements OnInit {
           delete e[0].type
           this.queueServ.changeStatusTransactionQCS(e).subscribe(res => {
             console.log(res);
-            if (res['successId0']) {
-              this.queueServ.refreshQCS(this.branchCode).subscribe()
-            }
+            // if (res['successId0']) {
+            //   this.queueServ.refreshQCS(this.branchCode).subscribe()
+            // }
           })
           break;
         case 'cancel':
