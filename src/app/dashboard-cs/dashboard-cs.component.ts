@@ -147,71 +147,78 @@ export class DashboardCsComponent implements OnInit {
 
   nextQueue() {
 
-    let TypeNasabah = 'non';
 
-    if (TypeNasabah === 'non') {
-      console.log('test');
-      this.queueServ.getNewQueueCS(this.branchCode, "998", "999").subscribe(e => {
-        console.log(e[0]);
-        this.transactionDialogNon(e[0])
-      })
-    } else {
-      this.queueServ.getLatestQue(this.branchCode, 998).subscribe(res => {
+    this.queueServ.getLatestQueCS(this.branchCode, 998).subscribe(res => {
 
-        if (res['success'] == true) {
-          let datares = res['record']
-          console.log(datares);
+      console.log(res);
 
-          res['record'].forEach(element => {
-            element.transbuff = '[' + element.transbuff + ']'
-            let parse = JSON.parse(element.transbuff)
-            element.transbuff = parse;
-          });
 
-          this.transactionDialog(res['record'])
+      if (res['success'] == true) {
+        let datares = res['record']
+        console.log(datares);
 
-        } else if (res['success'] == false) {
+        res['record'].forEach(element => {
+          element.transbuff = '[' + element.transbuff + ']'
+          let parse = JSON.parse(element.transbuff)
+          element.transbuff = parse;
+        });
 
-          this.queueServ.getLatestQue(this.branchCode, 999).subscribe(res => {
-
-            if (res['success'] == true) {
-              let datares = res['record']
-              console.log(datares);
-
-              res['record'].forEach(element => {
-                element.transbuff = '[' + element.transbuff + ']'
-                let parse = JSON.parse(element.transbuff)
-                element.transbuff = parse;
-              });
-
-              this.transactionDialog(res['record'])
-            } else {
-              console.log('data tidak ada');
-
-              if (localStorage.getItem('skip') !== null) {
-
-                var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
-                this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
-                  console.log(eco);
-
-                  if (eco['successId0']) {
-                    this.queueServ.refreshQ(this.branchCode).subscribe()
-                    localStorage.removeItem('skip')
-                  } else {
-                    this.queueServ.refreshQ(this.branchCode).subscribe()
-                  }
-
-                })
-              }
-            }
-          })
-
+        if (res['record'][0].trntype === 'nac') {
+          this.transactionDialogNon(res['record'][0])
         } else {
-          console.log('DATA TIDAK ADA');
+          this.transactionDialog(res['record'])
         }
 
-      })
-    }
+      } else if (res['success'] == false) {
+
+        this.queueServ.getLatestQueCS(this.branchCode, 999).subscribe(res => {
+
+          console.log(res['record'][0].trntype);
+
+          if (res['success'] == true) {
+            let datares = res['record']
+            console.log(datares);
+
+            res['record'].forEach(element => {
+              element.transbuff = '[' + element.transbuff + ']'
+              let parse = JSON.parse(element.transbuff)
+              element.transbuff = parse;
+            });
+
+            if (res['record'][0].trntype === 'nac') {
+              this.transactionDialogNon(res['record'][0])
+            } else {
+              this.transactionDialog(res['record'])
+            }
+
+
+          } else {
+            console.log('data tidak ada');
+
+            if (localStorage.getItem('skip') !== null) {
+
+              var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+              this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
+                console.log(eco);
+
+                if (eco['successId0']) {
+                  this.queueServ.refreshQ(this.branchCode).subscribe()
+                  localStorage.removeItem('skip')
+                } else {
+                  this.queueServ.refreshQ(this.branchCode).subscribe()
+                }
+
+              })
+            }
+          }
+        })
+
+      } else {
+        console.log('DATA TIDAK ADA');
+      }
+
+    })
+
 
     // function disableF5(e) { if ((e.which || e.keyCode) == 116) e.preventDefault(); };
     // $(document).on("keydown", disableF5);
@@ -243,13 +250,44 @@ export class DashboardCsComponent implements OnInit {
     dialogConfig.width = '1200px';
 
     this.dlg.open(DialogNewCustomerComponent, dialogConfig).afterClosed().subscribe(e => {
-      console.log(e);
-      this.queueServ.changeStatusTransactionQ(e).subscribe(res => {
-        console.log(res);
-        if (res['successId0']) {
-          this.queueServ.refreshQCS(this.branchCode).subscribe()
-        }
-      })
+      console.log(e[0].type);
+
+      switch (e[0].type) {
+        case 'finish':
+
+          delete e[0].type
+          this.queueServ.changeStatusTransactionQCS(e).subscribe(res => {
+            console.log(res);
+            if (res['successId0']) {
+              this.queueServ.refreshQCS(this.branchCode).subscribe()
+            }
+          })
+          break;
+        case 'skip':
+          this.nextQueue()
+          delete e[0].type
+          this.queueServ.changeStatusTransactionQCS(e).subscribe(res => {
+            console.log(res);
+            // if (res['successId0']) {
+            //   this.queueServ.refreshQCS(this.branchCode).subscribe()
+            // }
+          })
+          break;
+        case 'cancel':
+
+          delete e[0].type
+          this.queueServ.changeStatusTransactionQCS(e).subscribe(res => {
+            console.log(res);
+            if (res['successId0']) {
+              this.queueServ.refreshQCS(this.branchCode).subscribe()
+            }
+          })
+          break;
+        default:
+          break;
+      }
+
+
     })
   }
 

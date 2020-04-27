@@ -80,7 +80,15 @@ export class DialogNewCustomerComponent implements OnInit {
     // DATA AWAL
     this.dataLs = data.data;
 
-    console.log("data awal", data);
+    for (const key in data.data.transbuff) {
+      if (data.data.transbuff.hasOwnProperty(key)) {
+        const element = data.data.transbuff[key];
+        console.log(element);
+        data.data.transbuff = JSON.stringify(element);
+      }
+    }
+
+    // console.log("data awal", data);
 
 
     // INIT FORM GROUP
@@ -131,7 +139,7 @@ export class DialogNewCustomerComponent implements OnInit {
 
 
   getproductInfo() {
-    console.log(JSON.parse(this.dataLs.transbuff));
+    // console.log(JSON.parse(this.dataLs.transbuff));
     let dataTransbuff = JSON.parse(this.dataLs.transbuff)
     let group: any = {};
     console.log(dataTransbuff.produkInfo);
@@ -731,6 +739,7 @@ export class DialogNewCustomerComponent implements OnInit {
                     let obj: any = new Object();
                     obj.transId = this.dataLs.transid;
                     obj.status = '000';
+                    obj.type = 'finish'
                     postStat.push(obj)
 
                     this.dialogRef.close(postStat)
@@ -754,6 +763,30 @@ export class DialogNewCustomerComponent implements OnInit {
     } else {
       alert('Head CS belum dipilih')
     }
+  }
+
+  skipData() {
+    let postStat = new Array;
+
+    let obj: any = new Object();
+    obj.transId = this.dataLs.transid;
+    obj.status = '998';
+    obj.type = 'skip';
+    postStat.push(obj)
+
+    this.dialogRef.close(postStat)
+  }
+
+  cancelData() {
+    let postStat = new Array;
+
+    let obj: any = new Object();
+    obj.transId = this.dataLs.transid;
+    obj.status = '100';
+    obj.type = 'cancel';
+    postStat.push(obj)
+
+    this.dialogRef.close(postStat)
   }
 
 

@@ -63,14 +63,23 @@ export class QueueService {
     return this.http.get(this.apiUrl + 'api/queue/latestqueue' + body, this.httpOptions)
   }
 
+  getLatestQueCS(brch: string, stus: number) {
+    let body = "?status=" + stus + "&branchcode=" + brch;
+    return this.http.get(this.apiUrl + 'api/queue/latestqueuecs' + body, this.httpOptions)
+  }
+
   changeStatusTransactionQ(body) {
     return this.http.post(this.apiUrl + 'api/queue/updateStatus', body, this.httpOptions)
+  }
+
+  changeStatusTransactionQCS(body) {
+    return this.http.post(this.apiUrl + 'api/queue/updateStatusCs', body, this.httpOptions)
   }
 
   refreshQ(brch) {
     return this.http.get(this.apiSocket + 'api/queue/refresh?branchcode=' + brch, this.httpOptions)
   }
-  
+
   refreshQCS(brch) {
     return this.http.get(this.apiSocket + 'api/queue/refreshcs?branchcode=' + brch, this.httpOptions)
   }
