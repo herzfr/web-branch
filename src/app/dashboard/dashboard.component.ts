@@ -298,13 +298,7 @@ export class DashboardComponent implements OnInit {
 
           localStorage.setItem('skip', JSON.stringify(oldItems));
           console.log(JSON.stringify(oldItems));
-
-
-          // this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
-          //   console.log(res);
-          //   this.queueServ.refreshQ(this.branchCode).subscribe()
-          // })
-
+          
         } else if (resBack[0].batal) {
           console.log('batal jalan');
 
