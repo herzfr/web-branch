@@ -1,7 +1,7 @@
 <div id="title" mat-dialog-title>
   <ul class="container justify-content-center mb-0">
     <li class="list-inline-item row justify-content-center font-weight-bolder">PEMBUATAN REKENING BARU</li>
-    <li class="list-inline-item row justify-content-center font-weight-bold">No Antrian 008</li>
+    <li class="list-inline-item row justify-content-center font-weight-bold">No Antrian {{ dataLs.queueno }}</li>
   </ul>
 
   <div class="row justify-content-between pl-3 pr-3">
@@ -805,12 +805,12 @@
 
 
   <div class="row justify-content-between">
-    <div class="col-sm-4">
+    <mat-card class="col-sm-4">
       <img id="photo" class="img-responsive" [src]="photoImg()" alt="">
       <p class="lead text-center">Photo Nasabah</p>
-    </div>
+    </mat-card>
     <mat-card class="col-sm-8">
-      <img id="signature" class="img-responsive img-fluid" [src]="signImg()" alt="">
+      <img id="signature" class="img-responsive" [src]="signImg()" alt="">
       <p class="lead text-center">Tanda Tangan Nasabah</p>
     </mat-card>
   </div>
@@ -858,8 +858,8 @@
 
 <mat-dialog-actions class="justify-content-center">
   <div class="container-fluid justify-content-between d-flex m-0">
-    <button class="btn-batal" mat-button mat-dialog-close>Batal</button>
-    <button class="btn-skip" mat-button mat-dialog-close>Skip</button>
+    <button class="btn-batal" (click)="cancelData()" mat-button mat-dialog-close>Batal</button>
+    <button class="btn-skip" (click)="skipData()" mat-button mat-dialog-close>Skip</button>
   </div>
   <button (click)="sendConfirmation()" class="btn-proses" mat-button>Selesai</button>
   <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->

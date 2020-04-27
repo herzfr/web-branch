@@ -178,6 +178,7 @@ select.form-control:not([size]):not([multiple]) {
 
 #photo {
   border-radius: 200px;
+  width: inherit;
 }
 
 .btn-cls {

@@ -188,7 +188,9 @@ export class HeadCsComponent implements OnInit {
 
   confirmRejected() {
     this.subService = this.headServ.setState(1, this.transId, 1, this.userId).subscribe(res => {
-      this.getData();
+      if (res['success']) {
+        this.getData();
+      }
     });
   }
 

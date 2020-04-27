@@ -153,7 +153,13 @@ export class DashboardCsComponent implements OnInit {
       console.log('test');
       this.queueServ.getNewQueueCS(this.branchCode, "998", "999").subscribe(e => {
         console.log(e[0]);
-        this.transactionDialogNon(e[0])
+
+        if (e[0] === undefined) {
+          alert('Data tidak ada')
+        } else {
+          this.transactionDialogNon(e[0])
+        }
+
       })
     } else {
       this.queueServ.getLatestQue(this.branchCode, 998).subscribe(res => {
@@ -243,13 +249,46 @@ export class DashboardCsComponent implements OnInit {
     dialogConfig.width = '1200px';
 
     this.dlg.open(DialogNewCustomerComponent, dialogConfig).afterClosed().subscribe(e => {
-      console.log(e);
-      this.queueServ.changeStatusTransactionQ(e).subscribe(res => {
-        console.log(res);
-        if (res['successId0']) {
-          this.queueServ.refreshQCS(this.branchCode).subscribe()
-        }
-      })
+      console.log(e[0].type);
+
+      switch (e[0].type) {
+        case 'finish':
+
+          delete e[0].type
+          this.queueServ.changeStatusTransactionQ(e).subscribe(res => {
+            console.log(res);
+            if (res['successId0']) {
+              this.queueServ.refreshQCS(this.branchCode).subscribe()
+            }
+          })
+          break;
+        case 'skip':
+
+          delete e[0].type
+          this.queueServ.changeStatusTransactionQ(e).subscribe(res => {
+            console.log(res);
+            if (res['successId0']) {
+              this.nextQueue()
+              this.queueServ.refreshQCS(this.branchCode).subscribe()
+            }
+          })
+          break;
+        case 'cancel':
+
+          delete e[0].type
+          this.queueServ.changeStatusTransactionQ(e).subscribe(res => {
+            console.log(res);
+            if (res['successId0']) {
+              this.nextQueue()
+              this.queueServ.refreshQCS(this.branchCode).subscribe()
+            }
+          })
+          break;
+        default:
+          break;
+      }
+
+
     })
   }
 
