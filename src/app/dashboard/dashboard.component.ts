@@ -64,6 +64,7 @@ export class DashboardComponent implements OnInit {
     let dataQ;
 
     let branch = JSON.parse(this.secureLs.get("terminal"));
+
     this.branchCode = branch.branchCode;
 
     this.queueServ.getNewQueue(this.branchCode, this.waitingCall, this.outCall).subscribe(res => {
