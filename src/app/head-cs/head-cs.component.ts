@@ -68,7 +68,6 @@ export class HeadCsComponent implements OnInit {
 
 
   getData() {
-
     this.headServ.getDataReqOtoHeadCS(this.detailHeadCS['username'], this.detailHeadCS['branchcode'], "999").subscribe(e => {
       let arr = new Array;
       for (const key in e) {
@@ -87,6 +86,7 @@ export class HeadCsComponent implements OnInit {
   }
 
   MainFunction(event, num: string) {
+    console.log("event value : ", event);
 
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
@@ -173,19 +173,20 @@ export class HeadCsComponent implements OnInit {
     this.subDialog = this.dialog.open(HeadConfirmComponent, dialogConfig).afterClosed().subscribe(resBack => {
       console.log("return value dialog: ", resBack['returnType']);
 
-      console.log("form value : ", );
-      
+      console.log("form value : ");
+
 
       let valueReturn = resBack['returnType'];
 
       if (valueReturn === 2) {
-        console.log("approve");
-        this.subService = this.headServ.setState(1, this.transId, 0, this.userId).subscribe(res => {
-          console.log("data set return : ", res);
+        this.subService = this.headServ.updateValidation("000", this.transId).subscribe(res => {
+          if (res['success']) {
+            this.getData();
+          }
 
-          this.getData();
         });
-      
+
+
 
       } else if (valueReturn === 3) {
         console.log("rejected ");

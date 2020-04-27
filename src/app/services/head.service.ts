@@ -45,4 +45,16 @@ export class HeadService {
       .set('status', sts)
     return this.http.get(this.apiUrl + 'api/wbheadvalidation/getnewcs?' + params, this.httpOptions)
   }
+
+  updateValidation(status, transId) {
+    const params = new HttpParams()
+      .set('state', status)
+      .set('transId', transId)
+    return this.http.get(this.apiUrl + 'api/wbheadvalidation/csupdatestatus?' + params, this.httpOptions).pipe(
+
+
+    );
+  }
+
+
 }
