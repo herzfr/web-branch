@@ -88,9 +88,6 @@ export class DialogNewCustomerComponent implements OnInit {
       }
     }
 
-    // console.log("data awal", data);
-
-
     // INIT FORM GROUP
     this.productInfo = this.getproductInfo()
     this.dataPemohon = this.getDataPemohon()
