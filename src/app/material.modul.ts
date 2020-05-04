@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { MatSliderModule } from '@angular/material/slider';
-import { MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatInputModule, MatSelectModule, MatIconModule, MatCardModule, MatSnackBarModule, MatMenuModule, MatRippleModule, MatProgressSpinnerModule, MatAutocompleteModule, MatBadgeModule, MatBottomSheetModule, MatButtonToggleModule, MatChipsModule, MatStepperModule, MatDialogModule, MatExpansionModule, MatGridListModule, MatListModule, MatProgressBarModule, MatRadioModule, MatTabsModule, MatTreeModule, MatTableModule, MatPaginatorModule, MatBadge } from '@angular/material';
+import { MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatInputModule, MatSelectModule, MatCardModule, MatSnackBarModule, MatMenuModule, MatRippleModule, MatProgressSpinnerModule, MatAutocompleteModule, MatBadgeModule, MatBottomSheetModule, MatButtonToggleModule, MatChipsModule, MatStepperModule, MatDialogModule, MatExpansionModule, MatGridListModule, MatListModule, MatProgressBarModule, MatRadioModule, MatTabsModule, MatTreeModule, MatTableModule, MatPaginatorModule, MatBadge } from '@angular/material';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
 
 import { A11yModule } from '@angular/cdk/a11y';
 import { CdkStepperModule } from '@angular/cdk/stepper';

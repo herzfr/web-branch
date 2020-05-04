@@ -68,7 +68,11 @@ export class DashboardCsComponent implements OnInit {
       for (const key in res) {
         if (res.hasOwnProperty(key)) {
           const element = res[key];
+          console.log(JSON.parse(element.transbuff));
           let transBf = JSON.parse(element.transbuff);
+
+
+
           let date = moment(element.timestampentry).format('DD/MM/YYYY HH:mm:ss')
           // let transf = new Array;
           // this.DataTableQ.push(element)
@@ -304,6 +308,16 @@ export class DashboardCsComponent implements OnInit {
           })
           break;
         case 'cancel':
+
+          delete e[0].type
+          this.queueServ.changeStatusTransactionQCS(e).subscribe(res => {
+            console.log(res);
+            if (res['successId0']) {
+              this.queueServ.refreshQCS(this.branchCode).subscribe()
+            }
+          })
+          break;
+        case 'close':
 
           delete e[0].type
           this.queueServ.changeStatusTransactionQCS(e).subscribe(res => {

@@ -93,8 +93,8 @@
               </ng-container>
 
               <div class="d-flex justify-content-between">
-                <button (click)="transactionCancel(i, env.controls)" mat-button>Batal</button>
-                <button (click)="transactionProcess(env.controls, i)" mat-button matStepperNext>Proses</button>
+                <button (click)="transactionCancel(i, env.controls, stepper)" mat-button>Batal</button>
+                <button (click)="transactionProcess(env.controls, i, stepper)" mat-button>Proses</button>
               </div>
             </mat-step>
 
@@ -212,7 +212,7 @@
                         (animationCreated)="animationCreated($event)">
                       </ng-lottie>
                       <div (click)="onOtorisation('now', stepper, drawer)" class="d-flex justify-content-center"><button
-                          mat-button>Verifikasi Head 
+                          mat-button>Verifikasi Head
                           Teller</button></div>
                     </div>
                   </div>

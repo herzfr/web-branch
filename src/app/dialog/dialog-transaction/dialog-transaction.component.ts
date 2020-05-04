@@ -313,8 +313,8 @@ export class DialogTransactionComponent implements OnInit {
   }
 
 
-  transactionCancel(i, event) {
-    console.log(i, event)
+  transactionCancel(i, event, stepper) {
+    console.log(i, event, stepper)
 
     let arr = new Array;
     let obj: any = new Object();
@@ -335,7 +335,7 @@ export class DialogTransactionComponent implements OnInit {
     })
   }
 
-  transactionProcess(event, index) {
+  transactionProcess(event, index, stepper: MatStepper) {
     const accountNumber = event.Dari.value;
 
     if (accountNumber === "1001000002") {
@@ -355,6 +355,17 @@ export class DialogTransactionComponent implements OnInit {
     // console.log(dataObj);
     let Form = new FormGroup(event)
     let payLoad = JSON.stringify(Form.value);
+
+
+    if (event.Tipe.value === 'Tarik Tunai') {
+      event.Tipe.value = 'trk'
+    } else if (event.Tipe.value === 'Setor Tunai') {
+      event.Tipe.value = 'str'
+    } else if (event.Tipe.value === 'Transaksi Antar Rekening') {
+      event.Tipe.value = 'tar'
+    } else if (event.Tipe.value === 'Transaksi Antar Banktab') {
+      event.Tipe.value = 'tab'
+    }
 
     const dataProsesApi = {
       "transid": transId,
@@ -376,10 +387,12 @@ export class DialogTransactionComponent implements OnInit {
       "transeq": this.data[index].transeq
     }
 
+
     this.dataFormHeadValidation = dataProsesApi;
     this.queueServ.processTransactionDataQ(dataProsesApi).subscribe(res => {
       console.log(res);
       if (res['success']) {
+        stepper.next()
         this.dataSuccess.push(res)
         setTimeout(() => {
           this.isProsses = false;
@@ -393,7 +406,7 @@ export class DialogTransactionComponent implements OnInit {
           // ========================================================================================================================
         }, 500)
       } else {
-        console.log('gagal');
+        alert('Data gagal proses, silahkan coba lagi')
         setTimeout(() => {
           this.isProsses = false;
           this.isError = true;
@@ -488,12 +501,15 @@ export class DialogTransactionComponent implements OnInit {
   done() {
     this.stepDisabledHorizontal = false;
     this.isHeadTeller = false
+    console.log("data sukses :", this.dataSuccess.length);
+    console.log("data form :", this.form.length);
+
 
     if (this.dataSuccess.length === this.form.length) {
-      // console.log('suses di isi semua');
+      console.log('suses di isi semua');
       this.isDoneBtn = true;
     } else {
-      // console.log('masih belum');
+      console.log('masih belum');
     }
   }
 

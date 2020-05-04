@@ -789,5 +789,17 @@ export class DialogNewCustomerComponent implements OnInit {
     this.dialogRef.close(postStat)
   }
 
+  closeQDialog() {
+    let postStat = new Array;
+
+    let obj: any = new Object();
+    obj.transId = this.dataLs.transid;
+    obj.status = '998';
+    obj.type = 'close';
+    postStat.push(obj)
+
+    this.dialogRef.close(postStat)
+  }
+
 
 }
