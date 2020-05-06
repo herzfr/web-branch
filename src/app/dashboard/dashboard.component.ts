@@ -48,6 +48,12 @@ export class DashboardComponent implements OnInit {
     private appConfig: AppConfiguration, private sharedService: SharedService) {
     this.serverUrl = appConfig.ipSocketServer + "socket";
     console.log("dashboar socket : ", this.serverUrl);
+    if (localStorage.getItem('skip')) {
+      localStorage.removeItem('skip')
+    } else {
+      console.log('data skip kosong');
+
+    }
 
   }
 
@@ -298,7 +304,7 @@ export class DashboardComponent implements OnInit {
 
           localStorage.setItem('skip', JSON.stringify(oldItems));
           console.log(JSON.stringify(oldItems));
-          
+
         } else if (resBack[0].batal) {
           console.log('batal jalan');
 
@@ -308,6 +314,26 @@ export class DashboardComponent implements OnInit {
 
           this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
             console.log(res);
+            if (res['successId0']) {
+              if (localStorage.getItem('skip') !== null) {
+
+                var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+                this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
+                  console.log(eco);
+
+                  if (eco['successId0']) {
+                    this.queueServ.refreshQ(this.branchCode).subscribe()
+                    localStorage.removeItem('skip')
+                  } else {
+                    this.queueServ.refreshQ(this.branchCode).subscribe()
+                  }
+
+                })
+
+              } else {
+                this.queueServ.refreshQ(this.branchCode).subscribe()
+              }
+            }
             this.queueServ.refreshQ(this.branchCode).subscribe()
           })
 

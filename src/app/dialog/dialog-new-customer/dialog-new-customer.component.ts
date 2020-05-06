@@ -665,97 +665,109 @@ export class DialogNewCustomerComponent implements OnInit {
 
   sendConfirmation() {
 
-    console.log(this.headSelected);
+    console.log(this.allFinger);
 
     if (this.headSelected !== undefined && this.headSelected !== "") {
-      console.log(this.productInfo);
-      console.log(this.dataPemohon);
-      console.log(this.dataPekerjaan);
-      console.log(this.productInfo);
-      if (this.productInfo.valid) {
-        if (this.dataPemohon.valid) {
-          if (this.dataPekerjaan.valid) {
-            if (this.dataKerabat.valid) {
+      // console.log(this.productInfo);
+      // console.log(this.dataPemohon);
+      // console.log(this.dataPekerjaan);
+      // console.log(this.productInfo);
+      if (this.photoImage !== undefined) {
+        if (this.signatureImage !== undefined) {
+          if (this.allFinger !== undefined) {
+            if (this.productInfo.valid) {
+              if (this.dataPemohon.valid) {
+                if (this.dataPekerjaan.valid) {
+                  if (this.dataKerabat.valid) {
 
-              let TERMINAL = JSON.parse(this.ls.get('terminal'))
-              let TERMINALUSER = JSON.parse(this.ls.get('termdata'))
+                    let TERMINAL = JSON.parse(this.ls.get('terminal'))
+                    let TERMINALUSER = JSON.parse(this.ls.get('termdata'))
 
-              let dataTransbuff = {
-                "produkInfo": this.productInfo.value,
-                "dataPemohon": this.dataPemohon.value,
-                "dataPekerjaan": this.dataPekerjaan.value,
-                "dataKerabat": this.dataKerabat.value,
-                "wbimage": this.dataBiometri,
-              }
+                    let dataTransbuff = {
+                      "produkInfo": this.productInfo.value,
+                      "dataPemohon": this.dataPemohon.value,
+                      "dataPekerjaan": this.dataPekerjaan.value,
+                      "dataKerabat": this.dataKerabat.value,
+                      "wbimage": this.dataBiometri,
+                    }
 
-              // console.log(dataTransbuff);
+                    // console.log(dataTransbuff);
 
-              const dataProsesApi = {
-                "transid": this.dataLs.transid,
-                "branchcode": this.dataLs.branchcode,
-                "terminalid": TERMINAL.terminalID,
-                "queuedate": this.dataLs.queuedate,
-                "queuecode": this.dataLs.queuecode,
-                "queueno": this.dataLs.queueno.toString(),
-                "timestampentry": this.dataLs.timestampentry,
-                "userid": this.dataLs.userid,
-                "userterminal": TERMINALUSER,
-                "trntype": "nac",
-                "transcnt": this.dataLs.transcnt,
-                "transeq": this.dataLs.transeq,
-                "isCash": this.dataLs.isCash,
-                "iscustomer": this.dataLs.iscustomer,
-                "id": this.dataLs.id,
-                "status": "999",
-                "username": this.headSelected,
-                "transbuff": JSON.stringify(dataTransbuff),
-              }
+                    const dataProsesApi = {
+                      "transid": this.dataLs.transid,
+                      "branchcode": this.dataLs.branchcode,
+                      "terminalid": TERMINAL.terminalID,
+                      "queuedate": this.dataLs.queuedate,
+                      "queuecode": this.dataLs.queuecode,
+                      "queueno": this.dataLs.queueno.toString(),
+                      "timestampentry": this.dataLs.timestampentry,
+                      "userid": this.dataLs.userid,
+                      "userterminal": TERMINALUSER,
+                      "trntype": "nac",
+                      "transcnt": this.dataLs.transcnt,
+                      "transeq": this.dataLs.transeq,
+                      "isCash": this.dataLs.isCash,
+                      "iscustomer": this.dataLs.iscustomer,
+                      "id": this.dataLs.id,
+                      "status": "999",
+                      "username": this.headSelected,
+                      "transbuff": JSON.stringify(dataTransbuff),
+                    }
 
-              console.log(dataProsesApi);
-              console.log(this.headSelected);
+                    console.log(dataProsesApi);
+                    console.log(this.headSelected);
 
-              this.nasabahServ.accValidationNewAccount(this.headSelected, dataProsesApi).subscribe(e => {
-                console.log(e);
-                console.log(e['success']);
-                // if (e[''])
+                    this.nasabahServ.accValidationNewAccount(this.headSelected, dataProsesApi).subscribe(e => {
+                      console.log(e);
+                      console.log(e['success']);
+                      // if (e[''])
 
-                const dialogConfig = new MatDialogConfig();
-                dialogConfig.data = {
-                  id: 0,
-                  data: e
-                }
-                dialogConfig.backdropClass = 'backdropBackground';
-                dialogConfig.disableClose = true;
-                // dialogConfig.width = '1200px';
+                      const dialogConfig = new MatDialogConfig();
+                      dialogConfig.data = {
+                        id: 0,
+                        data: e
+                      }
+                      dialogConfig.backdropClass = 'backdropBackground';
+                      dialogConfig.disableClose = true;
+                      // dialogConfig.width = '1200px';
 
-                this.dialog.open(DialogSuccessComponent, dialogConfig).afterClosed().subscribe(e => {
-                  if (e) {
+                      this.dialog.open(DialogSuccessComponent, dialogConfig).afterClosed().subscribe(e => {
+                        if (e) {
 
-                    let postStat = new Array;
+                          let postStat = new Array;
 
-                    let obj: any = new Object();
-                    obj.transId = this.dataLs.transid;
-                    obj.status = '000';
-                    obj.type = 'finish'
-                    postStat.push(obj)
+                          let obj: any = new Object();
+                          obj.transId = this.dataLs.transid;
+                          obj.status = '000';
+                          obj.type = 'finish'
+                          postStat.push(obj)
 
-                    this.dialogRef.close(postStat)
+                          this.dialogRef.close(postStat)
+                        }
+
+                      })
+                    });
+
+                  } else {
+                    alert('Data Kerabat belum valid')
                   }
-
-                })
-              });
-
+                } else {
+                  alert('Data Pekerjaan belum valid')
+                }
+              } else {
+                alert('Data Pemohon belum valid')
+              }
             } else {
-              alert('Data Kerabat belum valid')
+              alert('Data Product Info belum valid!')
             }
           } else {
-            alert('Data Pekerjaan belum valid')
+            alert('Data Finger tidak ada!')
           }
         } else {
-          alert('Data Pemohon belum valid')
+          alert('Tanda Tangan belum diambil')
         }
       } else {
-        alert('Data Product Info belum valid!')
+        alert('Photo Nasabah belum diambil')
       }
     } else {
       alert('Head CS belum dipilih')

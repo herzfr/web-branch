@@ -338,8 +338,11 @@ export class DialogTransactionComponent implements OnInit {
   transactionProcess(event, index, stepper: MatStepper) {
     const accountNumber = event.Dari.value;
 
+    console.log(accountNumber);
+
+
     if (accountNumber === "1001000002") {
-      this.cardNum = 1234567890000001;
+      this.cardNum = 1234567890000002;
     } else if (accountNumber === "1001000003") {
       this.cardNum = 1234567890000003;
     } else {
@@ -363,7 +366,7 @@ export class DialogTransactionComponent implements OnInit {
       event.Tipe.value = 'str'
     } else if (event.Tipe.value === 'Transaksi Antar Rekening') {
       event.Tipe.value = 'tar'
-    } else if (event.Tipe.value === 'Transaksi Antar Banktab') {
+    } else if (event.Tipe.value === 'Transaksi Antar Bank') {
       event.Tipe.value = 'tab'
     }
 
@@ -600,6 +603,9 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   onSwapCard() {
+
+    console.log(this.cardNum);
+
     if (this.cardNum !== null) {
       this.isInputPin = true
       this.isCardNumber = true
