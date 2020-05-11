@@ -575,24 +575,25 @@ export class DialogNewCustomerComponent implements OnInit {
 
     this.dialog.open(VerifyDialogComponent, dialogConfig).afterClosed().subscribe(e => {
       console.log(e);
+
       this.allFinger = e.finger;
       this.photoImage = e.photo;
       this.signatureImage = e.signature;
       this.dataBiometri = {
-        "fingertemplate1": this.allFinger.fingerTemplate1,
-        "fingertemplate2": this.allFinger.fingerTemplate2,
-        "fingertemplate3": this.allFinger.fingerTemplate3,
-        "fingertemplate4": this.allFinger.fingerTemplate4,
-        "fingertemplate5": this.allFinger.fingerTemplate5,
-        "imagefinger1": this.allFinger.imageFinger1,
-        "imagefinger2": this.allFinger.imageFinger2,
-        "imagefinger3": this.allFinger.imageFinger3,
-        "imagefinger4": this.allFinger.imageFinger4,
-        "imagefinger5": this.allFinger.imageFinger5,
-        "name": this.dataPemohon.get('namaLengkap').value,
-        "imagepict": this.photoImage,
-        "imagesign": this.signatureImage,
-        "imageid": 123456789012
+        "wsftp1": this.allFinger.fingerTemplate1,
+        "wsftp2": this.allFinger.fingerTemplate2,
+        "wsftp3": this.allFinger.fingerTemplate3,
+        "wsftp4": this.allFinger.fingerTemplate4,
+        "wsftp5": this.allFinger.fingerTemplate5,
+        "wsfim1": this.allFinger.imageFinger1,
+        "wsfim2": this.allFinger.imageFinger2,
+        "wsfim3": this.allFinger.imageFinger3,
+        "wsfim4": this.allFinger.imageFinger4,
+        "wsfim5": this.allFinger.imageFinger5,
+        "wsfnme": this.dataPemohon.get('wsname').value,
+        "wsimgs": this.photoImage,
+        "wssign": this.signatureImage,
+        "wsimid": 123456789012
       }
 
     })
