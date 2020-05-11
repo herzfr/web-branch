@@ -43,6 +43,7 @@ import { SignaturePadModule } from '@ng-plus/signature-pad';
 import { DialogSuccessComponent } from './dialog/dialog-success/dialog-success.component';
 import { HeadCsDialogComponent } from './dialog/head-cs-dialog/head-cs-dialog.component';
 import { HeadConfirmComponent } from './dialog/head-confirm/head-confirm.component';
+import { ConfigurationService } from './services/configuration.service';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -90,7 +91,7 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   ],
   providers: [
     CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService,
-    TestService, TransactionService, SharedService, HeadService, UserDataService, NgxImageCompressService, NasabahService,
+    TestService, TransactionService, SharedService, HeadService, UserDataService, NgxImageCompressService, NasabahService, ConfigurationService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],
