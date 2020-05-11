@@ -12,6 +12,7 @@ import { AppConfiguration } from '../models/app.configuration';
 import { SharedService } from '../services/shared.service';
 import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
 import { DialogNewCustomerComponent } from '../dialog/dialog-new-customer/dialog-new-customer.component';
+import { ConfigurationService } from '../services/configuration.service';
 declare var $: any;
 declare var jQuery: any;
 
@@ -40,10 +41,13 @@ export class DashboardCsComponent implements OnInit {
 
   secureLs = new SecureLS({ encodingType: 'aes' });
 
+  newAccountType: string;
+
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService,
-    private appConfig: AppConfiguration, private sharedService: SharedService) {
+    private appConfig: AppConfiguration, private sharedService: SharedService, private config: ConfigurationService) {
+    this.newAccountType = this.config.getConfig().typeNewAccount;
     this.serverUrl = appConfig.ipSocketServer + "socket";
     console.log("dashboar socket : ", this.serverUrl);
   }
@@ -78,7 +82,7 @@ export class DashboardCsComponent implements OnInit {
           // this.DataTableQ.push(element)
 
           switch (element.trntype) {
-            case 'nac':
+            case this.newAccountType:
               transBf.tp = 'Pembukaan Rekening Baru';
               break;
             default:
@@ -167,7 +171,7 @@ export class DashboardCsComponent implements OnInit {
           element.transbuff = parse;
         });
 
-        if (res['record'][0].trntype === 'nac') {
+        if (res['record'][0].trntype === this.newAccountType) {
           this.transactionDialogNon(res['record'][0])
         } else {
           this.transactionDialog(res['record'])
@@ -189,7 +193,7 @@ export class DashboardCsComponent implements OnInit {
               element.transbuff = parse;
             });
 
-            if (res['record'][0].trntype === 'nac') {
+            if (res['record'][0].trntype === this.newAccountType) {
               this.transactionDialogNon(res['record'][0])
             } else {
               this.transactionDialog(res['record'])
