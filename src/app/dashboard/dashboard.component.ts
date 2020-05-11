@@ -16,6 +16,7 @@ import { AppConfiguration } from '../models/app.configuration';
 import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
 import * as SecureLS from 'secure-ls';
 import { SharedService } from '../services/shared.service';
+import { ConfigurationService } from '../services/configuration.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,16 +45,28 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
+  // transaction code 
+  setorTunaiCode: string;
+  tarikTunaiCode: string;
+  transferAntarBankCode: string;
+  transferAntarRekCode: string;
+
   constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService,
-    private appConfig: AppConfiguration, private sharedService: SharedService) {
+    private appConfig: AppConfiguration, private sharedService: SharedService, private config: ConfigurationService) {
     this.serverUrl = appConfig.ipSocketServer + "socket";
     console.log("dashboar socket : ", this.serverUrl);
+
     if (localStorage.getItem('skip')) {
       localStorage.removeItem('skip')
     } else {
       console.log('data skip kosong');
-
     }
+
+    this.setorTunaiCode = this.config.getConfig().typeSetorTunai;
+    this.tarikTunaiCode = this.config.getConfig().typeTarikTunai;
+    this.transferAntarBankCode = this.config.getConfig().typeTransferAntarRek;
+    this.transferAntarRekCode = this.config.getConfig().typeTransferAntarBank;
+
 
   }
 
@@ -65,8 +78,7 @@ export class DashboardComponent implements OnInit {
 
 
   getDataTableQ() {
-
-    console.log('jalan');
+    // console.log('jalan');
     let dataQ;
 
     let branch = JSON.parse(this.secureLs.get("terminal"));
@@ -84,14 +96,14 @@ export class DashboardComponent implements OnInit {
           // let transf = new Array;
           // this.DataTableQ.push(element)
 
-          // console.log(element);  
+          console.log(transBf.tp);
 
 
           switch (transBf.tp) {
             case 'trk':
               transBf.tp = 'Tarik Tunai';
               break;
-            case 'str':
+            case this.setorTunaiCode:
               transBf.tp = 'Setor Tunai';
               break;
             case 'tar':
@@ -111,7 +123,7 @@ export class DashboardComponent implements OnInit {
         }
       }
 
-      console.log(data);
+      // console.log(data);
 
       if (data.length > 0) {
         console.log('data ada');

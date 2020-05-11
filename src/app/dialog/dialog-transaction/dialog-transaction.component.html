@@ -68,9 +68,11 @@
     <mat-horizontal-stepper formArrayName="form">
       <ng-container>
         <mat-step [aria-labelledby]="stepDisabledHorizontal ? 'disabled_Hori' : null" [completed]="true"
-          [formGroupName]="i" *ngFor="let env of formGroup.controls.form.controls; let i = index">
-          <ng-container *ngFor="let a of env.controls | keyvalue">
-            <ng-template *ngIf="a.key === 'Tipe'" matStepLabel>{{a.value.value }} </ng-template>
+          [formGroupName]="i" *ngFor="let env of formGroup.controls.form.controls;let i = index">
+          <ng-container *ngFor="let a of env.controls | keyvalue ; ">
+            <ng-template *ngIf="a.key === 'Tipe'" matStepLabel>
+              {{transLabel[i]}}
+            </ng-template>
           </ng-container>
 
           <mat-vertical-stepper [linear]="isLinear" #stepper>
