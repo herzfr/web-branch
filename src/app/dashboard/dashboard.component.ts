@@ -67,7 +67,6 @@ export class DashboardComponent implements OnInit {
     this.transferAntarBankCode = this.config.getConfig().typeTransferAntarRek;
     this.transferAntarRekCode = this.config.getConfig().typeTransferAntarBank;
 
-
   }
 
   ngOnInit() {
@@ -76,7 +75,6 @@ export class DashboardComponent implements OnInit {
     this.connect();
   }
 
-
   getDataTableQ() {
     // console.log('jalan');
     let dataQ;
@@ -84,7 +82,8 @@ export class DashboardComponent implements OnInit {
     this.branchCode = branch.branchCode;
 
     this.queueServ.getNewQueue(this.branchCode, this.waitingCall, this.outCall).subscribe(res => {
-      console.log(res);
+      console.log("isi data : ", res);
+
       let data = new Array;
       for (const key in res) {
         if (res.hasOwnProperty(key)) {
