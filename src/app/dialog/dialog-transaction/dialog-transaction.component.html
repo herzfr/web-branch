@@ -82,7 +82,43 @@
               <ng-template matStepLabel>Cek Transaksi</ng-template>
 
               <ng-container *ngFor="let a of env.controls | keyvalue">
-                <div *ngIf="a.key != 'TransaksiId' && a.key != 'nm' && a.key != 'tn'" class="form-group row">
+                <ng-container *ngIf="a.key != 'TransaksiId'">
+
+                  <div [ngSwitch]="a.key">
+                    <div *ngSwitchCase="'nm'" class="form-group row">
+                      <label
+                        class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ a.key | titlecustom}}
+                        <span class="text-right">:</span></label>
+                      <div class="col-sm-9">
+                        <input currencyMask type="text" class="form-control-plaintext col-6"
+                          formControlName="{{ a.key }}">
+                      </div>
+                    </div>
+                    <div *ngSwitchCase="'tn'" class="form-group row">
+                      <label
+                        class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ a.key | titlecustom}}
+                        <span class="text-right">:</span></label>
+
+                      <div class="form-check col-sm-9 align-items-center d-flex">
+                        <label class="checkbox-square-bounce mb-0">
+                          <input type="checkbox" formControlName="{{ a.key }}" />
+                          <span class="track thumb"></span>
+                          <pre class="state">false</pre>
+                        </label>
+                      </div>
+
+                    </div>
+                    <div *ngSwitchDefault class="form-group row">
+                      <label
+                        class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ a.key | titlecustom}}
+                        <span class="text-right">:</span></label>
+                      <div class="col-sm-9">
+                        <input type="text" class="form-control-plaintext col-6" formControlName="{{ a.key }}">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- <div *ngIf="a.key != 'TransaksiId' && a.key != 'nm' && a.key != 'tn'" class="form-group row">
                   <label
                     class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ a.key | titlecustom}}
                     <span class="text-right">:</span></label>
@@ -107,8 +143,6 @@
                     <span class="text-right">:</span></label>
 
                   <div class="form-check col-sm-9 align-items-center d-flex">
-                    <!-- <input class="form-check-input position-static" type="checkbox" id="tunaiCheckBox"
-                      formControlName="{{ a.key }}"> -->
                     <label class="checkbox-square-bounce mb-0">
                       <input type="checkbox" formControlName="{{ a.key }}" />
                       <span class="track thumb"></span>
@@ -116,8 +150,8 @@
                     </label>
                   </div>
 
-                </div>
-
+                </div> -->
+                </ng-container>
               </ng-container>
 
               <div class="d-flex justify-content-between">

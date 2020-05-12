@@ -362,8 +362,56 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   transactionProcess(event, index, stepper: MatStepper) {
-    const accountNumber = event.Dari.value;
 
+
+    for (const key in event) {
+      if (event.hasOwnProperty(key)) {
+        const element = event[key];
+        switch (key) {
+          case 'TransaksiId':
+            event.wstran = element;
+            delete event.TransaksiId;
+            break;
+          case 'nm':
+            event.wsnomn = element;
+            delete event.nm;
+            break;
+          case 'tn':
+            event.wstnai = element;
+            delete event.tn;
+            break;
+          case 'tp':
+            event.wstype = element;
+            delete event.tp;
+            break;
+          case 'fr':
+            event.wsfrom = element;
+            delete event.fr;
+            break;
+          case 'to':
+            event.wstoto = element;
+            delete event.to;
+            break;
+          case 'br':
+            event.wsbrta = element;
+            delete event.br;
+            break;
+          case 'bc':
+            event.wsbcod = element;
+            delete event.bc;
+            break;
+          case 'id':
+            event.wsidid = element;
+            delete event.id;
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
+
+    const accountNumber = event.wsfrom.value;
     // console.log(accountNumber);
 
     if (accountNumber === "1001000002") {
@@ -380,21 +428,21 @@ export class DialogTransactionComponent implements OnInit {
     let branchCode = terminal.branchCode;
     let term = terminal.terminalID;
 
-    // console.log(dataObj);
     let Form = new FormGroup(event)
     let payLoad = JSON.stringify(Form.value);
 
-    console.log("event type : ", event.Tipe.value);
+
+    console.log("event type : ", event.wstype.value);
 
 
-    if (event.Tipe.value === 'Tarik Tunai') {
-      event.Tipe.value = this.tarikTunaiCode
-    } else if (event.Tipe.value === 'Setor Tunai') {
-      event.Tipe.value = this.setorTunaiCode;
-    } else if (event.Tipe.value === 'Transaksi Antar Rekening') {
-      event.Tipe.value = this.transferAntarRekCode
-    } else if (event.Tipe.value === 'Transaksi Antar Bank') {
-      event.Tipe.value = this.transferAntarBankCode
+    if (event.wstype.value === 'Tarik Tunai') {
+      event.wstype.value = this.tarikTunaiCode
+    } else if (event.wstype.value === 'Setor Tunai') {
+      event.wstype.value = this.setorTunaiCode;
+    } else if (event.wstype.value === 'Transaksi Antar Rekening') {
+      event.wstype.value = this.transferAntarRekCode
+    } else if (event.wstype.value === 'Transaksi Antar Bank') {
+      event.wstype.value = this.transferAntarBankCode
     }
 
     const dataProsesApi = {
@@ -407,7 +455,7 @@ export class DialogTransactionComponent implements OnInit {
       "timestampentry": dataObj.timestampentry.toString(),
       "userid": dataObj.userid,
       "userterminal": dataObj.userterminal,
-      "trntype": event.Tipe.value,
+      "trntype": event.wstype.value,
       "status": "",
       "transbuff": payLoad,
       "username": JSON.parse(this.secureLs.get('data')).username,
@@ -819,6 +867,7 @@ export class DialogTransactionComponent implements OnInit {
                     // that.onFingerVerifyHead(parse, stepper, drawer, "onsite");
 
                     that.sendProcess(that.dataFormHeadValidation, stepper, drawer, "onsite");
+
 
                   } else {
                     alert("validasi gagal");
