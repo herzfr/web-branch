@@ -145,10 +145,10 @@ export class DialogNewCustomerComponent implements OnInit {
     // console.log(JSON.parse(this.dataLs.transbuff));
     let dataTransbuff = JSON.parse(this.dataLs.transbuff)
     let group: any = {};
-    console.log(dataTransbuff.produkInfo);
-    for (const key in dataTransbuff.produkInfo) {
-      if (dataTransbuff.produkInfo.hasOwnProperty(key)) {
-        const element = dataTransbuff.produkInfo[key];
+    console.log(dataTransbuff.wspinf);
+    for (const key in dataTransbuff.wspinf) {
+      if (dataTransbuff.wspinf.hasOwnProperty(key)) {
+        const element = dataTransbuff.wspinf[key];
         group[key] = new FormControl(element, Validators.required)
       }
     }
@@ -158,10 +158,10 @@ export class DialogNewCustomerComponent implements OnInit {
   getDataPemohon() {
     let dataTransbuff = JSON.parse(this.dataLs.transbuff)
     let group: any = {};
-    console.log(dataTransbuff.dataPemohon);
-    for (const key in dataTransbuff.dataPemohon) {
-      if (dataTransbuff.dataPemohon.hasOwnProperty(key)) {
-        const element = dataTransbuff.dataPemohon[key];
+    console.log(dataTransbuff.wscdat);
+    for (const key in dataTransbuff.wscdat) {
+      if (dataTransbuff.wscdat.hasOwnProperty(key)) {
+        const element = dataTransbuff.wscdat[key];
 
 
         switch (key) {
@@ -210,10 +210,10 @@ export class DialogNewCustomerComponent implements OnInit {
   getdataPekerjaan() {
     let dataTransbuff = JSON.parse(this.dataLs.transbuff)
     let group: any = {};
-    console.log(dataTransbuff.dataPekerjaan);
-    for (const key in dataTransbuff.dataPekerjaan) {
-      if (dataTransbuff.dataPekerjaan.hasOwnProperty(key)) {
-        const element = dataTransbuff.dataPekerjaan[key];
+    console.log(dataTransbuff.wscjob);
+    for (const key in dataTransbuff.wscjob) {
+      if (dataTransbuff.wscjob.hasOwnProperty(key)) {
+        const element = dataTransbuff.wscjob[key];
         switch (key) {
           case 'wsposk':
             group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
@@ -234,10 +234,10 @@ export class DialogNewCustomerComponent implements OnInit {
   getdataKerabat() {
     let dataTransbuff = JSON.parse(this.dataLs.transbuff)
     let group: any = {};
-    console.log(dataTransbuff.dataKerabat);
-    for (const key in dataTransbuff.dataKerabat) {
-      if (dataTransbuff.dataKerabat.hasOwnProperty(key)) {
-        const element = dataTransbuff.dataKerabat[key];
+    console.log(dataTransbuff.wscfam);
+    for (const key in dataTransbuff.wscfam) {
+      if (dataTransbuff.wscfam.hasOwnProperty(key)) {
+        const element = dataTransbuff.wscfam[key];
         group[key] = new FormControl(element)
 
         switch (key) {
@@ -549,10 +549,10 @@ export class DialogNewCustomerComponent implements OnInit {
     console.log(JSON.stringify(this.dataKerabat.value));
 
     let buff =
-      "{\"productInfo\":" + JSON.stringify(this.productInfo.value) +
-      ",\"dataPemohon\":" + JSON.stringify(this.dataPemohon.value) +
-      ",\"dataPekerjaan\":" + JSON.stringify(this.dataPekerjaan.value) +
-      ",\"dataKerabat\":" + JSON.stringify(this.dataKerabat.value) +
+      "{\"wspinf\":" + JSON.stringify(this.productInfo.value) +
+      ",\"wscdat\":" + JSON.stringify(this.dataPemohon.value) +
+      ",\"wscjob\":" + JSON.stringify(this.dataPekerjaan.value) +
+      ",\"wscfam\":" + JSON.stringify(this.dataKerabat.value) +
       "}"
 
     console.log("isi buff :", buff);
@@ -691,11 +691,11 @@ export class DialogNewCustomerComponent implements OnInit {
                     let TERMINALUSER = JSON.parse(this.ls.get('termdata'))
 
                     let dataTransbuff = {
-                      "produkInfo": this.productInfo.value,
-                      "dataPemohon": this.dataPemohon.value,
-                      "dataPekerjaan": this.dataPekerjaan.value,
-                      "dataKerabat": this.dataKerabat.value,
-                      "wbimage": this.dataBiometri,
+                      "wspinf": this.productInfo.value,
+                      "wscdat": this.dataPemohon.value,
+                      "wscjob": this.dataPekerjaan.value,
+                      "wscfam": this.dataKerabat.value,
+                      "wsbiom": this.dataBiometri,
                     }
 
                     // console.log(dataTransbuff);
