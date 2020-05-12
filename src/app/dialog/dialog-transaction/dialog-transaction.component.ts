@@ -15,6 +15,7 @@ import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { AppConfiguration } from 'src/app/models/app.configuration';
 import { ConfigurationService } from 'src/app/services/configuration.service';
+import { ListingService } from 'src/app/services/listing.service';
 
 @Component({
   selector: 'app-dialog-transaction',
@@ -129,12 +130,13 @@ export class DialogTransactionComponent implements OnInit {
   tarikTunaiCode: string;
   transferAntarRekCode: string;
   transferAntarBankCode: string;
+  newAccountCode: string;
 
   transLabel: any = new Array;
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
     private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone, private appConfig: AppConfiguration,
-    private configuration: ConfigurationService) {
+    private configuration: ConfigurationService, private listConv: ListingService) {
 
     this.data = data.data;
     // console.log("data length : ", data.data.length);
@@ -145,6 +147,7 @@ export class DialogTransactionComponent implements OnInit {
     this.tarikTunaiCode = this.configuration.getConfig().typeTarikTunai;
     this.transferAntarRekCode = this.configuration.getConfig().typeTransferAntarRek;
     this.transferAntarBankCode = this.configuration.getConfig().typeTransferAntarBank;
+    this.newAccountCode = this.configuration.getConfig().typeNewAccount;
 
     this.serverUrlSocket = this.appConfig.ipSocketServer;
 
@@ -157,69 +160,69 @@ export class DialogTransactionComponent implements OnInit {
         let changeKey = element.transbuff[0]
         this.transID_for_while = element.transid
         this.status_for_while = element.status
-        for (const key in changeKey) {
-          if (changeKey.hasOwnProperty(key)) {
-            const e = changeKey[key];
-            // console.log(key);
+        // for (const key in changeKey) {
+        //   if (changeKey.hasOwnProperty(key)) {
+        //     const e = changeKey[key];
+        //     // console.log(key);
 
-            switch (key) {
-              case 'nm':
-                changeKey.Nominal = e
-                break;
-              case 'tn':
-                changeKey.Tunai = e
-                break;
-              case 'tp':
-                changeKey.Tipe = e
-                break;
-              case 'fr':
-                changeKey.Dari = e
-                break;
-              case 'to':
-                changeKey.Ke = e
-                break;
-              case 'br':
-                changeKey.Berita = e
-                break;
-              case 'bc':
-                changeKey.Bank = e
-                break;
-              default:
-                break;
-            }
+        //     switch (key) {
+        //       case 'nm':
+        //         changeKey.Nominal = e
+        //         break;
+        //       case 'tn':
+        //         changeKey.Tunai = e
+        //         break;
+        //       case 'tp':
+        //         changeKey.Tipe = e
+        //         break;
+        //       case 'fr':
+        //         changeKey.Dari = e
+        //         break;
+        //       case 'to':
+        //         changeKey.Ke = e
+        //         break;
+        //       case 'br':
+        //         changeKey.Berita = e
+        //         break;
+        //       case 'bc':
+        //         changeKey.Bank = e
+        //         break;
+        //       default:
+        //         break;
+        //     }
 
-          }
-        }
+        //   }
+        // }
 
-        delete changeKey.nm
-        delete changeKey.tn
-        delete changeKey.tp
-        delete changeKey.fr
-        delete changeKey.to
-        delete changeKey.br
-        delete changeKey.bc
+        // delete changeKey.nm
+        // delete changeKey.tn
+        // delete changeKey.tp
+        // delete changeKey.fr
+        // delete changeKey.to
+        // delete changeKey.br
+        // delete changeKey.bc
 
-        console.log("key : ", changeKey.Tipe);
+        console.log("key : ", changeKey.tp);
 
 
-        if (changeKey.Tipe === this.tarikTunaiCode) {
+        if (changeKey.tp === this.tarikTunaiCode) {
           this.transLabel.push("Tarik Tunai");
-          changeKey.Tipe = 'Tarik Tunai'
-        } else if (changeKey.Tipe === this.setorTunaiCode) {
+          changeKey.tp = 'Tarik Tunai'
+        } else if (changeKey.tp === this.setorTunaiCode) {
           this.transLabel.push("Setor Tunai");
-          changeKey.Tipe = 'Setor Tunai'
-        } else if (changeKey.Tipe === this.transferAntarRekCode) {
+          changeKey.tp = 'Setor Tunai'
+        } else if (changeKey.tp === this.transferAntarRekCode) {
           this.transLabel.push("Transaksi Antar Rekening");
-          changeKey.Tipe = 'Transaksi Antar Rekening'
-        } else if (changeKey.Tipe === this.transferAntarBankCode) {
+          changeKey.tp = 'Transaksi Antar Rekening'
+        } else if (changeKey.tp === this.transferAntarBankCode) {
           this.transLabel.push("Transaksi Antar Bank");
-          changeKey.Tipe = 'Transaksi Antar Bank'
+          changeKey.tp = 'Transaksi Antar Bank'
         }
 
-        if (changeKey.Tunai === '1') {
-          changeKey.Tunai = 'Ya'
+        if (changeKey.tn === '1') {
+          changeKey.tn = 'Ya'
         } else if (changeKey.Tunai === '0') {
-          changeKey.Tunai = 'Tidak'
+          changeKey.tn = 'Tidak'
         }
 
         // console.log(changeKey.Tunai);
@@ -267,7 +270,8 @@ export class DialogTransactionComponent implements OnInit {
     // console.log(event);
     event.TransaksiId = transid;
     // event.
-    console.log(event);
+    console.log(this.listConv.getListing(event));
+
 
     this.form = this.formGroup.get('form') as FormArray;
     this.form.push(this.init(event));
@@ -367,12 +371,12 @@ export class DialogTransactionComponent implements OnInit {
     } else if (accountNumber === "1001000003") {
       this.cardNum = 1234567890000003;
     } else {
-      this.cardNum = 1234567890123456;
+      this.cardNum = 1234567890000003;
     }
 
     let transId = event.TransaksiId.value
     let dataObj = this.findDataByTransactionId(transId, this.data);
-    let terminal = JSON.parse(this.secureLs.get("terminal"))
+    let terminal = JSON.parse(this.secureLs.get("terminal"));
     let branchCode = terminal.branchCode;
     let term = terminal.terminalID;
 
@@ -384,13 +388,13 @@ export class DialogTransactionComponent implements OnInit {
 
 
     if (event.Tipe.value === 'Tarik Tunai') {
-      event.Tipe.value = 'trk'
+      event.Tipe.value = this.tarikTunaiCode
     } else if (event.Tipe.value === 'Setor Tunai') {
       event.Tipe.value = this.setorTunaiCode;
     } else if (event.Tipe.value === 'Transaksi Antar Rekening') {
-      event.Tipe.value = 'tar'
+      event.Tipe.value = this.transferAntarRekCode
     } else if (event.Tipe.value === 'Transaksi Antar Bank') {
-      event.Tipe.value = 'tab'
+      event.Tipe.value = this.transferAntarBankCode
     }
 
     const dataProsesApi = {
@@ -739,7 +743,6 @@ export class DialogTransactionComponent implements OnInit {
       this.isFingerError = true
       this.fingerMessage = 'Finger Invalid'
     }
-
   }
 
   initializeWebSocketConnection(socket, stepper: MatStepper, drawer: MatDrawer) {
@@ -1061,7 +1064,8 @@ export class DialogTransactionComponent implements OnInit {
         }, 500)
       }
     });
-
   }
+
+
 
 }

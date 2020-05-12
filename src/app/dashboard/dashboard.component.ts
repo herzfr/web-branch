@@ -78,9 +78,7 @@ export class DashboardComponent implements OnInit {
   getDataTableQ() {
     // console.log('jalan');
     let dataQ;
-
     let branch = JSON.parse(this.secureLs.get("terminal"));
-
     this.branchCode = branch.branchCode;
 
     this.queueServ.getNewQueue(this.branchCode, this.waitingCall, this.outCall).subscribe(res => {
@@ -99,16 +97,16 @@ export class DashboardComponent implements OnInit {
 
 
           switch (transBf.tp) {
-            case 'trk':
+            case this.tarikTunaiCode:
               transBf.tp = 'Tarik Tunai';
               break;
             case this.setorTunaiCode:
               transBf.tp = 'Setor Tunai';
               break;
-            case 'tar':
+            case this.transferAntarRekCode:
               transBf.tp = 'Transfer Antar Rekening';
               break;
-            case 'tab':
+            case this.transferAntarBankCode:
               transBf.tp = 'Transfer Antar Bank';
               break;
             default:

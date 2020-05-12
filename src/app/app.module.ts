@@ -44,12 +44,31 @@ import { DialogSuccessComponent } from './dialog/dialog-success/dialog-success.c
 import { HeadCsDialogComponent } from './dialog/head-cs-dialog/head-cs-dialog.component';
 import { HeadConfirmComponent } from './dialog/head-confirm/head-confirm.component';
 import { ConfigurationService } from './services/configuration.service';
+import { TitlecustomPipe } from './pipes/titlecustom.pipe';
+import { NgxCurrencyModule, CurrencyMaskInputMode } from "ngx-currency";
+import { ListingService } from './services/listing.service';
+import { SortbypipePipe } from './pipes/sortbypipe.pipe';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
     return jsonAppConfigService.load();
   };
 }
+
+export const customCurrencyMaskConfig = {
+  align: "left",
+  allowNegative: true,
+  allowZero: true,
+  decimal: ",",
+  precision: 2,
+  prefix: "Rp ",
+  suffix: "",
+  thousands: ".",
+  nullable: true,
+  min: null,
+  max: null,
+  inputMode: CurrencyMaskInputMode.FINANCIAL
+};
 
 @NgModule({
   declarations: [
@@ -68,6 +87,8 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     DialogSuccessComponent,
     HeadCsDialogComponent,
     HeadConfirmComponent,
+    TitlecustomPipe,
+    SortbypipePipe,
   ],
   entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent, DialogNewCustomerComponent, VerifyDialogComponent,
     DialogSuccessComponent, HeadCsDialogComponent, HeadConfirmComponent],
@@ -87,11 +108,12 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     NgOtpInputModule,
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
     SignaturePadModule,
-    SignaturePadModule
+    NgxCurrencyModule.forRoot(customCurrencyMaskConfig)
   ],
   providers: [
     CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService,
-    TestService, TransactionService, SharedService, HeadService, UserDataService, NgxImageCompressService, NasabahService, ConfigurationService,
+    TestService, TransactionService, SharedService, HeadService, UserDataService, NgxImageCompressService, NasabahService,
+    ConfigurationService, ListingService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],
