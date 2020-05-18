@@ -6,6 +6,7 @@ export const transactioncode = {
     typeTarikTunai          : "0000003",
     typeTransferAntarRek    : "0000004",
     typeTransferAntarBank   : "0000005",
+    typeNewAccount          : "0000006"
 
   
   } 

@@ -90,11 +90,6 @@ export class DashboardComponent implements OnInit {
           const element = res[key];
           let transBf = JSON.parse(element.transbuff);
           let date = moment(element.timestampentry).format('DD/MM/YYYY HH:mm:ss')
-          // let transf = new Array;
-          // this.DataTableQ.push(element)
-
-          console.log(transBf.tp);
-
 
           switch (transBf.tp) {
             case this.tarikTunaiCode:
@@ -110,6 +105,7 @@ export class DashboardComponent implements OnInit {
               transBf.tp = 'Transfer Antar Bank';
               break;
             default:
+              transBf.tp = 'Unknown';
               break;
           }
 
@@ -119,8 +115,6 @@ export class DashboardComponent implements OnInit {
           data.push(element)
         }
       }
-
-      // console.log(data);
 
       if (data.length > 0) {
         console.log('data ada');
@@ -141,7 +135,6 @@ export class DashboardComponent implements OnInit {
         }
 
         // console.log(_data);
-
         for (const key in _data) {
           if (_data.hasOwnProperty(key)) {
             const element = _data[key];
