@@ -42,7 +42,7 @@ import { PlatformModule } from '@angular/cdk/platform';
         ScrollingModule,
 
         // Material
-        MatAutocompleteModule,
+        // MatAutocompleteModule,
         MatButtonModule,
         MatButtonToggleModule,
         MatCardModule,
@@ -57,7 +57,7 @@ import { PlatformModule } from '@angular/cdk/platform';
         MatListModule,
         MatMenuModule,
         MatProgressBarModule,
-        MatProgressSpinnerModule,
+        // MatProgressSpinnerModule,
         MatRadioModule,
         MatRippleModule,
         MatSelectModule,

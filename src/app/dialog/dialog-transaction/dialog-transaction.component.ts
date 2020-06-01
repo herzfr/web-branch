@@ -11,12 +11,11 @@ import { TransactionService } from 'src/app/services/transaction.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as securels from 'secure-ls';
 
-
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { AppConfiguration } from 'src/app/models/app.configuration';
-
-
+import { ConfigurationService } from 'src/app/services/configuration.service';
+import { ListingService } from 'src/app/services/listing.service';
 
 @Component({
   selector: 'app-dialog-transaction',
@@ -126,10 +125,29 @@ export class DialogTransactionComponent implements OnInit {
   @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
   @ViewChild('ngOtpInput', { static: true }) ngOtpInputRef: any;
 
+  // transaction code 
+  setorTunaiCode: string;
+  tarikTunaiCode: string;
+  transferAntarRekCode: string;
+  transferAntarBankCode: string;
+  newAccountCode: string;
+
+  transLabel: any = new Array;
+
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
-    private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone, private appConfig: AppConfiguration) {
+    private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone, private appConfig: AppConfiguration,
+    private configuration: ConfigurationService, private listConv: ListingService) {
+
     this.data = data.data;
+    // console.log("data length : ", data.data.length);
+
     this.TERMINAL = JSON.parse(this.ls.get('terminal'))
+
+    this.setorTunaiCode = this.configuration.getConfig().typeSetorTunai;
+    this.tarikTunaiCode = this.configuration.getConfig().typeTarikTunai;
+    this.transferAntarRekCode = this.configuration.getConfig().typeTransferAntarRek;
+    this.transferAntarBankCode = this.configuration.getConfig().typeTransferAntarBank;
+    this.newAccountCode = this.configuration.getConfig().typeNewAccount;
 
     this.serverUrlSocket = this.appConfig.ipSocketServer;
 
@@ -142,62 +160,69 @@ export class DialogTransactionComponent implements OnInit {
         let changeKey = element.transbuff[0]
         this.transID_for_while = element.transid
         this.status_for_while = element.status
-        for (const key in changeKey) {
-          if (changeKey.hasOwnProperty(key)) {
-            const e = changeKey[key];
-            // console.log(key);
+        // for (const key in changeKey) {
+        //   if (changeKey.hasOwnProperty(key)) {
+        //     const e = changeKey[key];
+        //     // console.log(key);
 
-            switch (key) {
-              case 'nm':
-                changeKey.Nominal = e
-                break;
-              case 'tn':
-                changeKey.Tunai = e
-                break;
-              case 'tp':
-                changeKey.Tipe = e
-                break;
-              case 'fr':
-                changeKey.Dari = e
-                break;
-              case 'to':
-                changeKey.Ke = e
-                break;
-              case 'br':
-                changeKey.Berita = e
-                break;
-              case 'bc':
-                changeKey.Bank = e
-                break;
-              default:
-                break;
-            }
+        //     switch (key) {
+        //       case 'nm':
+        //         changeKey.Nominal = e
+        //         break;
+        //       case 'tn':
+        //         changeKey.Tunai = e
+        //         break;
+        //       case 'tp':
+        //         changeKey.Tipe = e
+        //         break;
+        //       case 'fr':
+        //         changeKey.Dari = e
+        //         break;
+        //       case 'to':
+        //         changeKey.Ke = e
+        //         break;
+        //       case 'br':
+        //         changeKey.Berita = e
+        //         break;
+        //       case 'bc':
+        //         changeKey.Bank = e
+        //         break;
+        //       default:
+        //         break;
+        //     }
 
-          }
+        //   }
+        // }
+
+        // delete changeKey.nm
+        // delete changeKey.tn
+        // delete changeKey.tp
+        // delete changeKey.fr
+        // delete changeKey.to
+        // delete changeKey.br
+        // delete changeKey.bc
+
+        console.log("key : ", changeKey.tp);
+
+
+        if (changeKey.tp === this.tarikTunaiCode) {
+          this.transLabel.push("Tarik Tunai");
+          changeKey.tp = 'Tarik Tunai'
+        } else if (changeKey.tp === this.setorTunaiCode) {
+          this.transLabel.push("Setor Tunai");
+          changeKey.tp = 'Setor Tunai'
+        } else if (changeKey.tp === this.transferAntarRekCode) {
+          this.transLabel.push("Transaksi Antar Rekening");
+          changeKey.tp = 'Transaksi Antar Rekening'
+        } else if (changeKey.tp === this.transferAntarBankCode) {
+          this.transLabel.push("Transaksi Antar Bank");
+          changeKey.tp = 'Transaksi Antar Bank'
         }
 
-        delete changeKey.nm
-        delete changeKey.tn
-        delete changeKey.tp
-        delete changeKey.fr
-        delete changeKey.to
-        delete changeKey.br
-        delete changeKey.bc
-
-        if (changeKey.Tipe === 'trk') {
-          changeKey.Tipe = 'Tarik Tunai'
-        } else if (changeKey.Tipe === 'str') {
-          changeKey.Tipe = 'Setor Tunai'
-        } else if (changeKey.Tipe === 'tar') {
-          changeKey.Tipe = 'Transaksi Antar Rekening'
-        } else if (changeKey.Tipe === 'tab') {
-          changeKey.Tipe = 'Transaksi Antar Bank'
-        }
-
-        if (changeKey.Tunai === '1') {
-          changeKey.Tunai = 'Ya'
+        if (changeKey.tn === '1') {
+          changeKey.tn = 'Ya'
         } else if (changeKey.Tunai === '0') {
-          changeKey.Tunai = 'Tidak'
+          changeKey.tn = 'Tidak'
         }
 
         // console.log(changeKey.Tunai);
@@ -217,7 +242,7 @@ export class DialogTransactionComponent implements OnInit {
     for (const key in this.dataForm) {
       if (this.dataForm.hasOwnProperty(key)) {
         const element = this.dataForm[key];
-        console.log(element);
+        // console.log(element);
         this.addItem(element.transbuff, element.transid);
       }
     }
@@ -245,7 +270,8 @@ export class DialogTransactionComponent implements OnInit {
     // console.log(event);
     event.TransaksiId = transid;
     // event.
-    console.log(event);
+    console.log(this.listConv.getListing(event));
+
 
     this.form = this.formGroup.get('form') as FormArray;
     this.form.push(this.init(event));
@@ -336,38 +362,89 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   transactionProcess(event, index, stepper: MatStepper) {
-    const accountNumber = event.Dari.value;
 
-    console.log(accountNumber);
 
+    for (const key in event) {
+      if (event.hasOwnProperty(key)) {
+        const element = event[key];
+        switch (key) {
+          case 'TransaksiId':
+            event.wstran = element;
+            delete event.TransaksiId;
+            break;
+          case 'nm':
+            event.wsnomn = element;
+            delete event.nm;
+            break;
+          case 'tn':
+            event.wstnai = element;
+            delete event.tn;
+            break;
+          case 'tp':
+            event.wstype = element;
+            delete event.tp;
+            break;
+          case 'fr':
+            event.wsfrom = element;
+            delete event.fr;
+            break;
+          case 'to':
+            event.wstoto = element;
+            delete event.to;
+            break;
+          case 'br':
+            event.wsbrta = element;
+            delete event.br;
+            break;
+          case 'bc':
+            event.wsbcod = element;
+            delete event.bc;
+            break;
+          case 'id':
+            event.wsidid = element;
+            delete event.id;
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
+    const accountNumber = event.wsfrom.value;
 
     if (accountNumber === "1001000002") {
       this.cardNum = 1234567890000002;
     } else if (accountNumber === "1001000003") {
       this.cardNum = 1234567890000003;
     } else {
-      this.cardNum = 1234567890123456;
+      this.cardNum = 1234567890000003;
     }
+
+
+    console.log("event :", event.TransaksiId);
+
 
     let transId = event.TransaksiId.value
     let dataObj = this.findDataByTransactionId(transId, this.data);
-    let terminal = JSON.parse(this.secureLs.get("terminal"))
+    let terminal = JSON.parse(this.secureLs.get("terminal"));
     let branchCode = terminal.branchCode;
     let term = terminal.terminalID;
 
-    // console.log(dataObj);
     let Form = new FormGroup(event)
     let payLoad = JSON.stringify(Form.value);
 
 
-    if (event.Tipe.value === 'Tarik Tunai') {
-      event.Tipe.value = 'trk'
-    } else if (event.Tipe.value === 'Setor Tunai') {
-      event.Tipe.value = 'str'
-    } else if (event.Tipe.value === 'Transaksi Antar Rekening') {
-      event.Tipe.value = 'tar'
-    } else if (event.Tipe.value === 'Transaksi Antar Bank') {
-      event.Tipe.value = 'tab'
+    console.log("event type : ", event.wstype.value);
+
+
+    if (event.wstype.value === 'Tarik Tunai') {
+      event.wstype.value = this.tarikTunaiCode
+    } else if (event.wstype.value === 'Setor Tunai') {
+      event.wstype.value = this.setorTunaiCode;
+    } else if (event.wstype.value === 'Transaksi Antar Rekening') {
+      event.wstype.value = this.transferAntarRekCode
+    } else if (event.wstype.value === 'Transaksi Antar Bank') {
+      event.wstype.value = this.transferAntarBankCode
     }
 
     const dataProsesApi = {
@@ -380,7 +457,7 @@ export class DialogTransactionComponent implements OnInit {
       "timestampentry": dataObj.timestampentry.toString(),
       "userid": dataObj.userid,
       "userterminal": dataObj.userterminal,
-      "trntype": event.Tipe.value,
+      "trntype": event.wstype.value,
       "status": "",
       "transbuff": payLoad,
       "username": JSON.parse(this.secureLs.get('data')).username,
@@ -390,33 +467,20 @@ export class DialogTransactionComponent implements OnInit {
       "transeq": this.data[index].transeq
     }
 
-
     this.dataFormHeadValidation = dataProsesApi;
-    this.queueServ.processTransactionDataQ(dataProsesApi).subscribe(res => {
-      console.log(res);
-      if (res['success']) {
-        stepper.next()
-        this.dataSuccess.push(res)
-        setTimeout(() => {
-          this.isProsses = false;
-          this.isSuccess = true;
-          $(".check-icon").show();
-          this.isNext = true;
-          this.isCancelBtn = false;
-          this.isSkipBtn = false;
-          this.stepDisabledHorizontal = true;
-          this.isCloseDialog = false;
-          // ========================================================================================================================
-        }, 500)
-      } else {
-        alert('Data gagal proses, silahkan coba lagi')
-        setTimeout(() => {
-          this.isProsses = false;
-          this.isError = true;
-          this.isBack = true;
-        }, 500)
-      }
-    })
+
+    stepper.next()
+    this.dataSuccess.push("{\"success\":true}")
+    setTimeout(() => {
+      this.isProsses = false;
+      this.isSuccess = true;
+      $(".check-icon").show();
+      this.isNext = true;
+      this.isCancelBtn = false;
+      this.isSkipBtn = false;
+      this.stepDisabledHorizontal = true;
+      this.isCloseDialog = false;
+    }, 500);
 
   }
 
@@ -497,7 +561,6 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   stepChanged(event, stepper) {
-    // console.log(event, stepper.selected.interacted);
     stepper.selected.interacted = false;
   }
 
@@ -506,7 +569,6 @@ export class DialogTransactionComponent implements OnInit {
     this.isHeadTeller = false
     console.log("data sukses :", this.dataSuccess.length);
     console.log("data form :", this.form.length);
-
 
     if (this.dataSuccess.length === this.form.length) {
       console.log('suses di isi semua');
@@ -703,7 +765,6 @@ export class DialogTransactionComponent implements OnInit {
       this.isFingerError = true
       this.fingerMessage = 'Finger Invalid'
     }
-
   }
 
   initializeWebSocketConnection(socket, stepper: MatStepper, drawer: MatDrawer) {
@@ -741,36 +802,58 @@ export class DialogTransactionComponent implements OnInit {
         });
         break;
       case 'vldspv':
-        // console.log("runing validation supervisor");
         this.stompClient.connect({}, function (frame) {
           // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
           that.stompClient.subscribe("/" + socket, (message) => {
             if (message.body) {
 
               let parse = JSON.parse(message.body).success
+
+
+              console.log("parse result : ", parse);
+
               if (parse) {
-                that.onFingerVerifyHead(parse, stepper, drawer, "onsite")
+
                 that.dataFormHeadValidation.status = 999;
 
-                if (that.dataFormHeadValidation.trntype === 'Tarik Tunai') {
-                  that.dataFormHeadValidation.trntype = 'trk'
-                } else if (that.dataFormHeadValidation.trntype === 'Setor Tunai') {
-                  that.dataFormHeadValidation.trntype = 'str'
-                } else if (that.dataFormHeadValidation.trntype === 'Transaksi Antar Rekening') {
-                  that.dataFormHeadValidation.trntype = 'tar'
-                } else if (that.dataFormHeadValidation.trntype === 'Transaksi Antar Bank') {
-                  that.dataFormHeadValidation.trntype = 'tab'
-                }
+                console.log("transaction type : ", that.dataFormHeadValidation.trntype);
+
+                // if (that.dataFormHeadValidation.trntype === 'Tarik Tunai') {
+                //   that.dataFormHeadValidation.trntype = 'trk'
+                // } else if (that.dataFormHeadValidation.trntype === 'Setor Tunai') {
+                //   that.dataFormHeadValidation.trntype = 'str'
+                // } else if (that.dataFormHeadValidation.trntype === 'Transaksi Antar Rekening') {
+                //   that.dataFormHeadValidation.trntype = 'tar'
+                // } else if (that.dataFormHeadValidation.trntype === 'Transaksi Antar Bank') {
+                //   that.dataFormHeadValidation.trntype = 'tab'
+                // }
 
                 that.dataFormHeadValidation.isRejected = 0
                 that.dataFormHeadValidation.isValidated = 1
-                that.dataFormHeadValidation.timestampprocess = Date.now();
+                that.dataFormHeadValidation.timestampprocess = Date.now().toString();
 
                 that.dataFormHeadValidation.userterminal = JSON.parse(that.ls.get('data')).userterminal;
 
                 that.transacServ.sendRemoteValidation(that.dataFormHeadValidation, that.headSelectTeller.userid).subscribe(resp => {
-                  // console.log(resp);
+                  console.log("response : ", resp);
+
+                  if (resp['success']) {
+                    // that.onFingerVerifyHead(parse, stepper, drawer, "onsite");
+
+                    that.sendProcess(that.dataFormHeadValidation, stepper, drawer, "onsite");
+
+
+                  } else {
+                    alert("validasi gagal");
+                  }
+
+
+
+
                 });
+
+
+
               }
             }
 
@@ -830,11 +913,6 @@ export class DialogTransactionComponent implements OnInit {
             that.onFingerVerifyHead(true, stepper, drawer, "remote")
           }
 
-
-          // if (parse) {
-          //   that.onFingerVerify(parse, stepper)
-          // }
-
         }
 
       }, () => {
@@ -847,7 +925,6 @@ export class DialogTransactionComponent implements OnInit {
       console.log("gagal menghubungkan ke server ");
       console.log("Menghubungkan Ulang");
     });
-
   }
 
   disconnect() {
@@ -905,13 +982,11 @@ export class DialogTransactionComponent implements OnInit {
 
         this.dataFormHeadValidation.isRejected = 0
         this.dataFormHeadValidation.isValidated = 0
-        console.log("selected Teller : ", this.headSelectTeller);
-        console.log("data form : ", this.dataFormHeadValidation);
-
-        console.log("user terminal : ", JSON.parse(this.ls.get('data')).userterminal);
+        // console.log("selected Teller : ", this.headSelectTeller);
+        // console.log("data form : ", this.dataFormHeadValidation);
+        // console.log("user terminal : ", JSON.parse(this.ls.get('data')).userterminal);
 
         this.dataFormHeadValidation.userterminal = JSON.parse(this.ls.get('data')).userterminal;
-
 
         let terminalData = this.ls.get('termdata');
         let user = JSON.parse(this.ls.get('data')).userid;
@@ -921,9 +996,7 @@ export class DialogTransactionComponent implements OnInit {
 
         })
 
-
         this.initializeWebSocketConnection2('vldspv' + this.dataFormHeadValidation.transid, stepper, drawer);
-
 
         break;
       case 'reject':
@@ -995,5 +1068,27 @@ export class DialogTransactionComponent implements OnInit {
     console.log(event);
 
   }
+
+
+  sendProcess(dataProsesApi, stepper, drawer, value) {
+
+    this.queueServ.processTransactionDataQ(dataProsesApi).subscribe(res => {
+      console.log(res);
+      if (res['success']) {
+
+        this.onFingerVerifyHead(res, stepper, drawer, "onsite");
+
+      } else {
+        alert('Data gagal proses, silahkan coba lagi')
+        setTimeout(() => {
+          this.isProsses = false;
+          this.isError = true;
+          this.isBack = true;
+        }, 500)
+      }
+    });
+  }
+
+
 
 }

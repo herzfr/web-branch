@@ -101,6 +101,12 @@ export class DialogNewCustomerComponent implements OnInit {
       this.dataEdu = e;
     })
 
+    console.log(this.productInfo);
+    console.log(this.dataPemohon);
+    console.log(this.dataPekerjaan);
+    console.log(this.dataKerabat);
+
+
     this.nasabahServ.headCSList("headcs", this.dataLs.branchcode).subscribe(e => {
       console.log(e);
       if (e['success']) {
@@ -139,10 +145,10 @@ export class DialogNewCustomerComponent implements OnInit {
     // console.log(JSON.parse(this.dataLs.transbuff));
     let dataTransbuff = JSON.parse(this.dataLs.transbuff)
     let group: any = {};
-    console.log(dataTransbuff.produkInfo);
-    for (const key in dataTransbuff.produkInfo) {
-      if (dataTransbuff.produkInfo.hasOwnProperty(key)) {
-        const element = dataTransbuff.produkInfo[key];
+    console.log(dataTransbuff.wspinf);
+    for (const key in dataTransbuff.wspinf) {
+      if (dataTransbuff.wspinf.hasOwnProperty(key)) {
+        const element = dataTransbuff.wspinf[key];
         group[key] = new FormControl(element, Validators.required)
       }
     }
@@ -152,14 +158,14 @@ export class DialogNewCustomerComponent implements OnInit {
   getDataPemohon() {
     let dataTransbuff = JSON.parse(this.dataLs.transbuff)
     let group: any = {};
-    console.log(dataTransbuff.dataPemohon);
-    for (const key in dataTransbuff.dataPemohon) {
-      if (dataTransbuff.dataPemohon.hasOwnProperty(key)) {
-        const element = dataTransbuff.dataPemohon[key];
+    console.log(dataTransbuff.wscdat);
+    for (const key in dataTransbuff.wscdat) {
+      if (dataTransbuff.wscdat.hasOwnProperty(key)) {
+        const element = dataTransbuff.wscdat[key];
 
 
         switch (key) {
-          case 'tanggalLahir':
+          case 'wstlhr':
             var m = moment(element, 'DD-MM-YYYY', true)
             // return m.isValid() ? m.toDate() : new Date(NaN);
             if (m.isValid()) {
@@ -169,25 +175,25 @@ export class DialogNewCustomerComponent implements OnInit {
               group[key] = new FormControl(new Date(NaN));
             }
             break;
-          case 'noHandphone':
+          case 'wsnohp':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
             break;
-          case 'telpRumah':
+          case 'wstlp1':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
             break;
-          case 'telpDomisili':
+          case 'wstlp2':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
             break;
-          case 'noNpwp':
+          case 'wsnpwp':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/), Validators.min(100000000000000), Validators.max(999999999999999)]);
             break;
-          case 'tempatLahir':
+          case 'wslhir':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern('[a-zA-Z ]*')]);
             break;
-          case 'kodePos':
+          case 'wspos1':
             group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
             break;
-          case 'kodePosDomisili':
+          case 'wspos2':
             group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
             break;
           default:
@@ -204,15 +210,15 @@ export class DialogNewCustomerComponent implements OnInit {
   getdataPekerjaan() {
     let dataTransbuff = JSON.parse(this.dataLs.transbuff)
     let group: any = {};
-    console.log(dataTransbuff.dataPekerjaan);
-    for (const key in dataTransbuff.dataPekerjaan) {
-      if (dataTransbuff.dataPekerjaan.hasOwnProperty(key)) {
-        const element = dataTransbuff.dataPekerjaan[key];
+    console.log(dataTransbuff.wscjob);
+    for (const key in dataTransbuff.wscjob) {
+      if (dataTransbuff.wscjob.hasOwnProperty(key)) {
+        const element = dataTransbuff.wscjob[key];
         switch (key) {
-          case 'kodePos':
+          case 'wsposk':
             group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
             break;
-          case 'telp':
+          case 'wstlpk':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
             break;
           default:
@@ -228,23 +234,23 @@ export class DialogNewCustomerComponent implements OnInit {
   getdataKerabat() {
     let dataTransbuff = JSON.parse(this.dataLs.transbuff)
     let group: any = {};
-    console.log(dataTransbuff.dataKerabat);
-    for (const key in dataTransbuff.dataKerabat) {
-      if (dataTransbuff.dataKerabat.hasOwnProperty(key)) {
-        const element = dataTransbuff.dataKerabat[key];
+    console.log(dataTransbuff.wscfam);
+    for (const key in dataTransbuff.wscfam) {
+      if (dataTransbuff.wscfam.hasOwnProperty(key)) {
+        const element = dataTransbuff.wscfam[key];
         group[key] = new FormControl(element)
 
         switch (key) {
-          case 'telpKerabat':
+          case 'wstpkr':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
             break;
-          case 'telpAhliWaris':
+          case 'wstpaw':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
             break;
-          case 'kodePosKerabat':
+          case 'wspskr':
             group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
             break;
-          case 'kodePosAhliWaris':
+          case 'wspsaw':
             group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
             break;
           default:
@@ -262,15 +268,15 @@ export class DialogNewCustomerComponent implements OnInit {
       this.province = e;
 
       // GET DATA DAERAH I
-      this.formServ.getCity(this.dataPemohon.get('provinsi').value).subscribe(e => {
+      this.formServ.getCity(this.dataPemohon.get('wsprv1').value).subscribe(e => {
         // console.log(e);
         this.kabkot = e;
         // this.dataPemohon.get('kabupaten').disable()
-        this.formServ.getDistrict(this.dataPemohon.get('kabupaten').value).subscribe(e => {
+        this.formServ.getDistrict(this.dataPemohon.get('wskot1').value).subscribe(e => {
           // console.log(e);
           this.dataKec = e;
           // this.dataPemohon.get('kecamatan').disable()
-          this.formServ.getVillage(this.dataPemohon.get('kecamatan').value).subscribe(e => {
+          this.formServ.getVillage(this.dataPemohon.get('wskec1').value).subscribe(e => {
             // console.log(e);
             this.dataKel = e;
             // this.dataPemohon.get('kelurahan').disable()
@@ -280,15 +286,15 @@ export class DialogNewCustomerComponent implements OnInit {
 
 
       // GET DATA DAERAH II
-      this.formServ.getCity(this.dataPemohon.get('provinsiDomisili').value).subscribe(e => {
+      this.formServ.getCity(this.dataPemohon.get('wsprv2').value).subscribe(e => {
         // console.log(e);
         this.kabkot2 = e;
         // this.dataPemohon.get('kabupatenDomisili').disable()
-        this.formServ.getDistrict(this.dataPemohon.get('kabupatenDomisili').value).subscribe(e => {
+        this.formServ.getDistrict(this.dataPemohon.get('wskot2').value).subscribe(e => {
           // console.log(e);
           this.dataKec2 = e;
           // this.dataPemohon.get('kecamatanDomisili').disable()
-          this.formServ.getVillage(this.dataPemohon.get('kecamatanDomisili').value).subscribe(e => {
+          this.formServ.getVillage(this.dataPemohon.get('wskec2').value).subscribe(e => {
             // console.log(e);
             this.dataKel2 = e;
             // this.dataPemohon.get('kelurahanDomisili').disable()
@@ -297,15 +303,15 @@ export class DialogNewCustomerComponent implements OnInit {
       })
 
       // GET DATA DAERAH III
-      this.formServ.getCity(this.dataPekerjaan.get('provinsi').value).subscribe(e => {
+      this.formServ.getCity(this.dataPekerjaan.get('wsprvk').value).subscribe(e => {
         // console.log(e);
         this.kabkot3 = e;
         // this.dataPekerjaan.get('kabupaten').disable()
-        this.formServ.getDistrict(this.dataPekerjaan.get('kabupaten').value).subscribe(e => {
+        this.formServ.getDistrict(this.dataPekerjaan.get('wskotk').value).subscribe(e => {
           // console.log(e);
           this.dataKec3 = e;
           // this.dataPekerjaan.get('kecamatan').disable()
-          this.formServ.getVillage(this.dataPekerjaan.get('kecamatan').value).subscribe(e => {
+          this.formServ.getVillage(this.dataPekerjaan.get('wskeck').value).subscribe(e => {
             // console.log(e);
             this.dataKel3 = e;
             // this.dataPekerjaan.get('kelurahan').disable()
@@ -314,15 +320,15 @@ export class DialogNewCustomerComponent implements OnInit {
       })
 
       // GET DATA DAERAH IV
-      this.formServ.getCity(this.dataKerabat.get('provinsiKerabat').value).subscribe(e => {
+      this.formServ.getCity(this.dataKerabat.get('wspvkr').value).subscribe(e => {
         // console.log(e);
         this.kabkot4 = e;
         // this.dataKerabat.get('kabupatenKerabat').disable()
-        this.formServ.getDistrict(this.dataKerabat.get('kabupatenKerabat').value).subscribe(e => {
+        this.formServ.getDistrict(this.dataKerabat.get('wsktkr').value).subscribe(e => {
           // console.log(e);
           this.dataKec4 = e;
           // this.dataKerabat.get('kecamatanKerabat').disable()
-          this.formServ.getVillage(this.dataKerabat.get('kecamatanKerabat').value).subscribe(e => {
+          this.formServ.getVillage(this.dataKerabat.get('wskckr').value).subscribe(e => {
             // console.log(e);
             this.dataKel4 = e;
             // this.dataKerabat.get('kelurahanKerabat').disable()
@@ -331,15 +337,15 @@ export class DialogNewCustomerComponent implements OnInit {
       })
 
       // GET DATA DAERAH V
-      this.formServ.getCity(this.dataKerabat.get('provinsiAhliWaris').value).subscribe(e => {
+      this.formServ.getCity(this.dataKerabat.get('wspvaw').value).subscribe(e => {
         // console.log(e);
         this.kabkot5 = e;
         // this.dataKerabat.get('kabupatenAhliWaris').disable()
-        this.formServ.getDistrict(this.dataKerabat.get('kabupatenAhliWaris').value).subscribe(e => {
+        this.formServ.getDistrict(this.dataKerabat.get('wsktaw').value).subscribe(e => {
           // console.log(e);
           this.dataKec5 = e;
           // this.dataKerabat.get('kecamatanAhliWaris').disable()
-          this.formServ.getVillage(this.dataKerabat.get('kecamatanAhliWaris').value).subscribe(e => {
+          this.formServ.getVillage(this.dataKerabat.get('wskcaw').value).subscribe(e => {
             // console.log(e);
             this.dataKel5 = e;
             // this.dataKerabat.get('kelurahanAhliWaris').disable()
@@ -360,8 +366,8 @@ export class DialogNewCustomerComponent implements OnInit {
           console.log(e);
           this.kabkot = e;
           // this.dataPemohon.get('kabupaten').enable();
-          this.dataPemohon.get('kecamatan').reset();
-          this.dataPemohon.get('kelurahan').reset();
+          this.dataPemohon.get('wskec1').reset();
+          this.dataPemohon.get('wskel1').reset();
         })
         break;
       case 2:
@@ -369,8 +375,8 @@ export class DialogNewCustomerComponent implements OnInit {
           console.log(e);
           this.kabkot2 = e;
           // this.dataPemohon.get('kabupatenDomisili').enable();
-          this.dataPemohon.get('kecamatanDomisili').reset();
-          this.dataPemohon.get('kelurahanDomisili').reset();
+          this.dataPemohon.get('wskec2').reset();
+          this.dataPemohon.get('wskel2').reset();
         })
         break;
       case 3:
@@ -378,8 +384,8 @@ export class DialogNewCustomerComponent implements OnInit {
           console.log(e);
           this.kabkot3 = e;
           // this.dataPekerjaan.get('kabupaten').enable();
-          this.dataPekerjaan.get('kecamatan').reset();
-          this.dataPekerjaan.get('kelurahan').reset();
+          this.dataPekerjaan.get('wskeck').reset();
+          this.dataPekerjaan.get('wskelk').reset();
         })
         break;
       case 4:
@@ -387,8 +393,8 @@ export class DialogNewCustomerComponent implements OnInit {
           console.log(e);
           this.kabkot4 = e;
           // this.dataKerabat.get('kabupatenKerabat').enable();
-          this.dataKerabat.get('kecamatanKerabat').reset();
-          this.dataKerabat.get('kelurahanKerabat').reset();
+          this.dataKerabat.get('wskckr').reset();
+          this.dataKerabat.get('wsklkr').reset();
         })
         break;
       case 5:
@@ -396,8 +402,8 @@ export class DialogNewCustomerComponent implements OnInit {
           console.log(e);
           this.kabkot5 = e;
           // this.dataKerabat.get('kabupatenAhliWaris').enable();
-          this.dataKerabat.get('kecamatanAhliWaris').reset();
-          this.dataKerabat.get('kelurahanAhliWaris').reset();
+          this.dataKerabat.get('wskcaw').reset();
+          this.dataKerabat.get('wsklaw').reset();
         })
         break;
     }
@@ -411,40 +417,40 @@ export class DialogNewCustomerComponent implements OnInit {
         this.formServ.getDistrict(formGroup.get(formcontrol).value).subscribe(e => {
           console.log(e);
           this.dataKec = e;
-          this.dataPemohon.get('kecamatan').enable();
-          this.dataPemohon.get('kelurahan').reset();
+          this.dataPemohon.get('wskec1').enable();
+          this.dataPemohon.get('wskel1').reset();
         })
         break;
       case 2:
         this.formServ.getDistrict(formGroup.get(formcontrol).value).subscribe(e => {
           console.log(e);
           this.dataKec2 = e;
-          this.dataPemohon.get('kecamatanDomisili').enable();
-          this.dataPemohon.get('kelurahanDomisili').reset();
+          this.dataPemohon.get('wskec2').enable();
+          this.dataPemohon.get('wskel2').reset();
         })
         break;
       case 3:
         this.formServ.getDistrict(formGroup.get(formcontrol).value).subscribe(e => {
           console.log(e);
           this.dataKec3 = e;
-          this.dataPekerjaan.get('kecamatan').enable();
-          this.dataPekerjaan.get('kelurahan').reset();
+          this.dataPekerjaan.get('wskeck').enable();
+          this.dataPekerjaan.get('wskelk').reset();
         })
         break;
       case 4:
         this.formServ.getDistrict(formGroup.get(formcontrol).value).subscribe(e => {
           console.log(e);
           this.dataKec4 = e;
-          this.dataKerabat.get('kecamatanKerabat').enable();
-          this.dataKerabat.get('kelurahanKerabat').reset();
+          this.dataKerabat.get('wskckr').enable();
+          this.dataKerabat.get('wsklkr').reset();
         })
         break;
       case 5:
         this.formServ.getDistrict(formGroup.get(formcontrol).value).subscribe(e => {
           console.log(e);
           this.dataKec5 = e;
-          this.dataKerabat.get('kecamatanAhliWaris').enable();
-          this.dataKerabat.get('kelurahanAhliWaris').reset();
+          this.dataKerabat.get('wskcaw').enable();
+          this.dataKerabat.get('wsklaw').reset();
         })
         break;
     }
@@ -460,35 +466,35 @@ export class DialogNewCustomerComponent implements OnInit {
         this.formServ.getVillage(formGroup.get(formcontrol).value).subscribe(e => {
           console.log(e);
           this.dataKel = e;
-          this.dataPemohon.get('kelurahan').enable();
+          this.dataPemohon.get('wskel1').enable();
         })
         break;
       case 2:
         this.formServ.getVillage(formGroup.get(formcontrol).value).subscribe(e => {
           console.log(e);
           this.dataKel2 = e;
-          this.dataPemohon.get('kelurahanDomisili').enable();
+          this.dataPemohon.get('wskel2').enable();
         })
         break;
       case 3:
         this.formServ.getVillage(formGroup.get(formcontrol).value).subscribe(e => {
           console.log(e);
           this.dataKel3 = e;
-          this.dataPekerjaan.get('kelurahan').enable();
+          this.dataPekerjaan.get('wskelk').enable();
         })
         break;
       case 4:
         this.formServ.getVillage(formGroup.get(formcontrol).value).subscribe(e => {
           console.log(e);
           this.dataKel4 = e;
-          this.dataKerabat.get('kelurahanKerabat').enable();
+          this.dataKerabat.get('wsklkr').enable();
         })
         break;
       case 5:
         this.formServ.getVillage(formGroup.get(formcontrol).value).subscribe(e => {
           console.log(e);
           this.dataKel5 = e;
-          this.dataKerabat.get('kelurahanAhliWaris').enable();
+          this.dataKerabat.get('wsklaw').enable();
         })
         break;
     }
@@ -500,29 +506,29 @@ export class DialogNewCustomerComponent implements OnInit {
 
     switch (chapter) {
       case 1:
-        this.dataPemohon.get('kabupaten').updateValueAndValidity();
-        this.dataPemohon.get('kecamatan').updateValueAndValidity();
-        this.dataPemohon.get('kelurahan').updateValueAndValidity();
+        this.dataPemohon.get('wskot1').updateValueAndValidity();
+        this.dataPemohon.get('wskec1').updateValueAndValidity();
+        this.dataPemohon.get('wskel1').updateValueAndValidity();
         break;
       case 2:
-        this.dataPemohon.get('kabupatenDomisili').updateValueAndValidity();
-        this.dataPemohon.get('kecamatanDomisili').updateValueAndValidity();
-        this.dataPemohon.get('kelurahanDomisili').updateValueAndValidity();
+        this.dataPemohon.get('wskot2').updateValueAndValidity();
+        this.dataPemohon.get('wskec2').updateValueAndValidity();
+        this.dataPemohon.get('wskel2').updateValueAndValidity();
         break;
       case 3:
-        this.dataPekerjaan.get('kabupaten').updateValueAndValidity();
-        this.dataPekerjaan.get('kecamatan').updateValueAndValidity();
-        this.dataPekerjaan.get('kelurahan').updateValueAndValidity();
+        this.dataPekerjaan.get('wskotk').updateValueAndValidity();
+        this.dataPekerjaan.get('wskeck').updateValueAndValidity();
+        this.dataPekerjaan.get('wskelk').updateValueAndValidity();
         break;
       case 4:
-        this.dataKerabat.get('kabupatenKerabat').updateValueAndValidity();
-        this.dataKerabat.get('kecamatanKerabat').updateValueAndValidity();
-        this.dataKerabat.get('kelurahanKerabat').updateValueAndValidity();
+        this.dataKerabat.get('wsktkr').updateValueAndValidity();
+        this.dataKerabat.get('wskckr').updateValueAndValidity();
+        this.dataKerabat.get('wsklkr').updateValueAndValidity();
         break;
       case 5:
-        this.dataKerabat.get('kabupatenAhliWaris').updateValueAndValidity();
-        this.dataKerabat.get('kecamatanAhliWaris').updateValueAndValidity();
-        this.dataKerabat.get('kelurahanAhliWaris').updateValueAndValidity();
+        this.dataKerabat.get('wsktaw').updateValueAndValidity();
+        this.dataKerabat.get('wskcaw').updateValueAndValidity();
+        this.dataKerabat.get('wsklaw').updateValueAndValidity();
         break;
     }
 
@@ -543,10 +549,10 @@ export class DialogNewCustomerComponent implements OnInit {
     console.log(JSON.stringify(this.dataKerabat.value));
 
     let buff =
-      "{\"productInfo\":" + JSON.stringify(this.productInfo.value) +
-      ",\"dataPemohon\":" + JSON.stringify(this.dataPemohon.value) +
-      ",\"dataPekerjaan\":" + JSON.stringify(this.dataPekerjaan.value) +
-      ",\"dataKerabat\":" + JSON.stringify(this.dataKerabat.value) +
+      "{\"wspinf\":" + JSON.stringify(this.productInfo.value) +
+      ",\"wscdat\":" + JSON.stringify(this.dataPemohon.value) +
+      ",\"wscjob\":" + JSON.stringify(this.dataPekerjaan.value) +
+      ",\"wscfam\":" + JSON.stringify(this.dataKerabat.value) +
       "}"
 
     console.log("isi buff :", buff);
@@ -569,24 +575,25 @@ export class DialogNewCustomerComponent implements OnInit {
 
     this.dialog.open(VerifyDialogComponent, dialogConfig).afterClosed().subscribe(e => {
       console.log(e);
+
       this.allFinger = e.finger;
       this.photoImage = e.photo;
       this.signatureImage = e.signature;
       this.dataBiometri = {
-        "fingertemplate1": this.allFinger.fingerTemplate1,
-        "fingertemplate2": this.allFinger.fingerTemplate2,
-        "fingertemplate3": this.allFinger.fingerTemplate3,
-        "fingertemplate4": this.allFinger.fingerTemplate4,
-        "fingertemplate5": this.allFinger.fingerTemplate5,
-        "imagefinger1": this.allFinger.imageFinger1,
-        "imagefinger2": this.allFinger.imageFinger2,
-        "imagefinger3": this.allFinger.imageFinger3,
-        "imagefinger4": this.allFinger.imageFinger4,
-        "imagefinger5": this.allFinger.imageFinger5,
-        "name": this.dataPemohon.get('namaLengkap').value,
-        "imagepict": this.photoImage,
-        "imagesign": this.signatureImage,
-        "imageid": 123456789012
+        "wsftp1": this.allFinger.fingerTemplate1,
+        "wsftp2": this.allFinger.fingerTemplate2,
+        "wsftp3": this.allFinger.fingerTemplate3,
+        "wsftp4": this.allFinger.fingerTemplate4,
+        "wsftp5": this.allFinger.fingerTemplate5,
+        "wsfim1": this.allFinger.imageFinger1,
+        "wsfim2": this.allFinger.imageFinger2,
+        "wsfim3": this.allFinger.imageFinger3,
+        "wsfim4": this.allFinger.imageFinger4,
+        "wsfim5": this.allFinger.imageFinger5,
+        "wsfnme": this.dataPemohon.get('wsname').value,
+        "wsimgs": this.photoImage,
+        "wssign": this.signatureImage,
+        "wsimid": 123456789012
       }
 
     })
@@ -684,11 +691,11 @@ export class DialogNewCustomerComponent implements OnInit {
                     let TERMINALUSER = JSON.parse(this.ls.get('termdata'))
 
                     let dataTransbuff = {
-                      "produkInfo": this.productInfo.value,
-                      "dataPemohon": this.dataPemohon.value,
-                      "dataPekerjaan": this.dataPekerjaan.value,
-                      "dataKerabat": this.dataKerabat.value,
-                      "wbimage": this.dataBiometri,
+                      "wspinf": this.productInfo.value,
+                      "wscdat": this.dataPemohon.value,
+                      "wscjob": this.dataPekerjaan.value,
+                      "wscfam": this.dataKerabat.value,
+                      "wsbiom": this.dataBiometri,
                     }
 
                     // console.log(dataTransbuff);

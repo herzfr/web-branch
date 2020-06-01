@@ -16,6 +16,7 @@ import { AppConfiguration } from '../models/app.configuration';
 import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
 import * as SecureLS from 'secure-ls';
 import { SharedService } from '../services/shared.service';
+import { ConfigurationService } from '../services/configuration.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,16 +45,27 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
+  // transaction code 
+  setorTunaiCode: string;
+  tarikTunaiCode: string;
+  transferAntarBankCode: string;
+  transferAntarRekCode: string;
+
   constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService,
-    private appConfig: AppConfiguration, private sharedService: SharedService) {
+    private appConfig: AppConfiguration, private sharedService: SharedService, private config: ConfigurationService) {
     this.serverUrl = appConfig.ipSocketServer + "socket";
     console.log("dashboar socket : ", this.serverUrl);
+
     if (localStorage.getItem('skip')) {
       localStorage.removeItem('skip')
     } else {
       console.log('data skip kosong');
-
     }
+
+    this.setorTunaiCode = this.config.getConfig().typeSetorTunai;
+    this.tarikTunaiCode = this.config.getConfig().typeTarikTunai;
+    this.transferAntarBankCode = this.config.getConfig().typeTransferAntarRek;
+    this.transferAntarRekCode = this.config.getConfig().typeTransferAntarBank;
 
   }
 
@@ -63,44 +75,37 @@ export class DashboardComponent implements OnInit {
     this.connect();
   }
 
-
   getDataTableQ() {
-
-    console.log('jalan');
+    // console.log('jalan');
     let dataQ;
-
     let branch = JSON.parse(this.secureLs.get("terminal"));
-
     this.branchCode = branch.branchCode;
 
     this.queueServ.getNewQueue(this.branchCode, this.waitingCall, this.outCall).subscribe(res => {
-      console.log(res);
+      console.log("isi data : ", res);
+
       let data = new Array;
       for (const key in res) {
         if (res.hasOwnProperty(key)) {
           const element = res[key];
           let transBf = JSON.parse(element.transbuff);
           let date = moment(element.timestampentry).format('DD/MM/YYYY HH:mm:ss')
-          // let transf = new Array;
-          // this.DataTableQ.push(element)
-
-          // console.log(element);  
-
 
           switch (transBf.tp) {
-            case 'trk':
+            case this.tarikTunaiCode:
               transBf.tp = 'Tarik Tunai';
               break;
-            case 'str':
+            case this.setorTunaiCode:
               transBf.tp = 'Setor Tunai';
               break;
-            case 'tar':
+            case this.transferAntarRekCode:
               transBf.tp = 'Transfer Antar Rekening';
               break;
-            case 'tab':
+            case this.transferAntarBankCode:
               transBf.tp = 'Transfer Antar Bank';
               break;
             default:
+              transBf.tp = 'Unknown';
               break;
           }
 
@@ -110,8 +115,6 @@ export class DashboardComponent implements OnInit {
           data.push(element)
         }
       }
-
-      console.log(data);
 
       if (data.length > 0) {
         console.log('data ada');
@@ -132,7 +135,6 @@ export class DashboardComponent implements OnInit {
         }
 
         // console.log(_data);
-
         for (const key in _data) {
           if (_data.hasOwnProperty(key)) {
             const element = _data[key];
