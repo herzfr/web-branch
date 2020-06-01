@@ -16,6 +16,7 @@ import * as SockJS from 'sockjs-client';
 import { AppConfiguration } from 'src/app/models/app.configuration';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { ListingService } from 'src/app/services/listing.service';
+import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
   selector: 'app-dialog-transaction',
@@ -28,6 +29,7 @@ export class DialogTransactionComponent implements OnInit {
   private data: any;
   private dataForm: any;
   private noQ: any;
+  private isCust: any;
 
   private isLinear = true;
   private isProsses = true;
@@ -52,6 +54,7 @@ export class DialogTransactionComponent implements OnInit {
   private stepDisabledHorizontal: boolean = false;
 
   private dataFormHeadValidation: any;
+  private dataFormActual: any;
 
   private isCloseDialog: boolean = true;
   private secureLs = new SecureLS({ encodingType: 'aes' });
@@ -136,7 +139,7 @@ export class DialogTransactionComponent implements OnInit {
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
     private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone, private appConfig: AppConfiguration,
-    private configuration: ConfigurationService, private listConv: ListingService) {
+    private configuration: ConfigurationService, private listConv: ListingService, private utilityService: UtilityService) {
 
     this.data = data.data;
     // console.log("data length : ", data.data.length);
@@ -160,6 +163,7 @@ export class DialogTransactionComponent implements OnInit {
         let changeKey = element.transbuff[0]
         this.transID_for_while = element.transid
         this.status_for_while = element.status
+        this.isCust = element.iscustomer
         // for (const key in changeKey) {
         //   if (changeKey.hasOwnProperty(key)) {
         //     const e = changeKey[key];
@@ -278,7 +282,6 @@ export class DialogTransactionComponent implements OnInit {
   }
 
 
-
   cancelQ() {
     let postStat = new Array;
     this.dataForm.forEach(e => {
@@ -369,6 +372,9 @@ export class DialogTransactionComponent implements OnInit {
       if (event.hasOwnProperty(key)) {
         const element = event[key];
         console.log("element key : ", key);
+        console.log("element key : ", element);
+
+
 
         switch (key) {
           case 'TransaksiId':
@@ -383,7 +389,7 @@ export class DialogTransactionComponent implements OnInit {
             break;
           case 'tn':
             // console.log("tunai : ", element);
-            event.wstnai = element;
+            event.wsicas = element;
             delete event.tn;
             break;
           case 'tp':
@@ -448,9 +454,44 @@ export class DialogTransactionComponent implements OnInit {
 
     let Form = new FormGroup(event)
     let payLoad = JSON.stringify(Form.value);
+    let payLoadHex = JSON.parse(JSON.stringify(Form.value))
 
+    console.log("event event : ", payLoad);
 
-    console.log("event type : ", event.wstype.value);
+    for (const key in payLoadHex) {
+      if (payLoadHex.hasOwnProperty(key)) {
+        const element = payLoadHex[key];
+        console.log(key);
+        console.log(element);
+
+        switch (payLoadHex.wstype.value) {
+          case 'Tarik Tunai':
+            payLoadHex.wstype.value = this.tarikTunaiCode;
+            break;
+          case 'Setor Tunai':
+            payLoadHex.wstype.value = this.setorTunaiCode;
+            break;
+          case 'Transaksi Antar Rekening':
+            payLoadHex.wstype.value = this.transferAntarRekCode;
+            break;
+          case 'Transaksi Antar Bank':
+            payLoadHex.wstype.value = this.transferAntarBankCode;
+            break;
+          default:
+            break;
+        }
+
+        if ((typeof (element)) === 'string') {
+          payLoadHex[key] = this.utilityService.asciiToHexa(element)
+        } else if ((typeof (element)) === 'number') {
+          payLoadHex[key] = this.utilityService.asciiToHexa(element.toString())
+        } else {
+          payLoadHex[key] = this.utilityService.asciiToHexa(element.toString())
+        }
+
+      }
+    }
+
 
 
     if (event.wstype.value === 'Tarik Tunai') {
@@ -463,7 +504,8 @@ export class DialogTransactionComponent implements OnInit {
       event.wstype.value = this.transferAntarBankCode
     }
 
-    const dataProsesApi = {
+
+    const dataFormValidation = {
       "transid": transId,
       "branchcode": branchCode,
       "terminalid": term,
@@ -483,8 +525,59 @@ export class DialogTransactionComponent implements OnInit {
       "transeq": this.data[index].transeq
     }
 
+    const dataProsesApi = {
+      "wbtmsg": this.utilityService.asciiToHexa("0010"),
+      "wbproc": this.utilityService.asciiToHexa("900000"),
+      "wbtrid": this.utilityService.asciiToHexa(transId),
+      "wbbrcd": this.utilityService.asciiToHexa(branchCode),
+      "wbfgid": this.utilityService.asciiToHexa(dataObj.userid),
+      "wbscid": "",
+      "wbicsh": this.utilityService.asciiToHexa(this.data[index].isCash),
+      "wbicus": this.utilityService.asciiToHexa(this.isCust),
+      "wbqucd": this.utilityService.asciiToHexa(dataObj.queuecode),
+      "wbqudt": this.utilityService.asciiToHexa(dataObj.queuedate),
+      "wbrfno": "",
+      "wbstat": this.utilityService.asciiToHexa("100"),
+      "wbtmid": this.utilityService.asciiToHexa(term),
+      "wbtsen": this.utilityService.asciiToHexa(dataObj.timestampentry.toString()),
+      "wbtspr": "",
+      "wbtcno": "",
+      "wbtrbf": payLoadHex,
+      "wbtrty": this.utilityService.asciiToHexa(event.wstype.value),
+      "wbusid": this.utilityService.asciiToHexa(dataObj.userid),
+      "wbustm": this.utilityService.asciiToHexa(dataObj.userterminal),
+      "wbstop": this.utilityService.asciiToHexa("END"),
+    }
 
-    this.dataFormHeadValidation = dataProsesApi;
+    // const dataFormValidation = {
+    //   "wbtmsg": "0010",
+    //   "wbproc": "900000",
+    //   "wbtrid": transId,
+    //   "wbbrcd": branchCode,
+    //   "wbfgid": dataObj.userid,
+    //   "wbscid": "",
+    //   "wbicsh": this.data[index].isCash,
+    //   "wbicus": this.isCust,
+    //   "wbqucd": dataObj.queuecode,
+    //   "wbqudt": dataObj.queuedate,
+    //   "wbrfno": "",
+    //   "wbstat": "100",
+    //   "wbtmid": term,
+    //   "wbtsen": dataObj.timestampentry.toString(),
+    //   "wbtspr": "",
+    //   "wbtcno": "",
+    //   "wbtrbf": payLoad,
+    //   "wbtrty": event.wstype.value,
+    //   "wbusid": dataObj.userid,
+    //   "wbustm": dataObj.userterminal,
+    //   "wbstop": "END",
+    // }
+
+
+    console.log(dataProsesApi);
+
+    this.dataFormHeadValidation = dataFormValidation;
+    this.dataFormActual = dataProsesApi;
     // // this.queueServ.processTransactionDataQ(dataProsesApi).subscribe(res => {
     // //   console.log(res);
     // //   if (res['success']) {
@@ -871,7 +964,7 @@ export class DialogTransactionComponent implements OnInit {
 
                   if (resp['success']) {
                     // that.onFingerVerifyHead(parse, stepper, drawer, "onsite");
-                    that.sendProcess(that.dataFormHeadValidation, stepper, drawer, "onsite");
+                    that.sendProcess(that.dataFormActual, that.dataFormHeadValidation, stepper, drawer, "onsite");
                   } else {
                     alert("validasi gagal");
                   }
@@ -1076,16 +1169,20 @@ export class DialogTransactionComponent implements OnInit {
     // console.log(event);
   }
 
-  sendProcess(dataProsesApi, stepper, drawer, value) {
+  sendProcess(dataProsesApi, dataForm, stepper, drawer, value) {
 
     console.log("send proses");
 
 
     console.log("Data Proses Api : ", dataProsesApi);
 
+    this.queueServ.processTransactionDataQ2(dataProsesApi).subscribe(res => {
+      console.log(res);
+    })
 
-    this.queueServ.processTransactionDataQ(dataProsesApi).subscribe(res => {
-      // console.log(res);
+
+    this.queueServ.processTransactionDataQ(dataForm).subscribe(res => {
+      console.log(res);
       if (res['success']) {
 
         this.onFingerVerifyHead(res, stepper, drawer, "onsite");
