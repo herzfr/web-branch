@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { SharedService } from '../services/shared.service';
 import { MatSidenav } from '@angular/material';
+import { UtilityService } from '../services/utility.service';
 
 declare var $: any;
 
@@ -158,7 +159,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   constructor(private dialog: DialogService, private websocket: WebsocketService, private branchService: DataBranchServices,
-    private route: Router, private userService: UserService, private sharedService: SharedService) {
+    private route: Router, private userService: UserService, private sharedService: SharedService, private utilityService: UtilityService) {
     this.setInfoNavbar();
   }
 
@@ -181,6 +182,14 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.drawer.close();
       }
     });
+
+    let data = this.utilityService.asciiToHexa("abcdefghijklmno one ok rock");
+    let decode = this.utilityService.hexToAscii(data);
+    console.log("converting hex ", data);
+    console.log("decode : ", decode);
+
+
+
 
 
   }
