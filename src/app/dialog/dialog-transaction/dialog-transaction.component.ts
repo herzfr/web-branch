@@ -383,7 +383,7 @@ export class DialogTransactionComponent implements OnInit {
             break;
           case 'tn':
             // console.log("tunai : ", element);
-            event.wstnai = element;
+            event.wsicas = element;
             delete event.tn;
             break;
           case 'tp':
