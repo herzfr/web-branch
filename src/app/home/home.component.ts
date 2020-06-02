@@ -188,10 +188,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     console.log("converting hex ", data);
     console.log("decode : ", decode);
 
-
-
-
-
   }
 
   // get user data 
@@ -210,7 +206,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     const date = moment(data.lastlogindate).locale('ID').format('Do MMMM  YYYY')
     console.log("raw : ", data.lastlogindate);
-
     console.log("date :", date);
 
     this.lastLog = data.lastlogindate
