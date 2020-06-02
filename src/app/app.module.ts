@@ -48,6 +48,7 @@ import { TitlecustomPipe } from './pipes/titlecustom.pipe';
 import { NgxCurrencyModule, CurrencyMaskInputMode } from "ngx-currency";
 import { ListingService } from './services/listing.service';
 import { SortbypipePipe } from './pipes/sortbypipe.pipe';
+import { Titlecustom2Pipe } from './pipes/titlecustom2.pipe';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -88,6 +89,7 @@ export const customCurrencyMaskConfig = {
     HeadCsDialogComponent,
     HeadConfirmComponent,
     TitlecustomPipe,
+    Titlecustom2Pipe,
     SortbypipePipe,
   ],
   entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent, DialogNewCustomerComponent, VerifyDialogComponent,

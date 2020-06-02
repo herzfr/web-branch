@@ -88,5 +88,9 @@ export class QueueService {
     return this.http.post(this.apiUrl + 'api/wbtrans/process', body, this.httpOptions)
   }
 
+  processTransactionDataQ2(body) {
+    return this.http.post(this.apiUrl + 'api/comm', body, this.httpOptions)
+  }
+
 
 }
