@@ -1,0 +1,87 @@
+<!-- Stack the columns on mobile by making one full-width and the other half-width -->
+<div class="row">
+  <div class="col-12 col-md-8">
+    <h1 class="display-4">History Transaksi</h1>
+  </div>
+  <div class="col-6 col-md-4 d-flex align-items-center justify-content-end">
+    <p class="h3">Teller</p>
+  </div>
+</div>
+
+
+
+
+<div class="row">
+
+  <div class="card container-fluid">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-12 d-flex align-items-center justify-content-between">
+          <h4 class="mb-0">Daftar Transaksi</h4>
+          <h1 *ngIf="isQEmpty" class="marquee-container text-right">
+            <span class="marquee marqueeAlternate">Data Kosong!</span>
+          </h1>
+        </div>
+        <!-- <div class="col-6">
+            <mat-paginator class="col" [pageSizeOptions]="[10, 20]" showFirstLastButtons></mat-paginator>
+          </div> -->
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <div class="example-container mat-elevation-z8 ">
+        <table mat-table [dataSource]="dataSource">
+
+          <!-- Position Column -->
+          <ng-container matColumnDef="queue">
+            <th mat-header-cell *matHeaderCellDef> NOMOR ANTRIAN </th>
+            <td mat-cell *matCellDef="let element">{{element.queueno}} </td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="time">
+            <th mat-header-cell *matHeaderCellDef> WAKTU </th>
+            <td mat-cell *matCellDef="let element"> {{element.timestampentry}} </td>
+          </ng-container>
+
+
+          <!-- Name Approve -->
+          <ng-container matColumnDef="transid">
+            <th mat-header-cell *matHeaderCellDef> ID TRANSAKSI </th>
+            <td mat-cell *matCellDef="let element"> {{element.timestampentry}} </td>
+          </ng-container>
+
+
+          <!-- Name Approver -->
+          <ng-container matColumnDef="approver">
+            <th mat-header-cell *matHeaderCellDef> APPROVER </th>
+            <td mat-cell *matCellDef="let element"> {{element.timestampentry}} </td>
+          </ng-container>
+
+          <!-- Name Approve -->
+          <ng-container matColumnDef="approve">
+            <th mat-header-cell *matHeaderCellDef> APPROVE </th>
+            <td mat-cell *matCellDef="let element"> {{element.timestampentry}} </td>
+          </ng-container>
+
+          <!-- Weight Column -->
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef> TIPE TRANSAKSI </th>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngFor="let item of element.transbuff">
+                {{ item.tp }}
+              </ng-container>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

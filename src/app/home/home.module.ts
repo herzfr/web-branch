@@ -10,10 +10,11 @@ import { LottieModule } from 'ngx-lottie';
 import { ConfirmTransactionComponent } from '../dialog/confirm-transaction/confirm-transaction.component';
 import { DashboardCsComponent } from '../dashboard-cs/dashboard-cs.component';
 import { HeadCsComponent } from '../head-cs/head-cs.component';
+import { HistoryTransaksiComponent } from '../history-transaksi/history-transaksi.component';
 
 
 @NgModule({
-  declarations: [DashboardComponent, HeadTellerComponent, RejectTransactionComponent, ConfirmTransactionComponent, DashboardCsComponent, HeadCsComponent],
+  declarations: [DashboardComponent, HeadTellerComponent, RejectTransactionComponent, ConfirmTransactionComponent, DashboardCsComponent, HeadCsComponent, HistoryTransaksiComponent],
   entryComponents: [RejectTransactionComponent, ConfirmTransactionComponent],
   imports: [
     CommonModule,
