@@ -64,8 +64,8 @@ export class DashboardComponent implements OnInit {
 
     this.setorTunaiCode = this.config.getConfig().typeSetorTunai;
     this.tarikTunaiCode = this.config.getConfig().typeTarikTunai;
-    this.transferAntarBankCode = this.config.getConfig().typeTransferAntarRek;
-    this.transferAntarRekCode = this.config.getConfig().typeTransferAntarBank;
+    this.transferAntarBankCode = this.config.getConfig().typeTransferAntarBank;
+    this.transferAntarRekCode = this.config.getConfig().typeTransferAntarRek;
 
   }
 

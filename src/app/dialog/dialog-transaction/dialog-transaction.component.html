@@ -227,7 +227,50 @@
                   <img src="assets/svgs/logo-blue.svg" class="mb-3" alt="img-thumbnail">
                   <p class="h6 text-center">Transaksi Otorisasi</p>
                   <div *ngFor="let item of env.controls | keyvalue">
+
                     <ng-container *ngIf="item.key != 'wstran'">
+
+                      <div [ngSwitch]="item.key">
+                        <div *ngSwitchCase="'wsnomn'" class="form-group row">
+                          <label
+                            class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
+                            <span class="text-right">:</span></label>
+                          <div class="col-sm-8">
+                            <label class="form-control-plaintext">{{ item.value.value | currency:"Rp "}}</label>
+                          </div>
+                        </div>
+                        <div *ngSwitchCase="'wsicas'" class="form-group row">
+                          <label
+                            class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
+                            <span class="text-right">:</span></label>
+
+                          <div class="form-check col-sm-8 align-items-center d-flex">
+                            <label class="form-control-plaintext">{{ item.value.value | valuecustom  }}</label>
+                          </div>
+                        </div>
+                        <div *ngSwitchCase="'wstype'" class="form-group row">
+                          <label
+                            class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
+                            <span class="text-right">:</span></label>
+
+                          <div class="form-check col-sm-8 align-items-center d-flex">
+                            <label class="form-control-plaintext">{{ item.value.value | valuecustom }}</label>
+                          </div>
+                        </div>
+                        <div *ngSwitchDefault class="form-group row">
+                          <label
+                            class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
+                            <span class="text-right">:</span></label>
+                          <div class="col-sm-8">
+                            <label class="form-control-plaintext">{{ item.value.value }}
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+
+                    </ng-container>
+
+                    <!-- <ng-container *ngIf="item.key != 'wstran'">
 
                       <div [ngSwitch]="item.key">
                         <div *ngSwitchCase="'wsnomn'" class="form-group row">
@@ -256,7 +299,7 @@
                         </div>
                       </div>
 
-                    </ng-container>
+                    </ng-container> -->
                   </div>
                 </div>
 
@@ -372,27 +415,33 @@
                     <div [ngSwitch]="item.key">
                       <div *ngSwitchCase="'wsnomn'" class="form-group row">
                         <label
-                          class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
+                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
                           <span class="text-right">:</span></label>
-                        <div class="col-sm-9">
+                        <div class="col-sm-8">
                           <label class="form-control-plaintext">{{ item.value.value | currency:"Rp "}}</label>
                         </div>
                       </div>
                       <div *ngSwitchCase="'wsicas'" class="form-group row">
                         <label
-                          class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
+                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
                           <span class="text-right">:</span></label>
-
-                        <div class="form-check col-sm-9 align-items-center d-flex">
-                          <label class="form-control-plaintext">{{ item.value.value }}</label>
+                        <div class="form-check col-sm-8 align-items-center d-flex">
+                          <label class="form-control-plaintext">{{ item.value.value | valuecustom  }}</label>
                         </div>
-
+                      </div>
+                      <div *ngSwitchCase="'wstype'" class="form-group row">
+                        <label
+                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
+                          <span class="text-right">:</span></label>
+                        <div class="form-check col-sm-8 align-items-center d-flex">
+                          <label class="form-control-plaintext">{{ item.value.value | valuecustom }}</label>
+                        </div>
                       </div>
                       <div *ngSwitchDefault class="form-group row">
                         <label
-                          class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
+                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
                           <span class="text-right">:</span></label>
-                        <div class="col-sm-9">
+                        <div class="col-sm-8">
                           <label class="form-control-plaintext">{{ item.value.value }}
                           </label>
                         </div>

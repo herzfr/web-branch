@@ -34,6 +34,9 @@ export class Titlecustom2Pipe implements PipeTransform {
             case 'wsicas':
                 return 'Cash ?';
                 break;
+            case 'wstran':
+                return 'Transaksi ID';
+                break;
             default:
                 break;
         }

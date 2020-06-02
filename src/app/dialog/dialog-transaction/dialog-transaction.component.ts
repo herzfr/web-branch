@@ -366,7 +366,7 @@ export class DialogTransactionComponent implements OnInit {
 
   transactionProcess(event, index, stepper: MatStepper) {
 
-    // console.log("value : ", event);
+    console.log("value : ", event);
 
     for (const key in event) {
       if (event.hasOwnProperty(key)) {
@@ -375,50 +375,49 @@ export class DialogTransactionComponent implements OnInit {
         console.log("element key : ", element);
 
 
-
         switch (key) {
           case 'TransaksiId':
-            // console.log("transaksi id : ", element);
+            console.log("transaksi id : ", element);
             event.wstran = element;
             delete event.TransaksiId;
             break;
           case 'nm':
-            // console.log("nominal : ", element);
+            console.log("nominal : ", element);
             event.wsnomn = element;
             delete event.nm;
             break;
           case 'tn':
-            // console.log("tunai : ", element);
+            console.log("tunai : ", element);
             event.wsicas = element;
             delete event.tn;
             break;
           case 'tp':
-            // console.log("tipe : ", element);
+            console.log("tipe : ", element);
             event.wstype = element;
             delete event.tp;
             break;
           case 'fr':
-            // console.log("from : ", element);
+            console.log("from : ", element);
             event.wsfrom = element;
             delete event.fr;
             break;
           case 'to':
-            // console.log("to : ", element);
+            console.log("to : ", element);
             event.wstoto = element;
             delete event.to;
             break;
           case 'br':
-            // console.log("berita : ", element);
+            console.log("berita : ", element);
             event.wsbrta = element;
             delete event.br;
             break;
           case 'bc':
-            // console.log("bank code : ", element);
+            console.log("bank code : ", element);
             event.wsbcod = element;
             delete event.bc;
             break;
           case 'id':
-            // console.log("id : ", element);
+            console.log("id : ", element);
             event.wsidid = element;
             delete event.id;
             break;
@@ -428,18 +427,39 @@ export class DialogTransactionComponent implements OnInit {
       }
     }
 
-    console.log("event value : ", event);
+    console.log("LOG " + event.wsfrom);
 
-    const accountNumber = event.wsfrom.value;
-    console.log("account number :", accountNumber);
 
-    if (accountNumber === "1001000002") {
-      this.cardNum = 1234567890000002;
-    } else if (accountNumber === "1001000003") {
+    let accountNumber: any;
+    if (event.wsfrom === undefined) {
       this.cardNum = 1234567890000003;
     } else {
-      this.cardNum = 1234567890000003;
+      accountNumber = event.wsfrom;
+      console.log("account number :", accountNumber);
+
+      switch (accountNumber) {
+        case "1001000002":
+          this.cardNum = 1234567890000002;
+          break;
+        case "1001000003":
+          this.cardNum = 1234567890000003;
+          break;
+        default:
+          this.cardNum = 1234567890000003;
+          break;
+      }
+
     }
+
+    // if (event.wsfrom.value === "1001000002") {
+    //   this.cardNum = 1234567890000002;
+    // } else if (event.wsfrom.value === "1001000003") {
+    //   this.cardNum = 1234567890000003;
+    // } else if (event.wsfrom.value === undefined) {
+    //   this.cardNum = 1234567890000003;
+    // } else {
+    //   this.cardNum = 1234567890000003;
+    // }
 
 
     console.log("transaksi id : ", event.wstran.value);

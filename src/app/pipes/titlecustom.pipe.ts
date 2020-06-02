@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'titlecustom'
+  name: 'titlecustom',
 })
 export class TitlecustomPipe implements PipeTransform {
 
@@ -36,5 +36,8 @@ export class TitlecustomPipe implements PipeTransform {
         break;
     }
   }
+
+ 
+
 
 }
