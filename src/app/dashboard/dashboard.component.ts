@@ -54,12 +54,12 @@ export class DashboardComponent implements OnInit {
   constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService,
     private appConfig: AppConfiguration, private sharedService: SharedService, private config: ConfigurationService) {
     this.serverUrl = appConfig.ipSocketServer + "socket";
-    console.log("dashboar socket : ", this.serverUrl);
+    // console.log("dashboar socket : ", this.serverUrl);
 
     if (localStorage.getItem('skip')) {
       localStorage.removeItem('skip')
     } else {
-      console.log('data skip kosong');
+      // console.log('data skip kosong');
     }
 
     this.setorTunaiCode = this.config.getConfig().typeSetorTunai;
@@ -82,8 +82,7 @@ export class DashboardComponent implements OnInit {
     this.branchCode = branch.branchCode;
 
     this.queueServ.getNewQueue(this.branchCode, this.waitingCall, this.outCall).subscribe(res => {
-      console.log("isi data : ", res);
-
+      // console.log("isi data : ", res);
       let data = new Array;
       for (const key in res) {
         if (res.hasOwnProperty(key)) {
@@ -151,7 +150,7 @@ export class DashboardComponent implements OnInit {
 
         this.isQEmpty = false;
       } else {
-        console.log('data gak ada');
+        // console.log('data gak ada');
         this.isQEmpty = true;
         this.DataTableQ = _data;
         this.dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
@@ -178,8 +177,7 @@ export class DashboardComponent implements OnInit {
 
       if (res['success'] == true) {
         let datares = res['record']
-        console.log(datares);
-
+        // console.log(datares);
         res['record'].forEach(element => {
           element.transbuff = '[' + element.transbuff + ']'
           let parse = JSON.parse(element.transbuff)
@@ -194,8 +192,7 @@ export class DashboardComponent implements OnInit {
 
           if (res['success'] == true) {
             let datares = res['record']
-            console.log(datares);
-
+            // console.log(datares);
             res['record'].forEach(element => {
               element.transbuff = '[' + element.transbuff + ']'
               let parse = JSON.parse(element.transbuff)
@@ -388,14 +385,13 @@ export class DashboardComponent implements OnInit {
     let ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(ws);
     let that = this;
-    this.stompClient.connect({ "testing": "testaja" }, function (frame) {
+    this.stompClient.connect({}, function (frame) {
 
       that.stompClient.subscribe(socket, (message) => {
         if (message.body) {
-          console.log(JSON.parse(message.body));
-
+          // console.log(JSON.parse(message.body));
           if (JSON.parse(message.body).success) {
-            console.log("Success bro");
+            // console.log("Success bro");
             that.getDataTableQ();
           }
         }

@@ -17,6 +17,15 @@ export class UtilityService {
     return moment(log).format('DD/MM/YYYY HH:mm');
   }
 
+  getRawDateTime() {
+    let log = new Date();
+    return moment(log).format('DDMMYYYYHHmm');
+  }
+
+  convertMilisToDateTime(value: number) {
+    return moment.utc(value).format('DDMMYYYYHHmm');
+  }
+
   getDate() {
     var log = new Date();
     return moment(log).format('DD/MM/YYYY');
@@ -28,7 +37,7 @@ export class UtilityService {
   }
 
   leftPadding(value: string, padValue: string, length: number) {
-    console.log(value.padStart(length, padValue));
+    // console.log(value.padStart(length, padValue));
     return value.padStart(length, padValue);
   }
 

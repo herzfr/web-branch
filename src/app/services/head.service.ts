@@ -51,8 +51,6 @@ export class HeadService {
       .set('state', status)
       .set('transId', transId)
     return this.http.get(this.apiUrl + 'api/wbheadvalidation/csupdatestatus?' + params, this.httpOptions).pipe(
-
-
     );
   }
 

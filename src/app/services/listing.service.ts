@@ -9,7 +9,7 @@ export class ListingService {
 
   getListing(data) {
 
-    console.log(data);
+    // console.log(data);
 
     switch (data.tp) {
       case 'Setor Tunai':

@@ -176,11 +176,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       });
     });
     this.userVoid();
-
     this.checkSessionIat();
 
     let dataRoles: any = this.userService.getUserRoles();
-    console.log("isi roles ", dataRoles);
+    // console.log("isi roles ", dataRoles);
 
     this.sharedService.isVisibleSource.subscribe((isVisible: boolean) => {
       this.isMenuVisible = isVisible;
@@ -188,12 +187,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.drawer.close();
       }
     });
-
-    let data = this.utilityService.asciiToHexa("abcdefghijklmno one ok rock");
-    let decode = this.utilityService.hexToAscii(data);
-    console.log("converting hex ", data);
-    console.log("decode : ", decode);
-
   }
 
   // get user data 
@@ -211,12 +204,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.lastName = data.lastname;
 
     const date = moment(data.lastlogindate).locale('ID').format('Do MMMM  YYYY')
-    console.log("raw : ", data.lastlogindate);
-    console.log("date :", date);
+    // console.log("raw : ", data.lastlogindate);
+    // console.log("date :", date);
 
     this.lastLog = data.lastlogindate
     // this.lastLoghour = data.lastlogindate
-
 
     const socketDestination = "usr" + this.userName;
     this.websocket.initializeWebSocketConnection(socketDestination)

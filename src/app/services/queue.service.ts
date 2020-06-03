@@ -26,8 +26,7 @@ export class QueueService {
   constructor(private appConfiguration: AppConfiguration, private http: HttpClient) {
     this.apiUrl = this.appConfiguration.ipServer;
     this.apiSocket = this.appConfiguration.ipSocketServer;
-    console.log(this.ls.get('token'));
-
+    // console.log(this.ls.get('token'));
   }
 
   getNewQueue(brch: string, status1: string, status2) {
