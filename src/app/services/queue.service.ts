@@ -91,5 +91,9 @@ export class QueueService {
     return this.http.post(this.apiUrl + 'api/comm', body, this.httpOptions)
   }
 
+  processTransactionDataQSaldo(body) {
+    return this.http.post(this.apiUrl + 'api/comm/saldo', body, this.httpOptions)
+  }
+
 
 }

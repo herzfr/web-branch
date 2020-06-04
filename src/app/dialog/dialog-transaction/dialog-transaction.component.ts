@@ -88,14 +88,18 @@ export class DialogTransactionComponent implements OnInit {
   private cardNum: number;
   private pinMessage: string;
   private fingerMessage: string;
+  private isCheckSaldo: boolean;
 
   // Otorisasi Head Teller
   private isDisplayPrint: boolean = false;
+  private isDisplayPrintSaldo: boolean = false;
   private isWaitingConfirmation: boolean = false;
   private isRejectConfirmation: boolean = false;
 
   private nameHead: any = [];
   private isHeadTeller: boolean = false;
+
+  private saldoData: any;
 
 
   // Otorisasi Head Teller
@@ -134,6 +138,8 @@ export class DialogTransactionComponent implements OnInit {
   transferAntarRekCode: string;
   transferAntarBankCode: string;
   newAccountCode: string;
+  informasiSaldoTabunganCode: string;
+  informasiSaldoGiroCode: string;
 
   transLabel: any = new Array;
 
@@ -151,6 +157,8 @@ export class DialogTransactionComponent implements OnInit {
     this.transferAntarRekCode = this.configuration.getConfig().typeTransferAntarRek;
     this.transferAntarBankCode = this.configuration.getConfig().typeTransferAntarBank;
     this.newAccountCode = this.configuration.getConfig().typeNewAccount;
+    this.informasiSaldoGiroCode = this.configuration.getConfig().typeCheckSaldoGiro;
+    this.informasiSaldoTabunganCode = this.configuration.getConfig().typeCheckSaldoTabungan;
 
     this.serverUrlSocket = this.appConfig.ipSocketServer;
 
@@ -163,50 +171,6 @@ export class DialogTransactionComponent implements OnInit {
         let changeKey = element.transbuff[0]
         this.transID_for_while = element.transid
         this.status_for_while = element.status
-        // this.isCust = element.iscustomer
-        // for (const key in changeKey) {
-        //   if (changeKey.hasOwnProperty(key)) {
-        //     const e = changeKey[key];
-        //     // console.log(key);
-
-        //     switch (key) {
-        //       case 'nm':
-        //         changeKey.Nominal = e
-        //         break;
-        //       case 'tn':
-        //         changeKey.Tunai = e
-        //         break;
-        //       case 'tp':
-        //         changeKey.Tipe = e
-        //         break;
-        //       case 'fr':
-        //         changeKey.Dari = e
-        //         break;
-        //       case 'to':
-        //         changeKey.Ke = e
-        //         break;
-        //       case 'br':
-        //         changeKey.Berita = e
-        //         break;
-        //       case 'bc':
-        //         changeKey.Bank = e
-        //         break;
-        //       default:
-        //         break;
-        //     }
-
-        //   }
-        // }
-
-        // delete changeKey.nm
-        // delete changeKey.tn
-        // delete changeKey.tp
-        // delete changeKey.fr
-        // delete changeKey.to
-        // delete changeKey.br
-        // delete changeKey.bc
-
-        // console.log("key : ", changeKey.tp);
 
         if (changeKey.tp === this.tarikTunaiCode) {
           this.transLabel.push("Tarik Tunai");
@@ -220,6 +184,12 @@ export class DialogTransactionComponent implements OnInit {
         } else if (changeKey.tp === this.transferAntarBankCode) {
           this.transLabel.push("Transaksi Antar Bank");
           changeKey.tp = 'Transaksi Antar Bank'
+        } else if (changeKey.tp === this.informasiSaldoGiroCode) {
+          this.transLabel.push("Informasi Saldo Giro");
+          changeKey.tp = 'Informasi Saldo Giro'
+        } else if (changeKey.tp === this.informasiSaldoTabunganCode) {
+          this.transLabel.push("Informasi Saldo Tabungan");
+          changeKey.tp = 'Informasi Saldo Tabungan'
         }
 
         if (changeKey.tn === '1') {
@@ -245,7 +215,6 @@ export class DialogTransactionComponent implements OnInit {
     for (const key in this.dataForm) {
       if (this.dataForm.hasOwnProperty(key)) {
         const element = this.dataForm[key];
-        // console.log(element);
         this.addItem(element.transbuff, element.transid);
       }
     }
@@ -258,22 +227,15 @@ export class DialogTransactionComponent implements OnInit {
     for (const key in event) {
       if (event.hasOwnProperty(key)) {
         const el = event[key];
-        // console.log(key);
-
         const control: FormControl = new FormControl(el, Validators.required);
-        orderFormGroup.addControl(key, control)
-        // group[key] = new FormControl(el, Validators.required)
+        orderFormGroup.addControl(key, control);
       }
     }
-    // console.log(orderFormGroup);
     return orderFormGroup;
   }
 
   addItem(event, transid) {
-    // console.log(event);
     event.TransaksiId = transid;
-    // event.
-    // console.log(this.listConv.getListing(event));
     this.form = this.formGroup.get('form') as FormArray;
     this.form.push(this.init(event));
   }
@@ -292,10 +254,6 @@ export class DialogTransactionComponent implements OnInit {
 
     this.dialogRef.close(postStat);
 
-    // this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
-    //   console.log(res);
-    //   this.dialogRef.close(res);
-    // })
   }
 
   skipQ() {
@@ -311,11 +269,6 @@ export class DialogTransactionComponent implements OnInit {
 
     this.dialogRef.close(postStat)
 
-    // console.log(postStat);
-    // this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
-    //   console.log(res);
-    //   this.dialogRef.close(res);
-    // })
   }
 
   prosesQ() {
@@ -331,11 +284,6 @@ export class DialogTransactionComponent implements OnInit {
     });
 
     this.dialogRef.close(postStat);
-
-    // this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
-    //   console.log(res);
-    //   this.dialogRef.close(res);
-    // })
   }
 
 
@@ -363,57 +311,47 @@ export class DialogTransactionComponent implements OnInit {
 
   transactionProcess(event, index, stepper: MatStepper) {
 
-    // console.log("value : ", event);
+    console.log("process data :", event);
+
 
     for (const key in event) {
       if (event.hasOwnProperty(key)) {
         const element = event[key];
-        // console.log("element key : ", key);
-        // console.log("element : ", element);
 
         switch (key) {
           case 'TransaksiId':
-            // console.log("transaksi id : ", element);
             event.wstran = element;
             delete event.TransaksiId;
             break;
           case 'nm':
-            // console.log("nominal : ", element);
             event.wsnomn = element;
             delete event.nm;
             break;
           case 'tn':
-            // console.log("tunai : ", element);
             event.wsicas = element;
             delete event.tn;
             break;
           case 'tp':
-            // console.log("tipe : ", element);
             event.wstype = element;
             delete event.tp;
             break;
           case 'fr':
-            // console.log("from : ", element);
             event.wsfrom = element;
             delete event.fr;
             break;
           case 'to':
-            // console.log("to : ", element);
             event.wstoto = element;
             delete event.to;
             break;
           case 'br':
-            // console.log("berita : ", element);
             event.wsbrta = element;
             delete event.br;
             break;
           case 'bc':
-            // console.log("bank code : ", element);
             event.wsbcod = element;
             delete event.bc;
             break;
           case 'id':
-            // console.log("id : ", element);
             event.wsidid = element;
             delete event.id;
             break;
@@ -423,13 +361,15 @@ export class DialogTransactionComponent implements OnInit {
       }
     }
 
+    console.log("event after : ", event);
+
 
     let accountNumber: any;
     if (event.wsfrom === undefined) {
       this.cardNum = 1234567890000003;
     } else {
       accountNumber = event.wsfrom;
-      // console.log("account number :", accountNumber.value);
+      console.log("account number :", accountNumber.value);
 
       switch (accountNumber.value) {
         case "1001000002":
@@ -444,7 +384,6 @@ export class DialogTransactionComponent implements OnInit {
       }
     }
 
-    // let transId = event.TransaksiId.value
     let transId = event.wstran.value;
     let dataObj = this.findDataByTransactionId(transId, this.data);
     let terminal = JSON.parse(this.secureLs.get("terminal"));
@@ -455,33 +394,44 @@ export class DialogTransactionComponent implements OnInit {
     let payLoad = JSON.stringify(Form.value);
     let payLoadHex = JSON.parse(JSON.stringify(Form.value))
 
-    // console.log("event event : ", payLoad);
-    // console.log("data object : ", dataObj);
+    console.log("payload: ", dataObj);
 
 
+    // change value by transaction code 
+    switch (payLoadHex.wstype) {
+      case "Informasi Saldo Giro":
+        this.isCheckSaldo = true;
+        payLoadHex.wstype = this.informasiSaldoGiroCode;
+        break;
+      case "Informasi Saldo Tabungan":
+        this.isCheckSaldo = true;
+        payLoadHex.wstype = this.informasiSaldoTabunganCode;
+        break;
+      case "Tarik Tunai":
+        this.isCheckSaldo = false;
+        payLoadHex.wstype = this.tarikTunaiCode;
+        break;
+      case "Setor Tunai":
+        this.isCheckSaldo = false;
+        payLoadHex.wstype = this.tarikTunaiCode;
+        break;
+      case "Transaksi Antar Bank":
+        this.isCheckSaldo = false;
+        payLoadHex.wstype = this.transferAntarBankCode;
+        break;
+      case "Transaksi Antar Rekening":
+        this.isCheckSaldo = false;
+        payLoadHex.wstype = this.transferAntarRekCode;
+        break;
+      default:
+        this.isCheckSaldo = false;
+        break;
+    }
+
+    // convert json value string to custom hex value
     for (const key in payLoadHex) {
       if (payLoadHex.hasOwnProperty(key)) {
         const element = payLoadHex[key];
-        // console.log(key);
-        // console.log(element);
-
-        switch (payLoadHex.wstype.value) {
-          case 'Tarik Tunai':
-            payLoadHex.wstype.value = this.tarikTunaiCode;
-            break;
-          case 'Setor Tunai':
-            payLoadHex.wstype.value = this.setorTunaiCode;
-            break;
-          case 'Transaksi Antar Rekening':
-            payLoadHex.wstype.value = this.transferAntarRekCode;
-            break;
-          case 'Transaksi Antar Bank':
-            payLoadHex.wstype.value = this.transferAntarBankCode;
-            break;
-          default:
-            break;
-        }
-
         if ((typeof (element)) === 'string') {
           payLoadHex[key] = this.utilityService.asciiToHexa(element)
         } else if ((typeof (element)) === 'number') {
@@ -489,7 +439,6 @@ export class DialogTransactionComponent implements OnInit {
         } else {
           payLoadHex[key] = this.utilityService.asciiToHexa(element.toString())
         }
-
       }
     }
 
@@ -501,7 +450,15 @@ export class DialogTransactionComponent implements OnInit {
       event.wstype.value = this.transferAntarRekCode
     } else if (event.wstype.value === 'Transaksi Antar Bank') {
       event.wstype.value = this.transferAntarBankCode
+    } else if (event.wstype.value === 'Informasi Saldo Tabungan') {
+      event.wstype.value = this.informasiSaldoTabunganCode
+    } else if (event.wstype.value === 'Informasi Saldo Giro') {
+      event.wstype.value = this.informasiSaldoGiroCode
     }
+
+    console.log("event value: ", event);
+    console.log("cash data: ", this.data[index].isCash);
+    console.log("is cash data: ", this.data[index].isCash);
 
 
     const dataFormValidation = {
@@ -525,7 +482,6 @@ export class DialogTransactionComponent implements OnInit {
     }
 
     let scanId = this.data[index].scanid ? this.data[index].scanid : "";
-    // console.log("is cash : " + this.utilityService.leftPadding(this.data[index].isCash.toString(), "0", 3));
     const dataProsesApi = {
       "wbtmsg": this.utilityService.asciiToHexa("0100"),
       "wbproc": this.utilityService.asciiToHexa("900000"),
@@ -545,63 +501,15 @@ export class DialogTransactionComponent implements OnInit {
       "wbtcno": "",
       "wbtrbf": payLoadHex,
       "wbtrty": this.utilityService.asciiToHexa(event.wstype.value),
-      "wbusid": this.utilityService.asciiToHexa(dataObj.userid),
-      "wbustm": this.utilityService.asciiToHexa(dataObj.userterminal),
+      "wbusid": this.utilityService.asciiToHexa(dataObj.userid ? dataObj.userid : ""),
+      "wbustm": this.utilityService.asciiToHexa(dataObj.userterminal ? dataObj.userterminal : ""),
       "wbstop": this.utilityService.asciiToHexa("END"),
     }
 
-    // const dataFormValidation = {
-    //   "wbtmsg": "0010",
-    //   "wbproc": "900000",
-    //   "wbtrid": transId,
-    //   "wbbrcd": branchCode,
-    //   "wbfgid": dataObj.userid,
-    //   "wbscid": "",
-    //   "wbicsh": this.data[index].isCash,
-    //   "wbicus": this.isCust,
-    //   "wbqucd": dataObj.queuecode,
-    //   "wbqudt": dataObj.queuedate,
-    //   "wbrfno": "",
-    //   "wbstat": "100",
-    //   "wbtmid": term,
-    //   "wbtsen": dataObj.timestampentry.toString(),
-    //   "wbtspr": "",
-    //   "wbtcno": "",
-    //   "wbtrbf": payLoad,
-    //   "wbtrty": event.wstype.value,
-    //   "wbusid": dataObj.userid,
-    //   "wbustm": dataObj.userterminal,
-    //   "wbstop": "END",
-    // }
-    // console.log(dataProsesApi);
-
     this.dataFormHeadValidation = dataFormValidation;
     this.dataFormActual = dataProsesApi;
-    // // this.queueServ.processTransactionDataQ(dataProsesApi).subscribe(res => {
-    // //   console.log(res);
-    // //   if (res['success']) {
-    // //     stepper.next()
-    // //     this.dataSuccess.push(res)
-    // //     setTimeout(() => {
-    // //       this.isProsses = false;
-    // //       this.isSuccess = true;
-    // //       $(".check-icon").show();
-    // //       this.isNext = true;
-    // //       this.isCancelBtn = false;
-    // //       this.isSkipBtn = false;
-    // //       this.stepDisabledHorizontal = true;
-    // //       this.isCloseDialog = false;
-    // //       // ========================================================================================================================
-    // //     }, 500)
-    // //   } else {
-    // //     alert('Data gagal proses, silahkan coba lagi')
-    // //     setTimeout(() => {
-    // //       this.isProsses = false;
-    // //       this.isError = true;
-    // //       this.isBack = true;
-    // //     }, 500)
-    // //   }
-    // // });
+
+    console.log("data :", this.dataFormHeadValidation);
 
     stepper.next()
     this.dataSuccess.push("{\"success\":true}")
@@ -690,24 +598,21 @@ export class DialogTransactionComponent implements OnInit {
       visible.hide();
       element = parent;
     }
-
     return toShow;
   }
 
   stepChanged(event, stepper) {
-    // console.log(event, stepper.selected.interacted);
     stepper.selected.interacted = false;
   }
 
   done() {
     this.stepDisabledHorizontal = false;
     this.isHeadTeller = false
-    console.log("data sukses :", this.dataSuccess.length);
-    console.log("data form :", this.form.length);
-
+    // console.log("data sukses :", this.dataSuccess.length);
+    // console.log("data form :", this.form.length);
 
     if (this.dataSuccess.length === this.form.length) {
-      console.log('suses di isi semua');
+      // console.log('suses di isi semua');
       this.isDoneBtn = true;
     } else {
       console.log('masih belum');
@@ -867,8 +772,10 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   onFingerVerify(status, stepper: MatStepper) {
-
-    if (status) {
+    // console.log("status finger : ", status);
+    // console.log("stepper status : ", stepper);
+    // console.log("is check saldo : ", this.isCheckSaldo);
+    if (status && !this.isCheckSaldo) {
       this.fingerMessage = 'Finger Valid'
       this.isFingerSuccess = true
       this.isFingerError = false
@@ -887,14 +794,64 @@ export class DialogTransactionComponent implements OnInit {
         this.isFingerError = false;
         this.isFingerSuccess = false;
         this.transacServ.headTellerList('headteller', this.TERMINAL['branchCode']).subscribe(list => {
-          // console.log(list);
           if (list['success']) {
             this.nameHead = list['record']
           }
-          // console.log(this.nameHead);
         })
       }, 1000)
-    } else {
+    } else if (status && this.isCheckSaldo) {
+      delete this.dataFormActual.wbtrbf.wstran;
+      this.queueServ.processTransactionDataQ(this.dataFormHeadValidation).subscribe(res => {
+
+        if (res['success']) {
+          let traceNo = this.utilityService.leftPadding(res['traceno'].toString(), "0", 17);
+          this.dataFormActual.wbtcno = this.utilityService.asciiToHexa(traceNo);
+          this.dataFormActual.wbrfno = this.utilityService.asciiToHexa(res['reffno']);
+          this.dataFormActual.wbtspr = this.utilityService.asciiToHexa(this.utilityService.getRawDateTime());
+
+          this.queueServ.processTransactionDataQ2(this.dataFormActual).subscribe(res => {
+
+            if (res['wbrspc'] === "0000000") {
+
+              this.saldoData = res;
+              let nominal = Number(res['wbtrbf'].wsblav);
+              console.log("nominal :", nominal);
+              this.saldoData.wbtrbf.wsblav = nominal.toString();
+              console.log("data saldo : ", res);
+
+              $('#scan-finger').removeClass('blink')
+              setTimeout(() => {
+                stepper.next()
+                stepper.next()
+                this.disconnect()
+                $('.otp-input').prop('readonly', false);
+                $('.otp-input').val('');
+                this.isPinMessageSuccess = false;
+                this.isPinMessageError = false;
+                this.isScanFinger = false;
+                this.isSwapCard = true;
+                this.isInputPin = false;
+                this.isCardNumber = false;
+                this.isFingerError = false;
+                this.isFingerSuccess = false;
+                this.onCheckBalance();
+              }, 1000)
+            } else {
+              alert("Process Transaksi Gagal")
+            }
+          });
+        } else {
+          alert('Data gagal proses, silahkan coba lagi')
+          setTimeout(() => {
+            this.isProsses = false;
+            this.isError = true;
+            this.isBack = true;
+          }, 500)
+        }
+      })
+
+    }
+    else {
       this.isFingerError = true
       this.fingerMessage = 'Finger Invalid'
     }
@@ -943,24 +900,12 @@ export class DialogTransactionComponent implements OnInit {
               // console.log("parse result : ", parse);
               if (parse) {
                 that.dataFormHeadValidation.status = 999;
-                // console.log("transaction type : ", that.dataFormHeadValidation.trntype);
-                // if (that.dataFormHeadValidation.trntype === 'Tarik Tunai') {
-                //   that.dataFormHeadValidation.trntype = 'trk'
-                // } else if (that.dataFormHeadValidation.trntype === 'Setor Tunai') {
-                //   that.dataFormHeadValidation.trntype = 'str'
-                // } else if (that.dataFormHeadValidation.trntype === 'Transaksi Antar Rekening') {
-                //   that.dataFormHeadValidation.trntype = 'tar'
-                // } else if (that.dataFormHeadValidation.trntype === 'Transaksi Antar Bank') {
-                //   that.dataFormHeadValidation.trntype = 'tab'
-                // }
-
                 that.dataFormHeadValidation.isRejected = 0
                 that.dataFormHeadValidation.isValidated = 1
                 that.dataFormHeadValidation.timestampprocess = Date.now().toString();
                 that.dataFormHeadValidation.userterminal = JSON.parse(that.ls.get('data')).userterminal;
                 that.transacServ.sendRemoteValidation(that.dataFormHeadValidation, that.headSelectTeller.userid).subscribe(resp => {
-                  console.log("response : ", resp);
-
+                  // console.log("response : ", resp);
                   if (resp['success']) {
                     // that.onFingerVerifyHead(parse, stepper, drawer, "onsite");
                     that.sendProcess(that.dataFormActual, that.dataFormHeadValidation, stepper, drawer, "onsite");
@@ -992,12 +937,11 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   initializeWebSocketConnection2(socket, stepper: MatStepper, drawer: MatDrawer) {
-    // console.log(stepper);
-    // console.log(this.serverUrlSocket);
+
     let ws = new SockJS(this.serverUrlSocket + "socket");
     this.stompClientSocket = Stomp.over(ws);
     let that = this;
-    // console.log("koneksi ke : ", socket);
+
     this.stompClientSocket.connect({}, function (frame) {
       // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
       that.stompClientSocket.subscribe("/" + socket, (message) => {
@@ -1017,19 +961,19 @@ export class DialogTransactionComponent implements OnInit {
             // stepper.next()
             that.done()
           } else {
-            that.onFingerVerifyHead(true, stepper, drawer, "remote")
+            that.sendProcess(that.dataFormActual, that.dataFormHeadValidation, stepper, drawer, "remote");
           }
         }
       }, () => {
         // that.dialog.errorDialog("Error", "Koneksi Terputus");
-        console.log("koneksi terputus");
-        console.log("Koneksi Ulang");
+        // console.log("koneksi terputus");
+        // console.log("Koneksi Ulang");
         alert("koneksi terputus");
       });
     }, err => {
       alert("gagal menghubungkan ke server");
-      console.log("gagal menghubungkan ke server ");
-      console.log("Menghubungkan Ulang");
+      // console.log("gagal menghubungkan ke server ");
+      // console.log("Menghubungkan Ulang");
     });
   }
 
@@ -1088,9 +1032,6 @@ export class DialogTransactionComponent implements OnInit {
 
         this.dataFormHeadValidation.isRejected = 0
         this.dataFormHeadValidation.isValidated = 0
-        // console.log("selected Teller : ", this.headSelectTeller);
-        // console.log("data form : ", this.dataFormHeadValidation);
-        // console.log("user terminal : ", JSON.parse(this.ls.get('data')).userterminal);
         this.dataFormHeadValidation.userterminal = JSON.parse(this.ls.get('data')).userterminal;
         let terminalData = this.ls.get('termdata');
         let user = JSON.parse(this.ls.get('data')).userid;
@@ -1121,7 +1062,7 @@ export class DialogTransactionComponent implements OnInit {
 
   onFingerVerifyHead(status, stepper: MatStepper, drawer: MatDrawer, type: string) {
     if (type === "onsite") {
-      console.log("run on");
+      // console.log("run on");
       this.done()
       try {
         this.ngZone.runOutsideAngular(() => this.animationItem.stop());
@@ -1169,36 +1110,34 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   sendProcess(dataProsesApi, dataForm, stepper, drawer, value) {
-    // console.log("send proses");
     this.queueServ.processTransactionDataQ(dataForm).subscribe(res => {
-      // console.log("isi return :", res);
-      // console.log("isi reff no :", res['reffno']);
-      // console.log("data proses api : ", dataProsesApi);
+
       if (res['success']) {
         let traceNo = this.utilityService.leftPadding(res['traceno'].toString(), "0", 17);
         dataProsesApi.wbtcno = this.utilityService.asciiToHexa(traceNo);
         dataProsesApi.wbrfno = this.utilityService.asciiToHexa(res['reffno']);
         dataProsesApi.wbtspr = this.utilityService.asciiToHexa(this.utilityService.getRawDateTime());
-        console.log("data proses api : ", dataProsesApi);
 
         this.queueServ.processTransactionDataQ2(dataProsesApi).subscribe(res => {
-          console.log(res);
-          console.log("response : ", res['wbrspc']);
 
           if (res['wbrspc'] === "0000000") {
-            console.log("Success");
-            alert("Proses Transaksi Sukses");
-            // this.onFingerVerifyHead(res, stepper, drawer, "onsite");
+            // console.log("Success");
           } else {
-            console.log("failed");
-            alert("Process Transaksi Gagal")
+            alert("Process Transaksi Gagal");
+            setTimeout(() => {
+              this.isProsses = false;
+              this.isError = true;
+              this.isBack = true;
+            }, 500);
           }
 
-          this.onFingerVerifyHead(res, stepper, drawer, "onsite");
+          if (value === "remote") {
+            this.onFingerVerifyHead(res, stepper, drawer, "remote");
+          } else {
+            this.onFingerVerifyHead(res, stepper, drawer, "onsite");
+          }
 
         });
-
-
       } else {
         alert('Data gagal proses, silahkan coba lagi')
         setTimeout(() => {
@@ -1210,5 +1149,8 @@ export class DialogTransactionComponent implements OnInit {
     });
   }
 
+  onCheckBalance() {
+    this.isDisplayPrintSaldo = true;
+  }
 
 }
