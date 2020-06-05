@@ -124,15 +124,15 @@ export class DashboardComponent implements OnInit {
               break;
           }
 
-          if (transBf.tp == "000002") {
-            transBf.tp = "Setor Tunai"
-          } else if (transBf.tp == "000003") {
-            transBf.tp = "Tarik Tunai"
-          } else if (transBf.tp == "000004") {
-            transBf.tp = "Transfer Antar Rekening"
-          } else if (transBf.tp == "000005") {
-            transBf.tp = "Transfer Antar Bank"
-          }
+          // if (transBf.tp == "000002") {
+          //   transBf.tp = "Setor Tunai"
+          // } else if (transBf.tp == "000003") {
+          //   transBf.tp = "Tarik Tunai"
+          // } else if (transBf.tp == "000004") {
+          //   transBf.tp = "Transfer Antar Rekening"
+          // } else if (transBf.tp == "000005") {
+          //   transBf.tp = "Transfer Antar Bank"
+          // }
 
           element.transbuff = JSON.stringify(transBf);
           element.timestampentry = date;

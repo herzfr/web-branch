@@ -175,50 +175,80 @@ export class DialogTransactionComponent implements OnInit {
         console.log("changeKey.tp : ", changeKey.tp);
 
 
-
-
-        if (changeKey.tp === this.tarikTunaiCode) {
-          this.transLabel.push("Tarik Tunai");
-          changeKey.tp = 'Tarik Tunai'
-        } else if (changeKey.tp === this.setorTunaiCode) {
-          this.transLabel.push("Setor Tunai");
-          changeKey.tp = 'Setor Tunai'
-        } else if (changeKey.tp === this.transferAntarRekCode) {
-          this.transLabel.push("Transaksi Antar Rekening");
-          changeKey.tp = 'Transaksi Antar Rekening'
-        } else if (changeKey.tp === this.transferAntarBankCode) {
-          this.transLabel.push("Transaksi Antar Bank");
-          changeKey.tp = 'Transaksi Antar Bank'
-        } else if (changeKey.tp === this.informasiSaldoGiroCode) {
-          this.transLabel.push("Informasi Saldo Giro");
-          changeKey.tp = 'Informasi Saldo Giro'
+        switch (changeKey.tp) {
+          case this.tarikTunaiCode:
+            this.transLabel.push("Tarik Tunai");
+            changeKey.tp = 'Tarik Tunai'
+            break;
+          case this.setorTunaiCode:
+            this.transLabel.push("Setor Tunai");
+            changeKey.tp = 'Setor Tunai'
+            break;
+          case this.transferAntarBankCode:
+            this.transLabel.push("Transfer Antar Bank");
+            changeKey.tp = 'Transfer Antar Bank'
+            break;
+          case this.transferAntarRekCode:
+            this.transLabel.push("Transfer Antar Rekening");
+            changeKey.tp = 'Transfer Antar Rekening'
+            break;
+          case this.informasiSaldoGiroCode:
+            this.transLabel.push("Informasi Saldo Giro");
+            changeKey.tp = 'Informasi Saldo Giro'
+            break;
+          case this.informasiSaldoTabunganCode:
+            this.transLabel.push("Informasi Saldo Tabungan");
+            changeKey.tp = 'Informasi Saldo Tabungan'
+            break;
+          default:
+            break;
         }
 
-        else if (changeKey.tp === "000002") {
-          this.transLabel.push("Setor Tunai");
-          changeKey.tp = 'Setor Tunai'
-        }
-        else if (changeKey.tp === "000003") {
-          this.transLabel.push("Tarik Tunai");
-          changeKey.tp = 'Tarik Tunai'
-        }
 
-        else if (changeKey.tp === "000004") {
-          this.transLabel.push("Transfer Antar Rekening");
-          changeKey.tp = 'Transfer Antar Rekening'
-        }
-        else if (changeKey.tp === "000005") {
-          this.transLabel.push("Transfer Antar Bank");
-          changeKey.tp = 'Transfer Antar Bank'
-        }
-        else if (changeKey.tp === "0002001") {
-          this.transLabel.push("Saldo Tabungan");
-          changeKey.tp = 'Saldo Tabungan'
-        }
-        else if (changeKey.tp === "0001001") {
-          this.transLabel.push("Saldo Giro");
-          changeKey.tp = 'Saldo Giro'
-        }
+
+
+        // if (changeKey.tp === this.tarikTunaiCode) {
+        //   this.transLabel.push("Tarik Tunai");
+        //   changeKey.tp = 'Tarik Tunai'
+        // } else if (changeKey.tp === this.setorTunaiCode) {
+        //   this.transLabel.push("Setor Tunai");
+        //   changeKey.tp = 'Setor Tunai'
+        // } else if (changeKey.tp === this.transferAntarRekCode) {
+        //   this.transLabel.push("Transaksi Antar Rekening");
+        //   changeKey.tp = 'Transaksi Antar Rekening'
+        // } else if (changeKey.tp === this.transferAntarBankCode) {
+        //   this.transLabel.push("Transaksi Antar Bank");
+        //   changeKey.tp = 'Transaksi Antar Bank'
+        // } else if (changeKey.tp === this.informasiSaldoGiroCode) {
+        //   this.transLabel.push("Informasi Saldo Giro");
+        //   changeKey.tp = 'Informasi Saldo Giro'
+        // }
+
+        // else if (changeKey.tp === "000002") {
+        //   this.transLabel.push("Setor Tunai");
+        //   changeKey.tp = 'Setor Tunai'
+        // }
+        // else if (changeKey.tp === "000003") {
+        //   this.transLabel.push("Tarik Tunai");
+        //   changeKey.tp = 'Tarik Tunai'
+        // }
+
+        // else if (changeKey.tp === "000004") {
+        //   this.transLabel.push("Transfer Antar Rekening");
+        //   changeKey.tp = 'Transfer Antar Rekening'
+        // }
+        // else if (changeKey.tp === "000005") {
+        //   this.transLabel.push("Transfer Antar Bank");
+        //   changeKey.tp = 'Transfer Antar Bank'
+        // }
+        // else if (changeKey.tp === "0002001") {
+        //   this.transLabel.push("Saldo Tabungan");
+        //   changeKey.tp = 'Saldo Tabungan'
+        // }
+        // else if (changeKey.tp === "0001001") {
+        //   this.transLabel.push("Saldo Giro");
+        //   changeKey.tp = 'Saldo Giro'
+        // }
 
 
 
@@ -875,7 +905,7 @@ export class DialogTransactionComponent implements OnInit {
             // }
           });
         } else {
-          
+
           alert('Data gagal proses, silahkan coba lagi')
           setTimeout(() => {
             this.isProsses = false;
