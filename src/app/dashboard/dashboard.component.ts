@@ -50,6 +50,8 @@ export class DashboardComponent implements OnInit {
   tarikTunaiCode: string;
   transferAntarBankCode: string;
   transferAntarRekCode: string;
+  informasiSaldoTabunganCode: string;
+  informasiSaldoGiroCode: string;
 
   constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService,
     private appConfig: AppConfiguration, private sharedService: SharedService, private config: ConfigurationService) {
@@ -66,6 +68,8 @@ export class DashboardComponent implements OnInit {
     this.tarikTunaiCode = this.config.getConfig().typeTarikTunai;
     this.transferAntarBankCode = this.config.getConfig().typeTransferAntarBank;
     this.transferAntarRekCode = this.config.getConfig().typeTransferAntarRek;
+    this.informasiSaldoGiroCode = this.config.getConfig().typeCheckSaldoGiro;
+    this.informasiSaldoTabunganCode = this.config.getConfig().typeCheckSaldoTabungan;
 
   }
 
@@ -102,6 +106,12 @@ export class DashboardComponent implements OnInit {
               break;
             case this.transferAntarBankCode:
               transBf.tp = 'Transfer Antar Bank';
+              break;
+            case this.informasiSaldoGiroCode:
+              transBf.tp = 'Informasi Saldo Giro';
+              break;
+            case this.informasiSaldoTabunganCode:
+              transBf.tp = 'Informasi Saldo Tabungan';
               break;
             default:
               transBf.tp = 'Unknown';
@@ -408,9 +418,6 @@ export class DashboardComponent implements OnInit {
   }
 
 }
-
-
-
 
 export interface dataQueueNo {
   branchcode: string;

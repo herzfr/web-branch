@@ -37,7 +37,6 @@
       <p class="h6 ml-1 mr-1">Data Nasabah</p>
       <div class="container-fluid d-flex justify-content-between">
         <div class="col text-center">
-          <!-- <img src="../../../assets/png/avatar.png" alt="..." class="img-thumbnail rounded"> -->
           <img [src]="images64()" alt="..." class="img-thumbnail rounded">
           <p class="text-center font-weight-bold">Foto Nasabah</p>
         </div>
@@ -447,15 +446,48 @@
                         </div>
                       </div>
                     </div>
-
                   </ng-container>
-
-
-
                 </div>
               </div>
 
-              <div *ngIf="isDisplayPrint" class="container-fluid align-items-center">
+              <div *ngIf="isDisplayPrintSaldo" id="print-section" class="container-fluid  mt-3">
+                <img src="assets/svgs/logo-blue.svg" class="mb-3" alt="img-thumbnail">
+                <p class="h6 text-center">Bukti Transaksi</p>
+
+                <ng-container>
+                  <div class="form-group row">
+                    <label
+                      class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Nama
+                      <span class="text-right">:</span></label>
+                    <div class="col-sm-8">
+                      <label class="form-control-plaintext">{{saldoData.wbtrbf.wsname}}</label>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label
+                      class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">No
+                      Rekening
+                      <span class="text-right">:</span></label>
+                    <div class="form-check col-sm-8 align-items-center d-flex">
+                      <label class="form-control-plaintext">{{saldoData.wbtrbf.wsfrom}}</label>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label
+                      class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">Saldo
+                      <span class="text-right">:</span></label>
+                    <div class="form-check col-sm-8 align-items-center d-flex">
+                      <label class="form-control-plaintext">{{saldoData.wbtrbf.wsblav | currency:"Rp "}}</label>
+                    </div>
+                  </div>
+
+                </ng-container>
+
+              </div>
+
+              <div *ngIf="isDisplayPrint || isDisplayPrintSaldo" class="container-fluid align-items-center">
                 <div class="row justify-content-center">
                   <img src="assets/png/print.png" alt="">
                 </div>
