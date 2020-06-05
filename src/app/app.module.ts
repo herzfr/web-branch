@@ -37,14 +37,40 @@ import { UserDataService } from './services/user-data.service';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { DialogNewCustomerComponent } from './dialog/dialog-new-customer/dialog-new-customer.component';
 import { VerifyDialogComponent } from './dialog/verify-dialog/verify-dialog.component';
-import { SignaturePadModule } from 'angular2-signaturepad';
+// import { SignaturePadModule } from 'angular2-signaturepad';
 import { NasabahService } from './services/nasabah.service';
+import { SignaturePadModule } from '@ng-plus/signature-pad';
+import { DialogSuccessComponent } from './dialog/dialog-success/dialog-success.component';
+import { HeadCsDialogComponent } from './dialog/head-cs-dialog/head-cs-dialog.component';
+import { HeadConfirmComponent } from './dialog/head-confirm/head-confirm.component';
+import { ConfigurationService } from './services/configuration.service';
+import { TitlecustomPipe } from './pipes/titlecustom.pipe';
+import { NgxCurrencyModule, CurrencyMaskInputMode } from "ngx-currency";
+import { ListingService } from './services/listing.service';
+import { SortbypipePipe } from './pipes/sortbypipe.pipe';
+import { Titlecustom2Pipe } from './pipes/titlecustom2.pipe';
+import { ValuecustomPipe } from './pipes/valuecustom.pipe';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
     return jsonAppConfigService.load();
   };
 }
+
+export const customCurrencyMaskConfig = {
+  align: "left",
+  allowNegative: true,
+  allowZero: true,
+  decimal: ",",
+  precision: 2,
+  prefix: "Rp ",
+  suffix: "",
+  thousands: ".",
+  nullable: true,
+  min: null,
+  max: null,
+  inputMode: CurrencyMaskInputMode.FINANCIAL
+};
 
 @NgModule({
   declarations: [
@@ -60,8 +86,16 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     HeadTellerDialogComponent,
     DialogNewCustomerComponent,
     VerifyDialogComponent,
+    DialogSuccessComponent,
+    HeadCsDialogComponent,
+    HeadConfirmComponent,
+    TitlecustomPipe,
+    Titlecustom2Pipe,
+    ValuecustomPipe,
+    SortbypipePipe,
   ],
-  entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent, DialogNewCustomerComponent, VerifyDialogComponent],
+  entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent, DialogNewCustomerComponent, VerifyDialogComponent,
+    DialogSuccessComponent, HeadCsDialogComponent, HeadConfirmComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -77,11 +111,13 @@ export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
     MatTableModule,
     NgOtpInputModule,
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
-    SignaturePadModule
+    SignaturePadModule,
+    NgxCurrencyModule.forRoot(customCurrencyMaskConfig)
   ],
   providers: [
     CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService,
     TestService, TransactionService, SharedService, HeadService, UserDataService, NgxImageCompressService, NasabahService,
+    ConfigurationService, ListingService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],

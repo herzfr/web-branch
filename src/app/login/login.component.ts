@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import * as securels from 'secure-ls';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import * as moment from 'moment';
 
 import { LoginModel } from '../models/login-model';
 import { AppConfiguration } from '../models/app.configuration';
@@ -88,8 +89,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
 
-
-
     // if (term === null ) {
     //   $('#modalTerm').modal('show')
     //   $('.container-fluid').addClass('modalBlur');
@@ -145,13 +144,12 @@ export class LoginComponent implements OnInit, OnDestroy {
           that.secureLs.set("data", JSON.stringify(body.record));
           that.secureLs.set("termdata", JSON.stringify(body.record.userterminal));
           that.secureLs.set("token", body.token);
+          that.secureLs.set("iat", Date.now());
           if (body.success) {
             $('#verify').modal('hide')
             $('.container-fluid').removeClass('modalBlur');
             that.router.navigate(['/home']);
             that.stompClient.disconnect();
-            // console.log(body.token);
-
           }
         }
 

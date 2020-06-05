@@ -23,42 +23,36 @@ export class HeadService {
   };
 
   constructor(private appConfiguration: AppConfiguration, private http: HttpClient) {
-    this.apiUrl = this.appConfiguration.ipSocketServer;
+    this.apiUrl = this.appConfiguration.ipServer;
     this.apiSocket = this.appConfiguration.ipSocketServer;
-    console.log(this.ls.get('token'));
   }
 
-
   getDataReqOtorisation(stt, intv) {
-
     const params = new HttpParams()
       .set('state', stt)
       .set('timeInterval', intv)
-
-    return this.http.get(this.apiUrl + 'api/wbheadvalidation/getnew?' + params, this.httpOptions)
+    return this.http.get(this.apiSocket + 'api/wbheadvalidation/getnew?' + params, this.httpOptions)
   }
 
   setState(stt, transId, reject, usr) {
-
-    // const params = new HttpParams()
-    //   .set('state', stt)
-    //   .set('transId', transId)
-    //   .set('rejectedstate', reject)
-    //   .set('user', usr)
-
-    console.log("state : ", stt);
-    console.log("transid : ", transId);
-    console.log("reject : ", reject);
-    console.log("ussr : ", usr);
-
-
-
-
-    return this.http.get(this.apiUrl + 'api/wbheadvalidation/setstate?state=' + stt + '&transId=' + transId + '&rejectedstate=' + reject + '&user=' + usr, this.httpOptions)
+    return this.http.get(this.apiSocket + 'api/wbheadvalidation/setstate?state=' + stt + '&transId=' + transId + '&rejectedstate=' + reject + '&user=' + usr, this.httpOptions)
   }
 
+  getDataReqOtoHeadCS(usrnm, brch, sts) {
+    const params = new HttpParams()
+      .set('username', usrnm)
+      .set('branchcode', brch)
+      .set('status', sts)
+    return this.http.get(this.apiUrl + 'api/wbheadvalidation/getnewcs?' + params, this.httpOptions)
+  }
 
-
+  updateValidation(status, transId) {
+    const params = new HttpParams()
+      .set('state', status)
+      .set('transId', transId)
+    return this.http.get(this.apiUrl + 'api/wbheadvalidation/csupdatestatus?' + params, this.httpOptions).pipe(
+    );
+  }
 
 
 }

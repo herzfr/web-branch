@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Overpass:wght@300&display=swap');
+
+* {
+  font-family: 'Overpass', sans-serif;
+  color: #192A59;
+}
+
+::ng-deep .cdk-overlay-pane {
+  overflow: auto;
+}
+
+* label {
+  font-size: 14px;
+}
+
+
+.btn-close {
+  color: #133764;
+  border: 0px solid transparent;
+  outline: none;
+}
+
+p,
+label {
+  color: #133764;
+}
+
+#line1 {
+  background-color: #133764;
+}
+
+#line1>p {
+  color: #EEF3F8;
+}
+
+
+/* Input
+ ------------------------------------------------------------- */
+input[type="text"] {
+  height: 30px;
+  font-size: smaller;
+  background: #EEF3F8;
+  border: 1px solid #133764;
+  box-sizing: border-box;
+  border-radius: 20px;
+  outline: none;
+  padding-left: 10px;
+  padding-right: 10px;
+  transition: all 0.3s ease;
+  color: #133764;
+}
+
+input[type="text"]:focus {
+  text-indent: 10px;
+  box-shadow: none;
+}
+
+/* Select
+ ------------------------------------------------------------- */
+select.form-control:not([size]):not([multiple]) {
+  height: calc(2rem + 1px);
+  box-shadow: none;
+  height: 30px;
+  font-size: smaller;
+  background: #EEF3F8;
+  border: 1px solid #133764;
+  box-sizing: border-box;
+  border-radius: 20px;
+  outline: none;
+  padding-left: 10px;
+  padding-right: 10px;
+  transition: all 0.3s ease;
+  color: #133764;
+}
+
+
+.btn-retrieve {
+  width: inherit;
+  background: #192A59;
+  /* height: 30px; */
+  outline: none;
+  border: 1px solid transparent;
+  border-radius: 50px;
+  box-shadow: 3px 3px 4px 0px rgba(0, 0, 0, 0.25);
+  color: #EEF3F8;
+}
+
+#line1 {
+  background-color: #133764;
+}
+
+#line1>p {
+  color: #EEF3F8;
+}
+
+
+/* Radio button
+ ------------------------------------------------------------- */
+[type="radio"]:checked,
+[type="radio"]:not(:checked) {
+  position: absolute;
+  left: -9999px;
+}
+
+[type="radio"]:checked+label,
+[type="radio"]:not(:checked)+label {
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  line-height: 20px;
+  display: inline-block;
+  color: #666666;
+}
+
+[type="radio"]:checked+label:before,
+[type="radio"]:not(:checked)+label:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #999999;
+  border-radius: 50%;
+  background: #fff;
+}
+
+[type="radio"]:checked+label:after,
+[type="radio"]:not(:checked)+label:after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: #133764;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  border-radius: 50%;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+[type="radio"]:not(:checked)+label:after {
+  opacity: 0;
+  -webkit-transform: scale(0);
+  transform: scale(0);
+}
+
+[type="radio"]:checked+label:after {
+  opacity: 1;
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
+
+
+.fixedTop {
+  position: fixed;
+  /* right: 10%; */
+  left: 0%;
+  width: inherit;
+  padding: 0px 20px;
+  z-index: 1030;
+  top: 0 !important;
+  background: #fff;
+  transition: all 0.7s ease;
+  box-shadow: 0px 3px 10px 2px rgba(62, 62, 62, 0.29);
+}
+
+
+.mat-error {
+  font-size: 14px;
+}
+
+.img-responsive {
+  width: inherit;
+  max-height: 370px;
+  min-height: 370px;
+}
+
+#photo {
+  border-radius: 200px;
+  width: inherit;
+}
+
+.btn-cls {
+  min-width: 200px;
+  background: linear-gradient(#F2C94C, #F2994A);
+  color: #EEF3F8;
+}

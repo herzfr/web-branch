@@ -1,0 +1,17 @@
+<div mat-dialog-title class="d-flex justify-content-center align-items-center">
+  <p class="h4 mb-0 text-success">Success</p>
+</div>
+<mat-dialog-content id="print-section" class="mat-typography">
+
+  <ng-container>
+    <p class="lead">Data: {{ dataInfo.message }}</p>
+    <p class="lead">ID: {{ dataInfo.id }}</p>
+  </ng-container>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-center">
+  <button (click)="print()" mat-raised-button>Print</button>
+  <button (click)="ok()" mat-raised-button>Ok</button>
+</mat-dialog-actions>

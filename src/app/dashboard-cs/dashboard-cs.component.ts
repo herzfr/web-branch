@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
-
-
 import * as moment from 'moment';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
@@ -14,6 +12,7 @@ import { AppConfiguration } from '../models/app.configuration';
 import { SharedService } from '../services/shared.service';
 import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
 import { DialogNewCustomerComponent } from '../dialog/dialog-new-customer/dialog-new-customer.component';
+import { ConfigurationService } from '../services/configuration.service';
 declare var $: any;
 declare var jQuery: any;
 
@@ -42,10 +41,13 @@ export class DashboardCsComponent implements OnInit {
 
   secureLs = new SecureLS({ encodingType: 'aes' });
 
+  newAccountType: string;
+
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService,
-    private appConfig: AppConfiguration, private sharedService: SharedService) {
+    private appConfig: AppConfiguration, private sharedService: SharedService, private config: ConfigurationService) {
+    this.newAccountType = this.config.getConfig().typeNewAccount;
     this.serverUrl = appConfig.ipSocketServer + "socket";
     console.log("dashboar socket : ", this.serverUrl);
   }
@@ -64,32 +66,24 @@ export class DashboardCsComponent implements OnInit {
     let branch = JSON.parse(this.secureLs.get("terminal"));
     this.branchCode = branch.branchCode;
 
-    this.queueServ.getNewQueue(this.branchCode, this.waitingCall, this.outCall).subscribe(res => {
+    this.queueServ.getNewQueueCS(this.branchCode, this.waitingCall, this.outCall).subscribe(res => {
       console.log(res);
       let data = new Array;
       for (const key in res) {
         if (res.hasOwnProperty(key)) {
           const element = res[key];
+          console.log(JSON.parse(element.transbuff));
           let transBf = JSON.parse(element.transbuff);
+
+
+
           let date = moment(element.timestampentry).format('DD/MM/YYYY HH:mm:ss')
           // let transf = new Array;
           // this.DataTableQ.push(element)
 
-          // console.log(element);  
-
-
-          switch (transBf.tp) {
-            case 'trk':
-              transBf.tp = 'Tarik Tunai';
-              break;
-            case 'str':
-              transBf.tp = 'Setor Tunai';
-              break;
-            case 'tar':
-              transBf.tp = 'Transfer Antar Rekening';
-              break;
-            case 'tab':
-              transBf.tp = 'Transfer Antar Bank';
+          switch (element.trntype) {
+            case this.newAccountType:
+              transBf.tp = 'Pembukaan Rekening Baru';
               break;
             default:
               break;
@@ -122,8 +116,6 @@ export class DashboardCsComponent implements OnInit {
           }
         }
 
-        // console.log(_data);
-
         for (const key in _data) {
           if (_data.hasOwnProperty(key)) {
             const element = _data[key];
@@ -134,7 +126,6 @@ export class DashboardCsComponent implements OnInit {
           }
         }
 
-        // console.log(_data);
         this.DataTableQ = _data;
         this.dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
 
@@ -164,71 +155,78 @@ export class DashboardCsComponent implements OnInit {
 
   nextQueue() {
 
-    let TypeNasabah = 'non';
 
-    if (TypeNasabah === 'non') {
-      console.log('test');
-      this.queueServ.getNewQueueCS(this.branchCode, "998", "999").subscribe(e => {
-        console.log(e[0]);
-        this.transactionDialogNon(e[0])
-      })
-    } else {
-      this.queueServ.getLatestQue(this.branchCode, 998).subscribe(res => {
+    this.queueServ.getLatestQueCS(this.branchCode, 998).subscribe(res => {
 
-        if (res['success'] == true) {
-          let datares = res['record']
-          console.log(datares);
+      console.log(res);
 
-          res['record'].forEach(element => {
-            element.transbuff = '[' + element.transbuff + ']'
-            let parse = JSON.parse(element.transbuff)
-            element.transbuff = parse;
-          });
 
-          this.transactionDialog(res['record'])
+      if (res['success']) {
+        let datares = res['record']
+        console.log(datares);
 
-        } else if (res['success'] == false) {
+        res['record'].forEach(element => {
+          element.transbuff = '[' + element.transbuff + ']'
+          let parse = JSON.parse(element.transbuff)
+          element.transbuff = parse;
+        });
 
-          this.queueServ.getLatestQue(this.branchCode, 999).subscribe(res => {
-
-            if (res['success'] == true) {
-              let datares = res['record']
-              console.log(datares);
-
-              res['record'].forEach(element => {
-                element.transbuff = '[' + element.transbuff + ']'
-                let parse = JSON.parse(element.transbuff)
-                element.transbuff = parse;
-              });
-
-              this.transactionDialog(res['record'])
-            } else {
-              console.log('data tidak ada');
-
-              if (localStorage.getItem('skip') !== null) {
-
-                var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
-                this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
-                  console.log(eco);
-
-                  if (eco['successId0']) {
-                    this.queueServ.refreshQ(this.branchCode).subscribe()
-                    localStorage.removeItem('skip')
-                  } else {
-                    this.queueServ.refreshQ(this.branchCode).subscribe()
-                  }
-
-                })
-              }
-            }
-          })
-
+        if (res['record'][0].trntype === this.newAccountType) {
+          this.transactionDialogNon(res['record'][0])
         } else {
-          console.log('DATA TIDAK ADA');
+          this.transactionDialog(res['record'])
         }
 
-      })
-    }
+      } else if (!res['success']) {
+
+        this.queueServ.getLatestQueCS(this.branchCode, 999).subscribe(res => {
+
+          console.log(res);
+
+          if (res['success']) {
+            let datares = res['record']
+            console.log(datares);
+
+            res['record'].forEach(element => {
+              element.transbuff = '[' + element.transbuff + ']'
+              let parse = JSON.parse(element.transbuff)
+              element.transbuff = parse;
+            });
+
+            if (res['record'][0].trntype === this.newAccountType) {
+              this.transactionDialogNon(res['record'][0])
+            } else {
+              this.transactionDialog(res['record'])
+            }
+
+
+          } else {
+            console.log('data tidak ada');
+
+            if (localStorage.getItem('skip') !== null) {
+
+              var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+              this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
+                console.log(eco);
+
+                if (eco['successId0']) {
+                  this.queueServ.refreshQ(this.branchCode).subscribe()
+                  localStorage.removeItem('skip')
+                } else {
+                  this.queueServ.refreshQ(this.branchCode).subscribe()
+                }
+
+              })
+            }
+          }
+        })
+
+      } else {
+        console.log('DATA TIDAK ADA');
+      }
+
+    })
+
 
     // function disableF5(e) { if ((e.which || e.keyCode) == 116) e.preventDefault(); };
     // $(document).on("keydown", disableF5);
@@ -259,7 +257,86 @@ export class DashboardCsComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.width = '1200px';
 
-    this.dlg.open(DialogNewCustomerComponent, dialogConfig)
+    console.log(event.transid);
+
+
+    let postStat = new Array;
+
+    let obj: any = new Object();
+    obj.transId = event.transid;
+    obj.status = this.inCall;
+
+    postStat.push(obj)
+
+    this.queueServ.changeStatusTransactionQ(postStat).subscribe(res => {
+      console.log(res);
+      if (res['successId0']) {
+        this.queueServ.refreshQ(this.branchCode).subscribe()
+      }
+    })
+
+    this.dlg.open(DialogNewCustomerComponent, dialogConfig).afterClosed().subscribe(e => {
+      console.log(e[0].type);
+
+      switch (e[0].type) {
+        case 'finish':
+
+          delete e[0].type
+          this.queueServ.changeStatusTransactionQCS(e).subscribe(res => {
+            console.log(res);
+            if (res['successId0']) {
+              this.queueServ.refreshQCS(this.branchCode).subscribe()
+            }
+          })
+          break;
+        case 'skip':
+          this.nextQueue()
+
+          // Get Local STORAGE
+          var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+
+          delete e[0].type
+          oldItems.push(e[0]);
+
+          localStorage.setItem('skip', JSON.stringify(oldItems));
+          console.log(JSON.stringify(oldItems));
+
+          this.queueServ.refreshQCS(this.branchCode).subscribe()
+
+
+          this.queueServ.changeStatusTransactionQCS(e).subscribe(res => {
+            console.log(res);
+            if (res['successId0']) {
+              this.queueServ.refreshQCS(this.branchCode).subscribe()
+            }
+          })
+          break;
+        case 'cancel':
+
+          delete e[0].type
+          this.queueServ.changeStatusTransactionQCS(e).subscribe(res => {
+            console.log(res);
+            if (res['successId0']) {
+              this.queueServ.refreshQCS(this.branchCode).subscribe()
+            }
+          })
+          break;
+        case 'close':
+
+          delete e[0].type
+          this.queueServ.changeStatusTransactionQCS(e).subscribe(res => {
+            console.log(res);
+            if (res['successId0']) {
+              this.queueServ.refreshQCS(this.branchCode).subscribe()
+            }
+          })
+          break;
+        default:
+          break;
+      }
+
+
+    })
   }
 
   transactionDialog(datas) {
@@ -318,12 +395,6 @@ export class DashboardCsComponent implements OnInit {
           localStorage.setItem('skip', JSON.stringify(oldItems));
           console.log(JSON.stringify(oldItems));
 
-
-          // this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
-          //   console.log(res);
-          //   this.queueServ.refreshQ(this.branchCode).subscribe()
-          // })
-
         } else if (resBack[0].batal) {
           console.log('batal jalan');
 
@@ -369,19 +440,14 @@ export class DashboardCsComponent implements OnInit {
           })
         }
       }
-
-
-
-
-
-    })
+    });
 
   }
 
   connect() {
     let ls = JSON.parse(this.secureLs.get("terminal"));
     const branchCode = ls.branchCode;
-    const socketChannel = "/tlrx" + branchCode;
+    const socketChannel = "/csx" + branchCode;
     this.initializeWebSocketConnection(socketChannel);
   }
 
@@ -389,7 +455,7 @@ export class DashboardCsComponent implements OnInit {
     let ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(ws);
     let that = this;
-    this.stompClient.connect({ "testing": "testaja" }, function (frame) {
+    this.stompClient.connect({}, function (frame) {
       // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
 
       that.stompClient.subscribe(socket, (message) => {

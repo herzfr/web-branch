@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { SharedService } from '../services/shared.service';
 import { MatSidenav } from '@angular/material';
+import { UtilityService } from '../services/utility.service';
 
 declare var $: any;
 
@@ -50,9 +51,27 @@ export class HomeComponent implements OnInit, OnDestroy {
           children: []
         },
         {
+          displayName: 'CS DashBoard',
+          iconName: 'chevron_right',
+          route: "/home/cs",
+          children: []
+        },
+        {
           displayName: 'Head Teller DashBoard',
           iconName: 'chevron_right',
           route: "/home/head-teller",
+          children: []
+        },
+        {
+          displayName: 'Head CS DashBoard',
+          iconName: 'chevron_right',
+          route: "/home/head-cs",
+          children: []
+        },
+        {
+          displayName: 'History Transaksi',
+          iconName: 'chevron_right',
+          route: "/home/history",
           children: []
         },
         {
@@ -146,7 +165,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   constructor(private dialog: DialogService, private websocket: WebsocketService, private branchService: DataBranchServices,
-    private route: Router, private userService: UserService, private sharedService: SharedService) {
+    private route: Router, private userService: UserService, private sharedService: SharedService, private utilityService: UtilityService) {
     this.setInfoNavbar();
   }
 
@@ -157,9 +176,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       });
     });
     this.userVoid();
+    this.checkSessionIat();
 
     let dataRoles: any = this.userService.getUserRoles();
-    console.log("isi roles ", dataRoles);
+    // console.log("isi roles ", dataRoles);
 
     this.sharedService.isVisibleSource.subscribe((isVisible: boolean) => {
       this.isMenuVisible = isVisible;
@@ -167,12 +187,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.drawer.close();
       }
     });
-
-
   }
 
   // get user data 
   userVoid() {
+    this.checkSessionIat();
     const data = JSON.parse(this.secureLs.get("data"));
 
     this.branchSub = this.branchService.getBranchByCode(data.branchcode).subscribe(res => {
@@ -185,13 +204,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.lastName = data.lastname;
 
     const date = moment(data.lastlogindate).locale('ID').format('Do MMMM  YYYY')
-    console.log("raw : ", data.lastlogindate);
-
-    console.log("date :", date);
+    // console.log("raw : ", data.lastlogindate);
+    // console.log("date :", date);
 
     this.lastLog = data.lastlogindate
     // this.lastLoghour = data.lastlogindate
-
 
     const socketDestination = "usr" + this.userName;
     this.websocket.initializeWebSocketConnection(socketDestination)
@@ -200,6 +217,24 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.branchSub.unsubscribe();
       }
     }, 2000);
+  }
+
+  checkSessionIat() {
+
+    try {
+      const iat = this.secureLs.get('iat');
+      let ms = moment(Date.now()).diff(iat);
+      let d = moment.duration(ms);
+      let dif = Math.floor(d.asHours());
+      if (dif > 8) {
+        alert("Sesion anda sudah berakhir, mohon login kembali");
+        this.logout();
+      }
+    } catch (error) {
+      alert("Sesion anda sudah berakhir, mohon login kembali");
+      this.logout();
+    }
+
   }
 
   setInfoNavbar() {
@@ -217,6 +252,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   logout() {
     localStorage.removeItem('data');
     localStorage.removeItem('termdata');
+    localStorage.removeItem('iat');
     this.route.navigate(['/login']);
   }
 

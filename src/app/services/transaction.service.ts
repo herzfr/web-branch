@@ -26,7 +26,7 @@ export class TransactionService {
   constructor(private appConfiguration: AppConfiguration, private http: HttpClient) {
     this.apiUrl = this.appConfiguration.ipServer;
     this.apiSocket = this.appConfiguration.ipSocketServer;
-    console.log(this.ls.get('token'));
+    // console.log(this.ls.get('token'));
   }
 
   verifyCard(card, pin) {
@@ -70,6 +70,7 @@ export class TransactionService {
   callApp() {
     return this.http.get(this.localHost + "api/wbservice/call");
   }
+
 
 
 }

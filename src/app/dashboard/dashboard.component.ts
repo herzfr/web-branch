@@ -16,6 +16,7 @@ import { AppConfiguration } from '../models/app.configuration';
 import { DialogTransactionComponent } from '../dialog/dialog-transaction/dialog-transaction.component';
 import * as SecureLS from 'secure-ls';
 import { SharedService } from '../services/shared.service';
+import { ConfigurationService } from '../services/configuration.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,10 +45,31 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
+  // transaction code 
+  setorTunaiCode: string;
+  tarikTunaiCode: string;
+  transferAntarBankCode: string;
+  transferAntarRekCode: string;
+  informasiSaldoTabunganCode: string;
+  informasiSaldoGiroCode: string;
+
   constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService,
-    private appConfig: AppConfiguration, private sharedService: SharedService) {
+    private appConfig: AppConfiguration, private sharedService: SharedService, private config: ConfigurationService) {
     this.serverUrl = appConfig.ipSocketServer + "socket";
-    console.log("dashboar socket : ", this.serverUrl);
+    // console.log("dashboar socket : ", this.serverUrl);
+
+    if (localStorage.getItem('skip')) {
+      localStorage.removeItem('skip')
+    } else {
+      // console.log('data skip kosong');
+    }
+
+    this.setorTunaiCode = this.config.getConfig().typeSetorTunai;
+    this.tarikTunaiCode = this.config.getConfig().typeTarikTunai;
+    this.transferAntarBankCode = this.config.getConfig().typeTransferAntarBank;
+    this.transferAntarRekCode = this.config.getConfig().typeTransferAntarRek;
+    this.informasiSaldoGiroCode = this.config.getConfig().typeCheckSaldoGiro;
+    this.informasiSaldoTabunganCode = this.config.getConfig().typeCheckSaldoTabungan;
 
   }
 
@@ -57,43 +79,42 @@ export class DashboardComponent implements OnInit {
     this.connect();
   }
 
-
   getDataTableQ() {
-
-    console.log('jalan');
+    // console.log('jalan');
     let dataQ;
-
     let branch = JSON.parse(this.secureLs.get("terminal"));
     this.branchCode = branch.branchCode;
 
     this.queueServ.getNewQueue(this.branchCode, this.waitingCall, this.outCall).subscribe(res => {
-      console.log(res);
+      // console.log("isi data : ", res);
       let data = new Array;
       for (const key in res) {
         if (res.hasOwnProperty(key)) {
           const element = res[key];
           let transBf = JSON.parse(element.transbuff);
           let date = moment(element.timestampentry).format('DD/MM/YYYY HH:mm:ss')
-          // let transf = new Array;
-          // this.DataTableQ.push(element)
-
-          // console.log(element);  
-
 
           switch (transBf.tp) {
-            case 'trk':
+            case this.tarikTunaiCode:
               transBf.tp = 'Tarik Tunai';
               break;
-            case 'str':
+            case this.setorTunaiCode:
               transBf.tp = 'Setor Tunai';
               break;
-            case 'tar':
+            case this.transferAntarRekCode:
               transBf.tp = 'Transfer Antar Rekening';
               break;
-            case 'tab':
+            case this.transferAntarBankCode:
               transBf.tp = 'Transfer Antar Bank';
               break;
+            case this.informasiSaldoGiroCode:
+              transBf.tp = 'Informasi Saldo Giro';
+              break;
+            case this.informasiSaldoTabunganCode:
+              transBf.tp = 'Informasi Saldo Tabungan';
+              break;
             default:
+              transBf.tp = 'Unknown';
               break;
           }
 
@@ -103,8 +124,6 @@ export class DashboardComponent implements OnInit {
           data.push(element)
         }
       }
-
-      console.log(data);
 
       if (data.length > 0) {
         console.log('data ada');
@@ -125,7 +144,6 @@ export class DashboardComponent implements OnInit {
         }
 
         // console.log(_data);
-
         for (const key in _data) {
           if (_data.hasOwnProperty(key)) {
             const element = _data[key];
@@ -142,7 +160,7 @@ export class DashboardComponent implements OnInit {
 
         this.isQEmpty = false;
       } else {
-        console.log('data gak ada');
+        // console.log('data gak ada');
         this.isQEmpty = true;
         this.DataTableQ = _data;
         this.dataSource = new MatTableDataSource<QTable>(this.DataTableQ);
@@ -169,8 +187,7 @@ export class DashboardComponent implements OnInit {
 
       if (res['success'] == true) {
         let datares = res['record']
-        console.log(datares);
-
+        // console.log(datares);
         res['record'].forEach(element => {
           element.transbuff = '[' + element.transbuff + ']'
           let parse = JSON.parse(element.transbuff)
@@ -185,8 +202,7 @@ export class DashboardComponent implements OnInit {
 
           if (res['success'] == true) {
             let datares = res['record']
-            console.log(datares);
-
+            // console.log(datares);
             res['record'].forEach(element => {
               element.transbuff = '[' + element.transbuff + ']'
               let parse = JSON.parse(element.transbuff)
@@ -298,12 +314,6 @@ export class DashboardComponent implements OnInit {
           localStorage.setItem('skip', JSON.stringify(oldItems));
           console.log(JSON.stringify(oldItems));
 
-
-          // this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
-          //   console.log(res);
-          //   this.queueServ.refreshQ(this.branchCode).subscribe()
-          // })
-
         } else if (resBack[0].batal) {
           console.log('batal jalan');
 
@@ -313,6 +323,26 @@ export class DashboardComponent implements OnInit {
 
           this.queueServ.changeStatusTransactionQ(resBack).subscribe(res => {
             console.log(res);
+            if (res['successId0']) {
+              if (localStorage.getItem('skip') !== null) {
+
+                var oldItems = JSON.parse(localStorage.getItem('skip')) || [];
+                this.queueServ.changeStatusTransactionQ(oldItems).subscribe(eco => {
+                  console.log(eco);
+
+                  if (eco['successId0']) {
+                    this.queueServ.refreshQ(this.branchCode).subscribe()
+                    localStorage.removeItem('skip')
+                  } else {
+                    this.queueServ.refreshQ(this.branchCode).subscribe()
+                  }
+
+                })
+
+              } else {
+                this.queueServ.refreshQ(this.branchCode).subscribe()
+              }
+            }
             this.queueServ.refreshQ(this.branchCode).subscribe()
           })
 
@@ -350,11 +380,7 @@ export class DashboardComponent implements OnInit {
         }
       }
 
-
-
-
-
-    })
+    });
 
   }
 
@@ -369,15 +395,13 @@ export class DashboardComponent implements OnInit {
     let ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(ws);
     let that = this;
-    this.stompClient.connect({ "testing": "testaja" }, function (frame) {
-      // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
+    this.stompClient.connect({}, function (frame) {
 
       that.stompClient.subscribe(socket, (message) => {
         if (message.body) {
-          console.log(JSON.parse(message.body));
-
+          // console.log(JSON.parse(message.body));
           if (JSON.parse(message.body).success) {
-            console.log("Success bro");
+            // console.log("Success bro");
             that.getDataTableQ();
           }
         }
@@ -393,14 +417,7 @@ export class DashboardComponent implements OnInit {
     this.stompClient.disconnect();
   }
 
-
-
-
-
 }
-
-
-
 
 export interface dataQueueNo {
   branchcode: string;
