@@ -929,6 +929,7 @@ export class DialogTransactionComponent implements OnInit {
     this.stompClient = Stomp.over(ws);
     let that = this;
 
+
     switch (socket) {
       case 'vldnas':
         this.stompClient.connect({}, function (frame) {
@@ -969,13 +970,18 @@ export class DialogTransactionComponent implements OnInit {
                 that.dataFormHeadValidation.isValidated = 1
                 that.dataFormHeadValidation.timestampprocess = Date.now().toString();
                 that.dataFormHeadValidation.userterminal = JSON.parse(that.ls.get('data')).userterminal;
+                console.log("send data : ", that.dataFormHeadValidation);
+
+                that.dataFormHeadValidation.trntype = "000001";
+
                 that.transacServ.sendRemoteValidation(that.dataFormHeadValidation, that.headSelectTeller.userid).subscribe(resp => {
                   // console.log("response : ", resp);
                   if (resp['success']) {
                     // that.onFingerVerifyHead(parse, stepper, drawer, "onsite");
                     that.sendProcess(that.dataFormActual, that.dataFormHeadValidation, stepper, drawer, "onsite");
                   } else {
-                    alert("validasi gagal");
+                    // alert("validasi gagal");
+                    that.sendProcess(that.dataFormActual, that.dataFormHeadValidation, stepper, drawer, "onsite");
                   }
                 });
               }
@@ -1094,6 +1100,8 @@ export class DialogTransactionComponent implements OnInit {
         } else if (this.dataFormHeadValidation.trntype === 'Transaksi Antar Bank') {
           this.dataFormHeadValidation.trntype = 'tab'
         }
+
+        this.dataFormHeadValidation.trntype = "0000001  ";
 
         this.dataFormHeadValidation.isRejected = 0
         this.dataFormHeadValidation.isValidated = 0
