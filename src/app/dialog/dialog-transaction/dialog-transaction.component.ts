@@ -845,36 +845,37 @@ export class DialogTransactionComponent implements OnInit {
 
           this.queueServ.processTransactionDataQ2(this.dataFormActual).subscribe(res => {
 
-            if (res['wbrspc'] === "0000000") {
+            // if (res['wbrspc'] === "0000000") {
 
-              this.saldoData = res;
-              let nominal = Number(res['wbtrbf'].wsblav);
-              console.log("nominal :", nominal);
-              this.saldoData.wbtrbf.wsblav = nominal.toString();
-              console.log("data saldo : ", res);
+            this.saldoData = res;
+            let nominal = Number(res['wbtrbf'].wsblav);
+            console.log("nominal :", nominal);
+            this.saldoData.wbtrbf.wsblav = nominal.toString();
+            console.log("data saldo : ", res);
 
-              $('#scan-finger').removeClass('blink')
-              setTimeout(() => {
-                stepper.next()
-                stepper.next()
-                this.disconnect()
-                $('.otp-input').prop('readonly', false);
-                $('.otp-input').val('');
-                this.isPinMessageSuccess = false;
-                this.isPinMessageError = false;
-                this.isScanFinger = false;
-                this.isSwapCard = true;
-                this.isInputPin = false;
-                this.isCardNumber = false;
-                this.isFingerError = false;
-                this.isFingerSuccess = false;
-                this.onCheckBalance();
-              }, 1000)
-            } else {
-              alert("Process Transaksi Gagal")
-            }
+            $('#scan-finger').removeClass('blink')
+            setTimeout(() => {
+              stepper.next()
+              stepper.next()
+              this.disconnect()
+              $('.otp-input').prop('readonly', false);
+              $('.otp-input').val('');
+              this.isPinMessageSuccess = false;
+              this.isPinMessageError = false;
+              this.isScanFinger = false;
+              this.isSwapCard = true;
+              this.isInputPin = false;
+              this.isCardNumber = false;
+              this.isFingerError = false;
+              this.isFingerSuccess = false;
+              this.onCheckBalance();
+            }, 1000)
+            // } else {
+            //   alert("Process Transaksi Gagal")
+            // }
           });
         } else {
+          
           alert('Data gagal proses, silahkan coba lagi')
           setTimeout(() => {
             this.isProsses = false;
