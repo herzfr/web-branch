@@ -128,9 +128,9 @@ export class DashboardComponent implements OnInit {
             transBf.tp = "Setor Tunai"
           } else if (transBf.tp == "000003") {
             transBf.tp = "Tarik Tunai"
-          } else if (transBf.tp == "0000004") {
+          } else if (transBf.tp == "000004") {
             transBf.tp = "Transfer Antar Rekening"
-          } else if (transBf.tp == "0000005") {
+          } else if (transBf.tp == "000005") {
             transBf.tp = "Transfer Antar Bank"
           }
 
