@@ -1,8 +1,8 @@
 // created by Dwi & Herza
 export const configuration = {
 
-    ipServer: 'https://10.62.10.28:8443/',
-    ipSocket: 'https://10.62.10.28:8444/',
+    ipServer: 'https://192.168.43.91:8443/',
+    ipSocket: 'https://192.168.43.91:8444/',
 
     typeCheckSaldoGiro: "0001001",
     typeCheckSaldoTabungan: "0002001",
