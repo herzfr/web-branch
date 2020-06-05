@@ -172,6 +172,11 @@ export class DialogTransactionComponent implements OnInit {
         this.transID_for_while = element.transid
         this.status_for_while = element.status
 
+        console.log("changeKey.tp : ", changeKey.tp);
+
+
+
+
         if (changeKey.tp === this.tarikTunaiCode) {
           this.transLabel.push("Tarik Tunai");
           changeKey.tp = 'Tarik Tunai'
@@ -187,10 +192,36 @@ export class DialogTransactionComponent implements OnInit {
         } else if (changeKey.tp === this.informasiSaldoGiroCode) {
           this.transLabel.push("Informasi Saldo Giro");
           changeKey.tp = 'Informasi Saldo Giro'
-        } else if (changeKey.tp === this.informasiSaldoTabunganCode) {
-          this.transLabel.push("Informasi Saldo Tabungan");
-          changeKey.tp = 'Informasi Saldo Tabungan'
         }
+
+        else if (changeKey.tp === "000002") {
+          this.transLabel.push("Setor Tunai");
+          changeKey.tp = 'Setor Tunai'
+        }
+        else if (changeKey.tp === "000003") {
+          this.transLabel.push("Tarik Tunai");
+          changeKey.tp = 'Tarik Tunai'
+        }
+
+        else if (changeKey.tp === "000004") {
+          this.transLabel.push("Transfer Antar Rekening");
+          changeKey.tp = 'Transfer Antar Rekening'
+        }
+        else if (changeKey.tp === "000005") {
+          this.transLabel.push("Transfer Antar Bank");
+          changeKey.tp = 'Transfer Antar Bank'
+        }
+        else if (changeKey.tp === "0002001") {
+          this.transLabel.push("Saldo Tabungan");
+          changeKey.tp = 'Saldo Tabungan'
+        }
+        else if (changeKey.tp === "0001001") {
+          this.transLabel.push("Saldo Giro");
+          changeKey.tp = 'Saldo Giro'
+        }
+
+
+
 
         if (changeKey.tn === '1') {
           changeKey.tn = 'Ya'
