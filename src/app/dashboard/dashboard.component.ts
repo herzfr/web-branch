@@ -94,6 +94,9 @@ export class DashboardComponent implements OnInit {
           let transBf = JSON.parse(element.transbuff);
           let date = moment(element.timestampentry).format('DD/MM/YYYY HH:mm:ss')
 
+          console.log("transtype : ", transBf.tp);
+
+
           switch (transBf.tp) {
             case this.tarikTunaiCode:
               transBf.tp = 'Tarik Tunai';
@@ -113,9 +116,22 @@ export class DashboardComponent implements OnInit {
             case this.informasiSaldoTabunganCode:
               transBf.tp = 'Informasi Saldo Tabungan';
               break;
-            default:
-              transBf.tp = 'Unknown';
+            case '0002001':
+              transBf.tp = 'Informasi Saldo Tabungan';
               break;
+            case '0001001':
+              transBf.tp = 'Informasi Saldo Giro';
+              break;
+          }
+
+          if (transBf.tp == "000002") {
+            transBf.tp = "Setor Tunai"
+          } else if (transBf.tp == "000003") {
+            transBf.tp = "Tarik Tunai"
+          } else if (transBf.tp == "0000004") {
+            transBf.tp = "Transfer Antar Rekening"
+          } else if (transBf.tp == "0000005") {
+            transBf.tp = "Transfer Antar Bank"
           }
 
           element.transbuff = JSON.stringify(transBf);
