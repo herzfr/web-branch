@@ -432,6 +432,9 @@ export class DialogTransactionComponent implements OnInit {
       // console.log("account number :", accountNumber.value);
 
       switch (accountNumber.value) {
+        case "1001000001":
+          this.cardNum = 1234567890123456;
+          break;
         case "1001000002":
           this.cardNum = 1234567890000002;
           break;
