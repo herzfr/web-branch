@@ -1,13 +1,13 @@
 <mat-toolbar>
   <div class="container-fluid justify-content-between d-flex p-0">
     <div class="col-6 col-md-3 d-flex align-items-center p-0">
-      
-        <div id="nav-icon" (click)="drawer.toggle()">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+
+      <div id="nav-icon" (click)="drawer.toggle()">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
       <img class="pl-3 pr-3" src="/assets/svgs/logo-blue.svg" alt="logo">
     </div>
     <div class="col-12 col-sm-6 col-md-9 d-flex align-items-center justify-content-end">
@@ -15,10 +15,10 @@
       <div class="card border-welcome ml-2 mr-2" style="max-width: 25rem;">
         <ul class="list-group p-1">
           <li class="list-group-item d-flex justify-content-end align-items-center p-0">
-            Selamat Datang
+            <!-- Selamat Datang --> {{userName | uppercase }}
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center p-0">
-            <p class="card-text text-right"> {{userName | uppercase }} | {{firstName }} {{lastName }} |
+            <p class="card-text text-right"> {{firstName }} {{lastName }} |
               {{branchCode}}-Cabang Utama</p>
           </li>
         </ul>
@@ -59,23 +59,23 @@
 <mat-drawer-container class="example-container h-100" autosize>
   <mat-drawer #drawer class="example-sidenav" mode="side">
 
-      <span *ngFor="let item of navItems">
-        <!-- Handle branch node buttons here -->
-        <span *ngIf="item.children && item.children.length > 0">
-          <button class="container-fluid text-left" mat-button [matMenuTriggerFor]="menu.childMenu"
-            [disabled]="item.disabled"><img class="pr-3" src="/assets/svgs/{{ item.iconName }}" alt="">
-            {{item.displayName}}
-          </button>
-          <app-navs #menu [items]="item.children"></app-navs>
-        </span>
-        <!-- Leaf node buttons here -->
-        <span *ngIf="!item.children || item.children.length === 0">
-          <button class="container-fluid text-left" mat-button color="primary" [routerLink]="item.route">
-            <img class="pr-3" src="/assets/svgs/{{ item.iconName }}" alt="">
-            {{item.displayName}}
-          </button>
-        </span>
+    <span *ngFor="let item of navItems">
+      <!-- Handle branch node buttons here -->
+      <span *ngIf="item.children && item.children.length > 0">
+        <button class="container-fluid text-left" mat-button [matMenuTriggerFor]="menu.childMenu"
+          [disabled]="item.disabled"><img class="pr-3" src="/assets/svgs/{{ item.iconName }}" alt="">
+          {{item.displayName}}
+        </button>
+        <app-navs #menu [items]="item.children"></app-navs>
       </span>
+      <!-- Leaf node buttons here -->
+      <span *ngIf="!item.children || item.children.length === 0">
+        <button class="container-fluid text-left" mat-button color="primary" [routerLink]="item.route">
+          <img class="pr-3" src="/assets/svgs/{{ item.iconName }}" alt="">
+          {{item.displayName}}
+        </button>
+      </span>
+    </span>
 
   </mat-drawer>
 
