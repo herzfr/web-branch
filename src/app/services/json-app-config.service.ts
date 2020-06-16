@@ -22,7 +22,7 @@ export class JsonAppConfigService extends AppConfiguration {
         this.requestTimeout = data.requestTimeout;
         this.ipLocalHost = "http://localhost:1111/api/wbservice/"
         this.ipLocalHostSocket = "http://localhost:1111/socket"
-        console.log("configuration loaded");
+        // console.log("configuration loaded");
       })
       .catch(() => {
         alert('Could not load configuration');

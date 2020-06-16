@@ -150,6 +150,15 @@
               </mat-select>
             </mat-form-field>
 
+            <mat-form-field class="example-full-width container-fluid">
+              <mat-label>User Terminal </mat-label>
+              <mat-select formControlName="userterminal">
+                <mat-option *ngFor="let userTerminal  of userTerminalData" [value]="userTerminal.value">
+                  {{userTerminal.viewValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
             <mat-radio-group formControlName="enabledF">
               <mat-radio-button class="material-radio ml-2 mr-2" [value]="1" [checked]="enabledValue === 1">Enabled
               </mat-radio-button>

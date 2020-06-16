@@ -12,6 +12,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataBranchServices } from '../services/data-branch.service';
 import * as moment from 'moment';
 import { UserBiometricComponent } from '../dialog/user-biometric/user-biometric.component';
+import { UserTerminalService } from '../services/user-terminal.service';
+import { DialogSuccessComponent } from '../dialog/dialog-success/dialog-success.component';
 
 // created by Dwi S
 
@@ -33,6 +35,7 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   private subUserService: Subscription;
   private subDialog: Subscription;
   private subUserDelete: Subscription;
+  private subUserTerminal: Subscription;
 
   private passwordModel: any = {};
   private userNameOption: any = { standalone: true };
@@ -42,6 +45,7 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   private formEditUser: FormGroup;
   private userIDChange: string;
   private dataAllBrch: any;
+  private userTerminalData: any = [];
   // private sidenav: MatSidenav;
   // dates = new FormControl(new Date());
   serializedDate = new FormControl((new Date()).toISOString());
@@ -54,13 +58,15 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     { role: "Head CS", value: "headcs" },
   ];
 
+
   private enabledValue = 1;
 
   @ViewChild('sidenavEdit', { static: true }) sidenavEdit: MatSidenav;
   @ViewChild('sidenavChange', { static: true }) sidenavChange: MatSidenav;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private usersService: UserService, private dialog: MatDialog, private dataBrch: DataBranchServices) {
+  constructor(private usersService: UserService, private dialog: MatDialog,
+    private dataBrch: DataBranchServices, private userTerminalService: UserTerminalService) {
     this.formPassword = new FormGroup({
       password: new FormControl(null, Validators.required),
       password2: new FormControl(null, Validators.required)
@@ -80,6 +86,7 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       userkas: new FormControl(null),
       userppoint: new FormControl(null),
       userother: new FormControl(null),
+      userterminal: new FormControl(null)
     });
   }
 
@@ -105,7 +112,41 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  getAllUserTerminal() {
+
+    this.subUserTerminal = this.userTerminalService.getAllUserTerminal().subscribe(res => {
+      if (res === null) {
+        // console.log("data kosong");
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+          message: 'Error',
+          message2: 'Failed Get User Terminal Data'
+        };
+        dialogConfig.backdropClass = 'backdropBackground';
+        this.dialog.open(DialogErrorComponent, dialogConfig).afterClosed().subscribe(res => {
+          if (res === 'exit') {
+            this.sidenavEdit.close()
+            this.formEditUser.reset()
+            this.getAllUsersData("", 5, 0);
+          }
+        });
+      } else {
+        for (const key in res) {
+          if (res.hasOwnProperty(key)) {
+            const element = res[key];
+            let data = {
+              value: element.userterminal,
+              viewValue: element.userterminal
+            }
+            this.userTerminalData.push(data);
+          }
+        }
+      }
+    });
+  }
+
   ngAfterViewInit() {
+    this.getAllUserTerminal();
   }
 
   getServerData(event) {
@@ -120,6 +161,12 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     if (this.subDialog) {
       this.subDialog.unsubscribe();
+    }
+    if (this.subUserTerminal) {
+      this.subUserTerminal.unsubscribe();
+    }
+    if (this.subUserDelete) {
+      this.subUserDelete.unsubscribe();
     }
   }
 
@@ -285,6 +332,7 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     this.formEditUser.get('userkas').setValue(event['userkas']);
     this.formEditUser.get('userppoint').setValue(event['userppoint']);
     this.formEditUser.get('userother').setValue(event['userother']);
+    this.formEditUser.get('userterminal').setValue(event['userterminal']);
 
   }
 
@@ -317,9 +365,11 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       "userkas": userKas,
       "userppoint": userPpoint,
       "userother": userOther,
-      "roles":
-        this.formEditUser.value.roles
+      "roles": this.formEditUser.value.roles,
+      "userterminal": this.formEditUser.value.userterminal
+
     }
+
     this.usersService.editUser(obj).subscribe(e => {
       if (e['success']) {
         const dialogConfig = new MatDialogConfig();
@@ -357,7 +407,7 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
         dialogConfig.maxHeight = '1000px'
         dialogConfig.backdropClass = 'backdropBackground'
         this.dialog.open(UserBiometricComponent, dialogConfig).afterClosed().subscribe(e => {
-          console.log(e);
+          // console.log(e);
           if (e === 'reload') {
             this.editBiometric(value)
           }
@@ -365,9 +415,7 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
       } else {
         console.log('data tidak ada');
       }
-    })
-
-
+    });
   }
 
 }
