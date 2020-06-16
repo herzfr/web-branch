@@ -29,6 +29,10 @@ export class TransactionService {
     // console.log(this.ls.get('token'));
   }
 
+  requestValidation(body) {
+    return this.http.post(this.apiUrl + 'api/queue/getValidation', body, this.httpOptions)
+  }
+
   verifyCard(card, pin) {
     const params = new HttpParams()
       .set('cardnumber', card)
