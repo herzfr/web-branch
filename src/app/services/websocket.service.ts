@@ -94,6 +94,11 @@ export class WebsocketService {
   }
 
 
+  disconnectSocket() {
+    console.log("disconnected");
+    this.stompClient.disconnect()
+  }
+
 
 
 

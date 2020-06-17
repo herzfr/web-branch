@@ -21,6 +21,7 @@ import { WebsocketService } from 'src/app/services/websocket.service';
 import { BannerLoadingComponent } from 'src/app/banner/banner-loading/banner-loading.component';
 import { BannerSuccessComponent } from 'src/app/banner/banner-success/banner-success.component';
 import { BannerRejectComponent } from 'src/app/banner/banner-reject/banner-reject.component';
+import { TransactionModel } from 'src/app/models/transaction-model';
 
 @Component({
   selector: 'app-dialog-transaction',
@@ -153,6 +154,9 @@ export class DialogTransactionComponent implements OnInit {
   newAccountCode: string;
   informasiSaldoTabunganCode: string;
   informasiSaldoGiroCode: string;
+
+  // Model
+  transactionModel: TransactionModel = new TransactionModel();
 
   // transLabel: any = new Array;
 
@@ -573,9 +577,9 @@ export class DialogTransactionComponent implements OnInit {
             console.log(dataObj);
             this.removeComponent()
             // this.addComponent('reject')
-            this.isProsses = true;
             this.isSuccess = true;
-            this.stompClient.disconnect()
+            this.callSocket.disconnectSocket();
+            this.stepDisabledHorizontal = true;
             step.next()
           }
         });
@@ -598,25 +602,16 @@ export class DialogTransactionComponent implements OnInit {
         this.VCR = this.containers.first;
         const factoryLoad = this.resolver.resolveComponentFactory(BannerLoadingComponent);
         this.VCR.createComponent(factoryLoad);
-        // const containerLoader = this.containers.first;
-        // const factoryLoader = this.resolver.resolveComponentFactory(BannerLoadingComponent);
-        // containerLoader.createComponent(factoryLoader);
         break;
       case 'success':
         this.VCR = this.containers.first;
         const factorySuccess = this.resolver.resolveComponentFactory(BannerSuccessComponent);
         this.VCR.createComponent(factorySuccess);
-        // const containerSuccess = this.containers.first;
-        // const factorySuccess = this.resolver.resolveComponentFactory(BannerSuccessComponent);
-        // containerSuccess.createComponent(factorySuccess);
         break;
       case 'reject':
         this.VCR = this.containers.first;
         const factoryReject = this.resolver.resolveComponentFactory(BannerRejectComponent);
         this.VCR.createComponent(factoryReject);
-        // const containerReject = this.containers.first;
-        // const factoryReject = this.resolver.resolveComponentFactory(BannerRejectComponent);
-        // containerReject.createComponent(factoryReject);
         break;
       default:
         break;
@@ -630,14 +625,18 @@ export class DialogTransactionComponent implements OnInit {
 
   btnOK(event) {
     this.onReject(event)
-    this.stepDisabledHorizontal = false
-    this.stompClient.disconnect()
+    this.refresh();
+    this.callSocket.disconnectSocket();
   }
 
   refresh() {
-    // this.isHeadTeller = false;
-    // this.isRejectTeller = true;
-    // this.isSelectHeadTeller = true;
+    this.stepDisabledHorizontal = false
+    this.isHeadTeller = false;
+    this.isRejectTeller = true;
+    this.isSelectHeadTeller = true;
+    this.isError = !this.isError
+    this.isProsses = true;
+    this.isSuccess = !this.isSuccess;
   }
 
 
@@ -645,7 +644,7 @@ export class DialogTransactionComponent implements OnInit {
   //  IF OVERIDE / Button Override                                                           |   2   |
   //  ------------------------------------------------------------------------------------------------
   onOverride(index, step) {
-    let data: any = this.form.at(index).value;
+    let dataForm: any = this.form.at(index).value;
     this.isHeadTeller = !this.isHeadTeller;
     this.isRejectTeller = !this.isRejectTeller;
     this.isSelectHeadTeller = !this.isSelectHeadTeller;
@@ -653,15 +652,13 @@ export class DialogTransactionComponent implements OnInit {
     // console.log(this.containers)
     // console.log(this.stepMom);
 
-    let transId = data.wstran;
+    let transId = dataForm.wstran;
     let dataObj = this.findDataByTransactionId(transId, this.data);
-    let payLoad = JSON.stringify(data);
+    let payLoad = JSON.stringify(dataForm);
     dataObj.transbuff = payLoad;
     // let payLoadHex = JSON.parse(JSON.stringify(data.value))
     dataObj.isValidated = 0
-    console.log(data);
-    console.log(payLoad);
-    console.log(dataObj);
+
 
 
     this.transacServ.verifyFingerHead(this.headSelectTeller['username'], this.token).subscribe(e => {
@@ -677,15 +674,116 @@ export class DialogTransactionComponent implements OnInit {
             dataObj.isValidated = 1;
             dataObj.isRejected = 0;
             console.log(dataObj);
-            step.next()
-            console.log(step);
-            this.stompClient.disconnect()
+
+            let dataProcess = this.converDataKey(dataObj, dataForm)
+            this.queueServ.processTransactionDataQ2(dataProcess).subscribe(res => {
+              console.log(res);
+            })
+
+            // step.next()
+            // this.callSocket.disconnectSocket();
           } else {
             console.log("data tidak cocok");
           }
         })
       }
     })
+  }
+
+
+
+  converDataKey(dataObj, dataForm) {
+    // console.log(dataForm);
+
+    for (const key in dataForm) {
+      if (dataForm.hasOwnProperty(key)) {
+        const element = dataForm[key];
+        console.log(element);
+        console.log(key);
+        switch (key) {
+          case 'wsnomn':
+            dataForm[key] = this.utilityService.asciiToHexa(this.utilityService.leftPadding(element, "0", 17));
+            break;
+          default:
+            dataForm[key] = this.utilityService.asciiToHexa(element);
+            break;
+        }
+      }
+    }
+
+    for (const key in dataObj) {
+      if (dataObj.hasOwnProperty(key)) {
+        const element = dataObj[key];
+        switch (key) {
+          case 'queuecode':
+            if (element === 'TELLER') {
+              dataObj[key] = this.configuration.getConfig().ISCS;
+            } else {
+              dataObj[key] = this.configuration.getConfig().ISTL;
+            }
+            break;
+          case 'queuedate':
+            let date: string = element;
+            dataObj[key] = date.replace(/[-]/g, "")
+            // console.log(date.replace(/[-]/g, ""));
+            break;
+          default:
+            dataObj[key] = element;
+            break;
+
+        }
+      }
+    }
+
+    console.log(dataForm);
+    console.log(dataObj);
+
+    this.transactionModel.wbtmsg = this.utilityService.asciiToHexa("0100");
+    this.transactionModel.wbproc = this.utilityService.asciiToHexa("900000");
+    this.transactionModel.wbtrid = this.utilityService.asciiToHexa(dataObj.transid);
+    this.transactionModel.wbbrcd = this.utilityService.asciiToHexa(dataObj.branchcode);
+    this.transactionModel.wbfgid = this.utilityService.asciiToHexa(dataObj.userid);
+    this.transactionModel.wbscid = "";
+    this.transactionModel.wbicsh = "";
+    this.transactionModel.wbicus = this.utilityService.asciiToHexa(this.utilityService.leftPadding(dataObj.iscustomer.toString(), "0", 3));
+    this.transactionModel.wbqucd = this.utilityService.asciiToHexa(dataObj.queuecode);
+    this.transactionModel.wbqudt = this.utilityService.asciiToHexa(dataObj.queuedate);
+    this.transactionModel.wbrfno = "";
+    this.transactionModel.wbstat = this.utilityService.asciiToHexa("100");
+    this.transactionModel.wbtmid = this.utilityService.asciiToHexa(dataObj.terminalid);
+    this.transactionModel.wbtsen = this.utilityService.asciiToHexa(this.utilityService.convertMilisToDateTime(dataObj.timestampentry));
+    this.transactionModel.wbtspr = "";
+    this.transactionModel.wbtcno = "";
+    this.transactionModel.wbtrbf = dataForm;
+    this.transactionModel.wbtrty = this.utilityService.asciiToHexa(dataObj.trntype);
+    this.transactionModel.wbusid = this.utilityService.asciiToHexa(dataObj.userid ? dataObj.userid : "");
+    this.transactionModel.wbustm = this.utilityService.asciiToHexa(dataObj.userterminal ? dataObj.userterminal : "");
+    this.transactionModel.wbstop = this.utilityService.asciiToHexa("END");
+    console.log(this.transactionModel);
+
+    return this.transactionModel;
+
+    // branchcode: "034"
+    // isCash: 0
+    // isRejected: 0
+    // isValidated: 1
+    // iscustomer: 1
+    // queuecode: "TELLER"
+    // queuedate: "17-06-2020"
+    // queueno: 1
+    // scanid: null
+    // status: 998
+    // terminalid: "TRMCUSTOMERSER034003"
+    // timestampentry: 1592386621000
+    // timestampprocess: 1592387929000
+    // transbuff: "{"wsbcod":"009","wstype":"0000005","wstoto":"2234124123","wsfrom":"1001000003","wsnomn":"100000000","wsbrta":"cing pawe","wstran":"234234232300170620200934140001"}"
+    // transcnt: 3
+    // transeq: 1
+    // transid: "234234232300170620200934140001"
+    // trntype: "0000005"
+    // userid: "OMERSER034003"
+    // userterminal: "SLFSERVICE"
+
   }
 
 

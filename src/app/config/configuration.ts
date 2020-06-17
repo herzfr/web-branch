@@ -12,4 +12,7 @@ export const configuration = {
     typeTransferAntarBank: "0000005",
     typeNewAccount: "0000006",
 
+    ISCS: "0000000002",
+    ISTL: "0000000001"
+
 } 
