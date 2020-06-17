@@ -93,6 +93,34 @@ export class WebsocketService {
     return proms;
   }
 
+  initSocketCustomer(code) {
+
+    let ws = new SockJS(this.serverLocal);
+    this.stompClient = Stomp.over(ws);
+    let that = this;
+
+    let proms = new Promise((res, rej) => {
+      this.stompClient.connect({}, function (frame) {
+        // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
+        that.stompClient.subscribe("/" + code, (message) => {
+          if (message.body) {
+            let receivedValue = JSON.parse(message.body);
+            console.log(receivedValue);
+            res(message.body)
+          }
+        }, () => {
+          rej("Data Error")
+          return alert("koneksi terputus");
+        });
+      }, err => {
+        rej("Data Error")
+        return alert("gagal menghubungkan ke server");
+      });
+    });
+    return proms;
+
+  }
+
 
   disconnectSocket() {
     console.log("disconnected");

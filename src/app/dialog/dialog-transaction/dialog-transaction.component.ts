@@ -36,7 +36,11 @@ export class DialogTransactionComponent implements OnInit {
   private data: any;
   private dataForm: any;
   private noQ: any;
+  private dataObj: any = [];
   // private isCust: any;
+
+  // Model
+  transactionModel: TransactionModel = new TransactionModel();
 
   private isLinear = true;
   private isProsses = true;
@@ -155,8 +159,6 @@ export class DialogTransactionComponent implements OnInit {
   informasiSaldoTabunganCode: string;
   informasiSaldoGiroCode: string;
 
-  // Model
-  transactionModel: TransactionModel = new TransactionModel();
 
   // transLabel: any = new Array;
 
@@ -237,11 +239,11 @@ export class DialogTransactionComponent implements OnInit {
         //     break;
         // }
 
-        if (changeKey.tn === '1') {
-          changeKey.tn = 'Ya'
-        } else if (changeKey.Tunai === '0') {
-          changeKey.tn = 'Tidak'
-        }
+        // if (changeKey.tn === '1') {
+        //   changeKey.tn = 'Ya'
+        // } else if (changeKey.Tunai === '0') {
+        //   changeKey.tn = 'Tidak'
+        // }
 
         // console.log(changeKey.Tunai);
         let dataForm = { "transid": element.transid, "transbuff": element.transbuff[0], "trntype": element.trntype };
@@ -360,29 +362,6 @@ export class DialogTransactionComponent implements OnInit {
     this.dialogRef.close(postStat);
   }
 
-
-  transactionCancels(i, event, stepper) {
-    console.log(i, event, stepper)
-
-    let arr = new Array;
-    let obj: any = new Object();
-    obj.transId = event.TransaksiId.value;
-    obj.status = '100';
-
-    console.log(obj);
-    arr.push(obj)
-
-    this.queueServ.changeStatusTransactionQ(arr).subscribe(e => {
-      console.log(e);
-      if (e['successId0']) {
-        this.form.removeAt(i)
-        this.done()
-      } else {
-        console.log('data tidak sukses');
-      }
-    })
-  }
-
   //  ================================================================================================
   //  Process Transaction STEP 1
   //  ================================================================================================
@@ -447,9 +426,6 @@ export class DialogTransactionComponent implements OnInit {
     let payLoad = JSON.stringify(data);
     dataObj.transbuff = JSON.parse(payLoad)
     // let payLoadHex = JSON.parse(JSON.stringify(data.value))
-    console.log(data);
-    console.log(payLoad);
-    console.log(dataObj);
 
     // Post STEP 1 DATA for Validation true or false
     this.transacServ.requestValidation(dataObj).subscribe(e => {
@@ -458,11 +434,18 @@ export class DialogTransactionComponent implements OnInit {
         // console.log(e['message']);
         if (e['validate'] === 'true') {
           console.log('harus validasi');
-          this.isCloseDialog = !this.isCloseDialog;
+          this.isCloseDialog = false;
           this.stepDisabledHorizontal = true;
+          this.isCancelBtn = false;
+          this.isSkipBtn = false;
           step.next(); // Go To Step 1
         } else {
           console.log('tidak validasi');
+          this.cardReader(data.wsfrom)
+          this.isCloseDialog = false;
+          this.stepDisabledHorizontal = true;
+          this.isCancelBtn = false;
+          this.isSkipBtn = false;
           step.next(); // Skip to Step 2
           step.next(); // Go To Step 3
         }
@@ -489,9 +472,7 @@ export class DialogTransactionComponent implements OnInit {
       console.log(e['successId0']);
       if (e['successId0']) {
         this.form.removeAt(index)
-        this.stepmom.reset()
-        console.log(this.form.length);
-        this.stepDisabledHorizontal = !this.stepDisabledHorizontal;
+        this.done()
       } else {
         console.log("data status tidak berhasil diganti");
       }
@@ -519,7 +500,7 @@ export class DialogTransactionComponent implements OnInit {
       if (e['successId0']) {
         this.form.removeAt(index)
         this.stepDisabledHorizontal = false
-        console.log(this.form.length);
+        this.done()
       } else {
         console.log("data status tidak berhasil diganti");
       }
@@ -531,25 +512,22 @@ export class DialogTransactionComponent implements OnInit {
   //  ELSE IF OTORISATION / Button Otorisation                                               |   2   |
   //  ------------------------------------------------------------------------------------------------
   onOtorisation(index, step: MatStepper) {
-    let data: any = this.form.at(index).value;
-    this.isHeadTeller = !this.isHeadTeller;
-    this.isRejectTeller = !this.isRejectTeller;
-    this.isSelectHeadTeller = !this.isSelectHeadTeller;
+    let dataForm: any = this.form.at(index).value;
+    this.isHeadTeller = false;
+    this.isRejectTeller = false;
+    this.isSelectHeadTeller = false;
     // this.teSt.nativeElement.insertAdjacentHTML('');
     // console.log(this.containers);
     this.addComponent('loader')
 
     // console.log(this.stepMom);
 
-    let transId = data.wstran;
+    let transId = dataForm.wstran;
     let dataObj = this.findDataByTransactionId(transId, this.data);
-    let payLoad = JSON.stringify(data);
+    let payLoad = JSON.stringify(dataForm);
     dataObj.transbuff = payLoad;
     // let payLoadHex = JSON.parse(JSON.stringify(data.value))
     dataObj.isValidated = 0
-    console.log(data);
-    console.log(payLoad);
-    console.log(dataObj);
 
     this.transacServ.sendRemoteValidation(dataObj, this.headSelectTeller.userid).subscribe(resp => {
       console.log(resp);
@@ -577,6 +555,7 @@ export class DialogTransactionComponent implements OnInit {
             console.log(dataObj);
             this.removeComponent()
             // this.addComponent('reject')
+            this.cardReader(dataForm.wsfrom)
             this.isSuccess = true;
             this.callSocket.disconnectSocket();
             this.stepDisabledHorizontal = true;
@@ -618,36 +597,32 @@ export class DialogTransactionComponent implements OnInit {
     }
   }
 
+  //  ------------------------------------------------------------------------------------------------
+  //  Remove Component                                                                       |   2   |
+  //  ------------------------------------------------------------------------------------------------
   removeComponent() {
     console.log(this.containers);
     this.VCR.remove();
   }
 
+
+  //  ------------------------------------------------------------------------------------------------
+  //  Btn OK Reject                                                                           |   2   |
+  //  ------------------------------------------------------------------------------------------------
   btnOK(event) {
     this.onReject(event)
     this.refresh();
     this.callSocket.disconnectSocket();
   }
 
-  refresh() {
-    this.stepDisabledHorizontal = false
-    this.isHeadTeller = false;
-    this.isRejectTeller = true;
-    this.isSelectHeadTeller = true;
-    this.isError = !this.isError
-    this.isProsses = true;
-    this.isSuccess = !this.isSuccess;
-  }
-
-
   //  ------------------------------------------------------------------------------------------------
   //  IF OVERIDE / Button Override                                                           |   2   |
   //  ------------------------------------------------------------------------------------------------
   onOverride(index, step) {
     let dataForm: any = this.form.at(index).value;
-    this.isHeadTeller = !this.isHeadTeller;
-    this.isRejectTeller = !this.isRejectTeller;
-    this.isSelectHeadTeller = !this.isSelectHeadTeller;
+    this.isHeadTeller = false;
+    this.isRejectTeller = false;
+    this.isSelectHeadTeller = false;
     // this.teSt.nativeElement.insertAdjacentHTML('');
     // console.log(this.containers)
     // console.log(this.stepMom);
@@ -673,15 +648,13 @@ export class DialogTransactionComponent implements OnInit {
             console.log("data cocok");
             dataObj.isValidated = 1;
             dataObj.isRejected = 0;
-            console.log(dataObj);
+            // console.log(dataObj);
+            this.cardReader(dataForm.wsfrom)
+            this.updateDataObj(dataObj)
+            $('#card-swap').addClass('blink')
+            this.callSocket.disconnectSocket();
+            step.next()
 
-            let dataProcess = this.converDataKey(dataObj, dataForm)
-            this.queueServ.processTransactionDataQ2(dataProcess).subscribe(res => {
-              console.log(res);
-            })
-
-            // step.next()
-            // this.callSocket.disconnectSocket();
           } else {
             console.log("data tidak cocok");
           }
@@ -692,9 +665,23 @@ export class DialogTransactionComponent implements OnInit {
 
 
 
+  //  ------------------------------------------------------------------------------------------------
+  //  Update Object                                                                          |   x   |
+  //  ------------------------------------------------------------------------------------------------
+  updateDataObj(objc) {
+    console.log(objc);
+    const targetIdx = this.data.map(item => item.transid).indexOf(objc.transid);
+    this.data[targetIdx] = objc;
+    // console.log(this.data);
+  }
+
+
+
+  //  ------------------------------------------------------------------------------------------------
+  //  Change Key Object                                                                      |   x   |
+  //  ------------------------------------------------------------------------------------------------
   converDataKey(dataObj, dataForm) {
     // console.log(dataForm);
-
     for (const key in dataForm) {
       if (dataForm.hasOwnProperty(key)) {
         const element = dataForm[key];
@@ -717,9 +704,9 @@ export class DialogTransactionComponent implements OnInit {
         switch (key) {
           case 'queuecode':
             if (element === 'TELLER') {
-              dataObj[key] = this.configuration.getConfig().ISCS;
-            } else {
               dataObj[key] = this.configuration.getConfig().ISTL;
+            } else {
+              dataObj[key] = this.configuration.getConfig().ISCS;
             }
             break;
           case 'queuedate':
@@ -762,28 +749,6 @@ export class DialogTransactionComponent implements OnInit {
     console.log(this.transactionModel);
 
     return this.transactionModel;
-
-    // branchcode: "034"
-    // isCash: 0
-    // isRejected: 0
-    // isValidated: 1
-    // iscustomer: 1
-    // queuecode: "TELLER"
-    // queuedate: "17-06-2020"
-    // queueno: 1
-    // scanid: null
-    // status: 998
-    // terminalid: "TRMCUSTOMERSER034003"
-    // timestampentry: 1592386621000
-    // timestampprocess: 1592387929000
-    // transbuff: "{"wsbcod":"009","wstype":"0000005","wstoto":"2234124123","wsfrom":"1001000003","wsnomn":"100000000","wsbrta":"cing pawe","wstran":"234234232300170620200934140001"}"
-    // transcnt: 3
-    // transeq: 1
-    // transid: "234234232300170620200934140001"
-    // trntype: "0000005"
-    // userid: "OMERSER034003"
-    // userterminal: "SLFSERVICE"
-
   }
 
 
@@ -812,25 +777,215 @@ export class DialogTransactionComponent implements OnInit {
     }
   }
 
-  isDoor(event: number, event2: number, stepper: MatStepper): void {
-    console.log(event);
-    if (event > event2) {
-      stepper.next()
-      this.isProsses = true;
-      this.isSuccess = false;
-      this.isError = false;
-      this.isBack = false;
-      this.isNext = false;
-    } else if (event < event2) {
-      stepper.previous()
-      this.isProsses = true;
-      this.isSuccess = false;
-      this.isError = false;
-      this.isBack = false;
-      this.isNext = false;
+
+  //  ================================================================================================
+  //  Process Transaction STEP 3
+  //  ================================================================================================
+  //  SWAP CARD / INIT CARD                                                                  |   3   |
+  //  ------------------------------------------------------------------------------------------------
+
+  onSwapCard() {
+    // console.log(this.cardNum);
+    $('#card-swap').removeClass('blink')
+    if (this.cardNum !== null) {
+      this.isInputPin = true
+      this.isCardNumber = true
     }
   }
 
+  //  ------------------------------------------------------------------------------------------------
+  //  OTP PIN CARD                                                                           |   3   |
+  //  ------------------------------------------------------------------------------------------------
+  onOtpChange(event: any, step: MatStepper, index) {
+
+    // Check PIN 
+    if (event.length == 6) {
+      $('.otp-input').blur();
+      $('.otp-input').prop('readonly', true);
+
+      this.transacServ.verifyCard(this.cardNum, event).subscribe(res => {
+        console.log(res);
+
+        if (res['success']) {
+          this.isScanFinger = true;
+          $('#scan-finger').addClass('blink')
+          this.pinMessage = 'Pin Sukses'
+          this.isPinMessageSuccess = true
+          this.isPinMessageError = false
+
+
+          this.transacServ.getInfoCardPerson(res['record']).subscribe(e => {
+            // console.log(e);
+            this.base64Image = 'data:image/png;base64,' + e['imagepict']
+            this.base64Sign = 'data:image/png;base64,' + e['imagesign']
+            this.NAME_CUST = e['name']
+            this.imageID = e['imageid']
+            this.images64()
+            this.sign64()
+
+            // this.transacServ.verifyFingerCust(e['imageid'], this.token).subscribe(eres => {
+            //   console.log(eres);
+            // })
+
+            this.callFingerVerify()
+            this.callSocket.initSocketCustomer('vldnas').then(value => {
+
+              const res = JSON.parse(value.toString())
+              if (res['success']) {
+
+                this.fingerMessage = 'Finger Valid'
+                this.isFingerSuccess = true
+                this.isFingerError = false
+                $('#scan-finger').removeClass('blink')
+
+                if (this.stepmom.selectedIndex === index) {
+
+                  const dataForm: any = this.form.at(index).value;
+                  let transId = dataForm.wstran;
+                  let dataObj = this.findDataByTransactionId(dataForm.wstran, this.data);
+
+                  const dataProcessApi = this.converDataKey(dataObj, dataForm)
+                  console.log(dataProcessApi);
+
+                  this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
+                    // console.log(res);
+                    if (res['success']) {
+                      this.dataSuccess.push(res)
+                      switch (dataForm.wstype) {
+                        case this.informasiSaldoGiroCode:
+                          this.isDisplayPrintSaldo = true;
+                          this.done()
+                          step.next()
+                          break;
+                        case this.informasiSaldoTabunganCode:
+                          this.isDisplayPrintSaldo = true;
+                          this.done()
+                          step.next()
+                          break;
+                        default:
+                          this.isDisplayPrint = true;
+                          this.done()
+                          step.next()
+                          break;
+                      }
+                    }
+                  })
+                }
+              }
+
+            })
+
+            // this.initializeWebSocketConnection('vldnas', step)
+            // this.transacServ.verifyFingerCust(e['imageid'], this.token).subscribe(eres => {
+            //   // console.log(eres);
+            // })
+          })
+        } else {
+          $('.otp-input').prop('readonly', false);
+          this.pinMessage = 'PIN ' + res['message']
+          this.isPinMessageError = true
+        }
+
+      })
+    }
+  }
+
+
+  //  ------------------------------------------------------------------------------------------------
+  //  Call Cust Finger Verify                                                                |   3   |
+  //  ------------------------------------------------------------------------------------------------
+  callFingerVerify() {
+    this.transacServ.verifyFingerCust(this.imageID, this.token).subscribe(eres => {
+      // console.log(eres);
+    })
+  }
+
+  //  ------------------------------------------------------------------------------------------------
+  //  Header Customer                                                                         |   H   |
+  //  ------------------------------------------------------------------------------------------------
+  images64() {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(this.base64Image);
+  }
+  sign64() {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(this.base64Sign);
+  }
+
+  //  ------------------------------------------------------------------------------------------------
+  //  Reader Card                                                                             |   X   |
+  //  ------------------------------------------------------------------------------------------------
+  cardReader(event) {
+    let accountNumber: any;
+    if (event === undefined) {
+      this.cardNum = 1234567890000003;
+    } else {
+      accountNumber = event;
+      console.log("account number :", accountNumber.value);
+
+      switch (accountNumber) {
+        case "1001000001":
+          this.cardNum = 1234567890123456;
+          break;
+        case "1001000002":
+          this.cardNum = 1234567890000002;
+          break;
+        case "1001000003":
+          this.cardNum = 1234567890000003;
+          break;
+        default:
+          this.cardNum = 1234567890000003;
+          break;
+      }
+    }
+  }
+
+  //  ------------------------------------------------------------------------------------------------
+  //  Check Refresh Transaction                                                               |   X   |
+  //  ------------------------------------------------------------------------------------------------
+  done() {
+    this.refresh()
+    console.log(this.dataSuccess.length);
+    console.log(this.form.length);
+    // let dataLength = this.dataSuccess.length
+    if (this.dataSuccess.length === this.form.length) {
+      this.isDoneBtn = true;
+      this.isSkipBtn = true;
+      this.isCloseDialog = true;
+    } else {
+      console.log('masih belum');
+    }
+  }
+
+  //  ------------------------------------------------------------------------------------------------
+  //  Refresh                                                                                |   x   |
+  //  ------------------------------------------------------------------------------------------------
+  refresh() {
+    // Head Teller
+    this.stepDisabledHorizontal = false
+    this.isHeadTeller = false;
+    this.isRejectTeller = true;
+    this.isSelectHeadTeller = true;
+    this.isError = false
+    this.isProsses = true;
+    this.isSuccess = false;
+    // otorisasi pin Nasabah true false
+    this.isPinMessageSuccess = false;
+    this.isPinMessageError = false;
+    this.isScanFinger = false;
+    this.isSwapCard = true;
+    this.isInputPin = false;
+    this.isCardNumber = false;
+    this.isFingerError = false;
+    this.isFingerSuccess = false;
+    this.cardNum = null;
+    $('#scan-finger').removeClass('blink')
+    $('#card-swap').removeClass('blink')
+  }
+
+
+
+  //  ------------------------------------------------------------------------------------------------
+  //  Print                                                                                  |   x   |
+  //  ------------------------------------------------------------------------------------------------
   print() {
     $('#print-section').printThis({
       debug: false,               // show the iframe for debugging
@@ -856,37 +1011,10 @@ export class DialogTransactionComponent implements OnInit {
     });
   }
 
-  hideParentSiblings(element): any[] {
-    let parent;
-    const toShow = [];
 
-    while ((parent = element.parent()).length) {
-      const visible = parent.siblings().find(':visible');
-      toShow.push(visible);
-      visible.hide();
-      element = parent;
-    }
-    return toShow;
-  }
-
-  stepChanged(event, stepper) {
-    stepper.selected.interacted = false;
-  }
-
-  done() {
-    this.stepDisabledHorizontal = false;
-    this.isHeadTeller = false
-    // console.log("data sukses :", this.dataSuccess.length);
-    // console.log("data form :", this.form.length);
-
-    if (this.dataSuccess.length === this.form.length) {
-      // console.log('suses di isi semua');
-      this.isDoneBtn = true;
-    } else {
-      console.log('masih belum');
-    }
-  }
-
+  //  ------------------------------------------------------------------------------------------------
+  //  Close Dialog                                                                           |   H   |
+  //  ------------------------------------------------------------------------------------------------
   closeQDialog() {
     if (this.status_for_while === 999) {
       let arr = new Array;
@@ -973,293 +1101,9 @@ export class DialogTransactionComponent implements OnInit {
     }
   }
 
-  onSwapCard() {
-    // console.log(this.cardNum);
-    if (this.cardNum !== null) {
-      this.isInputPin = true
-      this.isCardNumber = true
-      $('#card-swap').removeClass('blink')
-    }
-  }
-
-  onOtpChange(event: any, stepper: MatStepper) {
-    if (event.length == 6) {
-      // console.log('cukup');
-      $('.otp-input').blur();
-      $('.otp-input').prop('readonly', true);
-      // console.log("car number yang dikirim : " + this.cardNum);
-
-      this.transacServ.verifyCard(this.cardNum, event).subscribe(res => {
-        // console.log(res);
-        if (res['success']) {
-          // console.log(res['message']);
-          this.isScanFinger = true;
-          $('#scan-finger').addClass('blink')
-          this.pinMessage = 'Pin Sukses'
-          this.isPinMessageSuccess = true
-          this.isPinMessageError = false
-          this.transacServ.getInfoCardPerson(res['record']).subscribe(e => {
-            // console.log(e);
-            this.base64Image = 'data:image/png;base64,' + e['imagepict']
-            this.base64Sign = 'data:image/png;base64,' + e['imagesign']
-            this.NAME_CUST = e['name']
-            this.imageID = e['imageid']
-            this.images64()
-            this.sign64()
-            this.initializeWebSocketConnection('vldnas', stepper)
-            this.transacServ.verifyFingerCust(e['imageid'], this.token).subscribe(eres => {
-              // console.log(eres);
-            })
-          })
-        } else {
-          // console.log(res['message']);
-          // console.log(this.ngOtpInputRef);
-          $('.otp-input').prop('readonly', false);
-          this.pinMessage = 'PIN ' + res['message']
-          this.isPinMessageError = true
-        }
-      })
-    } else {
-      // console.log('belum cukup');
-      this.pinMessage = 'Pin Masih Kurang'
-      this.isPinMessageError = true
-    }
-  }
-
-  callFingerVerify() {
-    this.transacServ.verifyFingerCust(this.imageID, this.token).subscribe(eres => {
-      // console.log(eres);
-    })
-  }
-
-  images64() {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(this.base64Image);
-  }
-  sign64() {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(this.base64Sign);
-  }
-
-  onFingerVerify(status, stepper: MatStepper) {
-    // console.log("status finger : ", status);
-    // console.log("stepper status : ", stepper);
-    // console.log("is check saldo : ", this.isCheckSaldo);
-    if (status && !this.isCheckSaldo) {
-      this.fingerMessage = 'Finger Valid'
-      this.isFingerSuccess = true
-      this.isFingerError = false
-      $('#scan-finger').removeClass('blink')
-      setTimeout(() => {
-        stepper.next()
-        this.disconnect()
-        $('.otp-input').prop('readonly', false);
-        $('.otp-input').val('');
-        this.isPinMessageSuccess = false;
-        this.isPinMessageError = false;
-        this.isScanFinger = false;
-        this.isSwapCard = true;
-        this.isInputPin = false;
-        this.isCardNumber = false;
-        this.isFingerError = false;
-        this.isFingerSuccess = false;
-        this.transacServ.headTellerList('headteller', this.BRANCH_CODE).subscribe(list => {
-          if (list['success']) {
-            this.nameHead = list['record']
-          }
-        })
-      }, 1000)
-    } else if (status && this.isCheckSaldo) {
-      delete this.dataFormActual.wbtrbf.wstran;
-      this.queueServ.processTransactionDataQ(this.dataFormHeadValidation).subscribe(res => {
-
-        if (res['success']) {
-          let traceNo = this.utilityService.leftPadding(res['traceno'].toString(), "0", 17);
-          this.dataFormActual.wbtcno = this.utilityService.asciiToHexa(traceNo);
-          this.dataFormActual.wbrfno = this.utilityService.asciiToHexa(res['reffno']);
-          this.dataFormActual.wbtspr = this.utilityService.asciiToHexa(this.utilityService.getRawDateTime());
-
-          this.queueServ.processTransactionDataQ2(this.dataFormActual).subscribe(res => {
-
-            // if (res['wbrspc'] === "0000000") {
-
-            this.saldoData = res;
-            let nominal = Number(res['wbtrbf'].wsblav);
-            console.log("nominal :", nominal);
-            this.saldoData.wbtrbf.wsblav = nominal.toString();
-            console.log("data saldo : ", res);
-
-            $('#scan-finger').removeClass('blink')
-            setTimeout(() => {
-              stepper.next()
-              stepper.next()
-              this.disconnect()
-              $('.otp-input').prop('readonly', false);
-              $('.otp-input').val('');
-              this.isPinMessageSuccess = false;
-              this.isPinMessageError = false;
-              this.isScanFinger = false;
-              this.isSwapCard = true;
-              this.isInputPin = false;
-              this.isCardNumber = false;
-              this.isFingerError = false;
-              this.isFingerSuccess = false;
-              this.onCheckBalance();
-            }, 1000)
-            // } else {
-            //   alert("Process Transaksi Gagal")
-            // }
-          });
-        } else {
-
-          alert('Data gagal proses, silahkan coba lagi')
-          setTimeout(() => {
-            this.isProsses = false;
-            this.isError = true;
-            this.isBack = true;
-          }, 500)
-        }
-      })
-
-    }
-    else {
-      this.isFingerError = true
-      this.fingerMessage = 'Finger Invalid'
-    }
-  }
-
-  initializeWebSocketConnection(socket, stepper: MatStepper) {
-
-    // console.log(stepper);
-    let ws = new SockJS(this.serverUrl);
-    this.stompClient = Stomp.over(ws);
-    let that = this;
-
-
-    switch (socket) {
-      case 'vldnas':
-        this.stompClient.connect({}, function (frame) {
-          // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
-          that.stompClient.subscribe("/" + socket, (message) => {
-            if (message.body) {
-              let parse = JSON.parse(message.body).success
-              if (parse) {
-                that.onFingerVerify(parse, stepper)
-              }
-            }
-
-          }, () => {
-            // that.dialog.errorDialog("Error", "Koneksi Terputus");
-            setTimeout(() => {
-              that.initializeWebSocketConnection(socket, stepper);
-            }, 1000);
-
-          });
-        }, err => {
-
-          setTimeout(() => {
-            that.initializeWebSocketConnection(socket, stepper);
-          }, 1000);
-          // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
-        });
-        break;
-      case 'vldspv':
-        this.stompClient.connect({}, function (frame) {
-          // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
-          that.stompClient.subscribe("/" + socket, (message) => {
-            if (message.body) {
-              let parse = JSON.parse(message.body).success
-              // console.log("parse result : ", parse);
-              if (parse) {
-                that.dataFormHeadValidation.status = 999;
-                that.dataFormHeadValidation.isRejected = 0
-                that.dataFormHeadValidation.isValidated = 1
-                that.dataFormHeadValidation.timestampprocess = Date.now().toString();
-                that.dataFormHeadValidation.userterminal = JSON.parse(that.ls.get('data')).userterminal;
-                console.log("send data : ", that.dataFormHeadValidation);
-
-                that.dataFormHeadValidation.trntype = "000001";
-
-                that.transacServ.sendRemoteValidation(that.dataFormHeadValidation, that.headSelectTeller.userid).subscribe(resp => {
-                  // console.log("response : ", resp);
-                  if (resp['success']) {
-                    // that.onFingerVerifyHead(parse, stepper, drawer, "onsite");
-                    that.sendProcess(that.dataFormActual, that.dataFormHeadValidation, stepper, "onsite");
-                  } else {
-                    // alert("validasi gagal");
-                    that.sendProcess(that.dataFormActual, that.dataFormHeadValidation, stepper, "onsite");
-                  }
-                });
-              }
-            }
-
-          }, () => {
-            // that.dialog.errorDialog("Error", "Koneksi Terputus");
-            // console.log("koneksi terputus");
-            // console.log("Koneksi Ulang");
-            setTimeout(() => {
-              that.initializeWebSocketConnection(socket, stepper);
-            }, 1000);
-          });
-        }, err => {
-          alert("Gagal menghubungkan ke server");
-          // console.log("gagal menghubungkan ke server ");
-          // that.dialog.errorDialog("Error", "Gagal Menghubungkan Koneksi Ke Server ");
-        });
-        break;
-      default:
-        break;
-
-    }
-  }
-
-  initializeWebSocketConnection2(socket, stepper: MatStepper) {
-
-    let ws = new SockJS(this.serverUrlSocket + "socket");
-    this.stompClientSocket = Stomp.over(ws);
-    let that = this;
-
-    this.stompClientSocket.connect({}, function (frame) {
-      // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
-      that.stompClientSocket.subscribe("/" + socket, (message) => {
-        if (message.body) {
-          let receivedValue = JSON.parse(message.body);
-          // console.log("socket value: ", receivedValue);
-          // console.log("rejected", receivedValue.rejected);
-          // console.log("success", receivedValue.success);
-          if (receivedValue.rejected) {
-            console.log("transaction rejected");
-            that.isDisplayPrint = false;
-            that.isWaitingConfirmation = false;
-            that.isRejectConfirmation = true;
-            // that.stepDisabledHorizontal = false;
-            // this.isCloseDialog = true;
-            that.isHeadTeller = false
-            // stepper.next()
-            that.done()
-          } else {
-            that.sendProcess(that.dataFormActual, that.dataFormHeadValidation, stepper, "remote");
-          }
-        }
-      }, () => {
-        // that.dialog.errorDialog("Error", "Koneksi Terputus");
-        // console.log("koneksi terputus");
-        // console.log("Koneksi Ulang");
-        alert("koneksi terputus");
-      });
-    }, err => {
-      alert("gagal menghubungkan ke server");
-      // console.log("gagal menghubungkan ke server ");
-      // console.log("Menghubungkan Ulang");
-    });
-  }
-
-  disconnect() {
-    this.stompClient.disconnect();
-  }
-
-  openSideNav() {
-    console.log(this.sidenav);
-  }
-
+  //  ------------------------------------------------------------------------------------------------
+  //  Other Method                                                                           |   x   |
+  //  ------------------------------------------------------------------------------------------------
   animationCreated(animationItem: AnimationItem): void {
     this.animationItem = animationItem;
     // console.log(animationItem);
@@ -1268,149 +1112,6 @@ export class DialogTransactionComponent implements OnInit {
   close(reason: string) {
     console.log(reason);
     this.sidenav.close();
-  }
-
-
-  //  ================================================================================================
-
-  // Function Otorisasi param INDEX, STEPPER PENYEDIA SELANJUTNYAm ctrl Sebagai Transaksi ID
-
-  //  ================================================================================================
-  // onOtorisation(index, stepper: MatStepper, ctrl, btnType) {
-  //   // console.log(index, stepper, ctrl.TransaksiId.value);
-  //   console.log(this.form.at(index));
-  //   switch (btnType) {
-  //     case "001":
-  //       console.log("REJECT", this.form.at(index));
-  //       this.form.removeAt(index) // Remove Form By Index
-
-  //       for (const key in this.form.controls) {
-  //         if (this.form.controls.hasOwnProperty(key)) {
-  //           const element = this.form.controls[key];
-
-  //           // Double check the data that was just deleted by index
-  //           if (element.get('TransaksiId').value == ctrl.TransaksiId.value) {
-  //             console.log("Data Belum di Hapus");
-  //           } else {
-  //             console.log("Data Berhasil di Hapus");
-  //           }
-  //         }
-  //       } // End
-
-  //       // console.log("=>", this.form.length)
-  //       // Last Index will be trigger to SKIP function
-  //       if (this.form.length < 1) {
-  //         this.skipQ();
-  //       }
-  //       break;
-  //     case "002":
-  //       console.log("OTORISASI", this.form.at(index));
-  //       break;
-  //     case "003":
-  //       console.log("OVERRIDE", this.form.at(index));
-  //       break;
-
-  //   }
-
-
-  // switch (event) {
-  //   case 'now':
-  //     // console.log('now');
-  //     // console.log(this.headSelectTeller);
-  //     this.initializeWebSocketConnection('vldspv', stepper, drawer);
-  //     this.transacServ.verifyFingerHead(this.headSelectTeller['username'], this.token).subscribe(e => {
-  //       console.log(e);
-  //     })
-  //     this.ngZone.runOutsideAngular(() => this.animationItem.play());
-  //     this.isHeadTeller = false
-  //     break;
-  //   case 'request':
-  //     // console.log('request');
-  //     stepper.next()
-  //     this.isDisplayPrint = false;
-  //     this.isWaitingConfirmation = true;
-  //     this.isRejectConfirmation = false;
-  //     // this.stepDisabledHorizontal = false;
-  //     // this.isCloseDialog = true;
-  //     this.isHeadTeller = false
-
-  //     this.dataFormHeadValidation.status = 999;
-
-  //     if (this.dataFormHeadValidation.trntype === 'Tarik Tunai') {
-  //       this.dataFormHeadValidation.trntype = 'trk'
-  //     } else if (this.dataFormHeadValidation.trntype === 'Setor Tunai') {
-  //       this.dataFormHeadValidation.trntype = 'str'
-  //     } else if (this.dataFormHeadValidation.trntype === 'Transaksi Antar Rekening') {
-  //       this.dataFormHeadValidation.trntype = 'tar'
-  //     } else if (this.dataFormHeadValidation.trntype === 'Transaksi Antar Bank') {
-  //       this.dataFormHeadValidation.trntype = 'tab'
-  //     }
-
-  //     this.dataFormHeadValidation.trntype = "0000001  ";
-
-  //     this.dataFormHeadValidation.isRejected = 0
-  //     this.dataFormHeadValidation.isValidated = 0
-  //     this.dataFormHeadValidation.userterminal = JSON.parse(this.ls.get('data')).userterminal;
-  //     let terminalData = this.ls.get('termdata');
-  //     let user = JSON.parse(this.ls.get('data')).userid;
-
-  //     this.transacServ.sendRemoteValidation(this.dataFormHeadValidation, this.headSelectTeller.userid).subscribe(resp => {
-  //       console.log(resp);
-  //     })
-
-  //     this.initializeWebSocketConnection2('vldspv' + this.dataFormHeadValidation.transid, stepper, drawer);
-
-  //     break;
-  //   case 'reject':
-  //     console.log('reject');
-  //     this.isDisplayPrint = false;
-  //     this.isWaitingConfirmation = false;
-  //     this.isRejectConfirmation = true;
-  //     // this.stepDisabledHorizontal = false;
-  //     // this.isCloseDialog = true;
-  //     this.isHeadTeller = false
-  //     this.done()
-  //     stepper.next()
-  //     break;
-  //   default:
-  //     break;
-  // }
-
-  // }
-
-  onFingerVerifyHead(status, stepper: MatStepper, type: string) {
-    if (type === "onsite") {
-      // console.log("run on");
-      this.done()
-      try {
-        this.ngZone.runOutsideAngular(() => this.animationItem.stop());
-      } catch (error) {
-        console.log("Lottie Error!");
-      }
-
-      if (status) {
-        setTimeout(() => {
-          // drawer.toggle()
-          setTimeout(() => {
-            stepper.next()
-            this.isDisplayPrint = true;
-            this.isWaitingConfirmation = false;
-            this.isRejectConfirmation = false;
-            // this.stepDisabledHorizontal = false;
-            // this.isCloseDialog = true;
-            this.disconnect()
-          }, 500)
-        }, 1000)
-      } else {
-        console.log('silahkan coba lagi');
-      }
-    } else {
-      this.isDisplayPrint = true;
-      this.isWaitingConfirmation = false;
-      this.isRejectConfirmation = false;
-      // this.stepDisabledHorizontal = false;
-      this.stompClientSocket.disconnect();
-    }
   }
 
   onSelectValueChangeHeadTeller(event) {
@@ -1427,48 +1128,16 @@ export class DialogTransactionComponent implements OnInit {
     // console.log(event);
   }
 
-  sendProcess(dataProsesApi, dataForm, stepper, value) {
-    this.queueServ.processTransactionDataQ(dataForm).subscribe(res => {
-
-      if (res['success']) {
-        let traceNo = this.utilityService.leftPadding(res['traceno'].toString(), "0", 17);
-        dataProsesApi.wbtcno = this.utilityService.asciiToHexa(traceNo);
-        dataProsesApi.wbrfno = this.utilityService.asciiToHexa(res['reffno']);
-        dataProsesApi.wbtspr = this.utilityService.asciiToHexa(this.utilityService.getRawDateTime());
-
-        this.queueServ.processTransactionDataQ2(dataProsesApi).subscribe(res => {
-
-          if (res['wbrspc'] === "0000000") {
-            // console.log("Success");
-          } else {
-            alert("Process Transaksi Gagal");
-            setTimeout(() => {
-              this.isProsses = false;
-              this.isError = true;
-              this.isBack = true;
-            }, 500);
-          }
-
-          if (value === "remote") {
-            this.onFingerVerifyHead(res, stepper, "remote");
-          } else {
-            this.onFingerVerifyHead(res, stepper, "onsite");
-          }
-
-        });
-      } else {
-        alert('Data gagal proses, silahkan coba lagi')
-        setTimeout(() => {
-          this.isProsses = false;
-          this.isError = true;
-          this.isBack = true;
-        }, 500)
-      }
-    });
-  }
-
   onCheckBalance() {
     this.isDisplayPrintSaldo = true;
+  }
+
+  backStep(step: MatStepper) {
+    this.done()
+    this.isCancelBtn = true;
+    this.isSkipBtn = true;
+    this.isCloseDialog = true;
+    step.previous()
   }
 
 }

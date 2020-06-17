@@ -120,34 +120,6 @@
                 </ng-container>
               </ng-container>
 
-              <!-- <div class="d-flex justify-content-center">
-                <mat-form-field class="container-fluid col-sm-6">
-                  <mat-label>Pilih Head Teller</mat-label>
-                  <mat-select (selectionChange)="onSelectValueChangeHeadTeller($event.value)">
-                    <mat-option *ngFor="let nm of nameHead | keyvalue" [value]="nm.value">
-                      {{nm.value.firstname}} {{nm.value.lastname}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-
-              <div class="d-flex justify-content-center">
-                <mat-card (click)="onOtorisation(i, stepper, env.controls, '001')" align="center" class="m-2 btn-card">
-                  <i class="fad fa-trash-undo fa-3x"></i>
-                  <p>Reject</p>
-                </mat-card>
-                <mat-card *ngIf="isHeadTeller" (click)="onOtorisation(i, stepper, env.controls, '002')" align="center"
-                  class="m-2 btn-card">
-                  <i class="fad fa-user-shield fa-3x"></i>
-                  <p>Req Otorisasi</p>
-                </mat-card>
-                <mat-card *ngIf="isHeadTeller" id="now-section" (click)="onOtorisation(i, stepper, env.controls, '003')"
-                  align="center" class="m-2 btn-card">
-                  <i class="fad fa-fingerprint fa-3x"></i>
-                  <p>Override</p>
-                </mat-card>
-              </div> -->
-
               <div class="d-flex justify-content-between">
                 <button (click)="transactionCancel(i, stepper)" mat-button>Batal</button>
                 <button (click)="transactionProcess(i, stepper)" mat-button>Proses</button>
@@ -196,37 +168,6 @@
                     </div>
 
                   </ng-container>
-
-                  <!-- <ng-container *ngIf="item.key != 'wstran'">
-
-                      <div [ngSwitch]="item.key">
-                        <div *ngSwitchCase="'wsnomn'" class="form-group row">
-                          <label
-                            class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2  }}
-                            :</label>
-                          <div class="col-sm-9" class="form-group row">
-                            <label class="form-control-plaintext">{{ item.value.value | currency:"Rp " }}</label>
-                          </div>
-                        </div>
-                        <div *ngSwitchCase="'wsicas'" class="form-group row">
-                          <label
-                            class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2 }}
-                            :</label>
-                          <div class="col-sm-9">
-                            <label class="form-control-plaintext">{{ item.value.value }}</label>
-                          </div>
-                        </div>
-                        <div *ngSwitchDefault class="form-group row">
-                          <label
-                            class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2 }}
-                            :</label>
-                          <div class="col-sm-9">
-                            <label class="form-control-plaintext">{{ item.value.value }}</label>
-                          </div>
-                        </div>
-                      </div>
-
-                    </ng-container> -->
                 </div>
               </div>
 
@@ -257,23 +198,6 @@
                 </mat-card>
               </div>
 
-              <!-- <mat-drawer #drawer class="example-sidenav" mode="over" position="end">
-                  <div class="container-fluid justify-content-end d-flex">
-                    <i (click)="drawer.toggle()" class="fad fa-times fa-2x"></i>
-
-                    <div class="container-fluid">
-                      <ng-lottie height="400px" [options]="options" (configReady)="configReady()"
-                        (animationCreated)="animationCreated($event)">
-                      </ng-lottie>
-                      <div (click)="onOtorisation('now', stepper, drawer)" class="d-flex justify-content-center"><button
-                          mat-button>Verifikasi Head
-                          Teller</button></div>
-                    </div>
-                  </div>
-                </mat-drawer> -->
-
-              <!-- </mat-drawer-container> -->
-
               <ng-template #viewContainerRef></ng-template>
               <div class="row justify-content-center">
                 <button *ngIf="isError" (click)="btnOK(i)" class="btn btn-ls">REJECT</button>
@@ -281,8 +205,7 @@
               </div>
 
               <div class="d-flex justify-content-end">
-                <button *ngIf="isBack" mat-button (click)="isDoor(1, 2, stepper)">Back</button>
-                <button *ngIf="isNext" mat-button (click)="isDoor(3, 2, stepper)">Next</button>
+                <button (click)="backStep(stepper)" mat-button>Back</button>
               </div>
             </mat-step>
 
@@ -294,7 +217,7 @@
                 <div class="row mt-3 mb-5">
                   <div class="col-sm">
                     <div class="card">
-                      <div id="card-swap" class="card-body justify-content-center d-flex blink">
+                      <div id="card-swap" class="card-body justify-content-center d-flex">
                         <img (click)="onSwapCard()" src="assets/svgs/swip-card.svg" alt="">
                       </div>
                       <div class="card-footer text-muted">
@@ -311,7 +234,7 @@
                       <div id="input-pin" class="card-body justify-content-center align-items-center d-flex">
                         <ng-otp-input id="inpfoc" *ngIf="isInputPin"
                           class="row d-flex align-items-center justify-content-center"
-                          (onInputChange)="onOtpChange($event, stepper)" [config]="config" #ngOtpInput>
+                          (onInputChange)="onOtpChange($event, stepper, i)" [config]="config" #ngOtpInput>
                         </ng-otp-input>
                       </div>
                       <div class="card-footer text-muted">
@@ -346,62 +269,36 @@
             <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null" [stepControl]="4">
               <ng-template matStepLabel>Hasil Transaksi</ng-template>
 
-              <ng-container *ngIf="isRejectConfirmation">
-                <div class="container-fluid d-flex justify-content-start align-items-center">
-                  <p>Transaksi telah di Reject</p>
-                </div>
-                <div class="container-fluid d-flex justify-content-start align-items-center mb-2 mt-2">
-                  <ng-lottie width="100px" height="100px" [options]="optionReject"
-                    (animationCreated)="animationCreated($event)">
-                  </ng-lottie>
-                </div>
-                <div>
-                  <button mat-button matStepperNext>Selanjutnya</button>
-                </div>
-              </ng-container>
-
-              <div *ngIf="isWaitingConfirmation"
-                class="container-fluid d-flex justify-content-start align-items-center mt-3">
-                <p class="h6 text-center mr-5">Menunggu konfirmasi dari Head Teller</p>
-                <ng-lottie width="200px" height="200px" [options]="optionWaiting">
-                </ng-lottie>
-              </div>
-
               <div *ngIf="isDisplayPrint" id="print-section" class="container-fluid  mt-3">
-                <img src="assets/svgs/logo-blue.svg" class="mb-3" alt="img-thumbnail">
+                <div class="row justify-content-center">
+                  <img src="assets/svgs/logo-blue.svg" class="mb-3" alt="img-thumbnail">
+                </div>
                 <p class="h6 text-center">Bukti Transaksi</p>
                 <div *ngFor="let item of env.controls | keyvalue">
 
-                  <ng-container *ngIf="item.key != 'wstran'">
+                  <ng-container *ngIf="item.key != 'TransaksiId'">
 
                     <div [ngSwitch]="item.key">
-                      <div *ngSwitchCase="'wsnomn'" class="form-group row">
+                      <div *ngSwitchCase="'nm'" class="form-group row mb-0">
                         <label
-                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
+                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom }}
                           <span class="text-right">:</span></label>
                         <div class="col-sm-8">
                           <label class="form-control-plaintext">{{ item.value.value | currency:"Rp "}}</label>
                         </div>
                       </div>
-                      <div *ngSwitchCase="'wsicas'" class="form-group row">
+                      <div *ngSwitchCase="'tp'" class="form-group row mb-0">
                         <label
-                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
+                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom  }}
                           <span class="text-right">:</span></label>
-                        <div class="form-check col-sm-8 align-items-center d-flex">
-                          <label class="form-control-plaintext">{{ item.value.value | valuecustom  }}</label>
-                        </div>
-                      </div>
-                      <div *ngSwitchCase="'wstype'" class="form-group row">
-                        <label
-                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
-                          <span class="text-right">:</span></label>
+
                         <div class="form-check col-sm-8 align-items-center d-flex">
                           <label class="form-control-plaintext">{{ item.value.value | valuecustom }}</label>
                         </div>
                       </div>
-                      <div *ngSwitchDefault class="form-group row">
+                      <div *ngSwitchDefault class="form-group row mb-0">
                         <label
-                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom2}}
+                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom  }}
                           <span class="text-right">:</span></label>
                         <div class="col-sm-8">
                           <label class="form-control-plaintext">{{ item.value.value }}
@@ -409,12 +306,16 @@
                         </div>
                       </div>
                     </div>
+
                   </ng-container>
+
                 </div>
               </div>
 
               <div *ngIf="isDisplayPrintSaldo" id="print-section" class="container-fluid  mt-3">
-                <img src="assets/svgs/logo-blue.svg" class="mb-3" alt="img-thumbnail">
+                <div class="row justify-content-center">
+                  <img src="assets/svgs/logo-blue.svg" class="mb-3" alt="img-thumbnail">
+                </div>
                 <p class="h6 text-center">Bukti Transaksi</p>
 
                 <ng-container>
@@ -450,23 +351,22 @@
 
               </div>
 
-              <div *ngIf="isDisplayPrint || isDisplayPrintSaldo" class="container-fluid align-items-center">
+              <div class="container-fluid align-items-center">
                 <div class="row justify-content-center">
                   <img src="assets/png/print.png" alt="">
                 </div>
-                <div class="row justify-content-between">
+                <div class="row justify-content-center">
                   <button mat-button (click)="print()" class="print-button">Print</button>
-                  <button mat-button (click)="done()" class="print-button" matStepperNext>Next</button>
                 </div>
                 <!-- <button (click)="done()" mat-button matStepperNext>Next</button> -->
               </div>
             </mat-step>
 
             <!-- STEP 5 -->
-            <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null">
+            <!-- <mat-step [aria-labelledby]="stepDisabled ? 'disabled_Resi' : null">
               <ng-template matStepLabel>Done</ng-template>
               <p>You are now done.</p>
-            </mat-step>
+            </mat-step> -->
           </mat-vertical-stepper>
 
           <div class="d-flex justify-content-center">
@@ -482,9 +382,9 @@
 
 </mat-dialog-content>
 <mat-dialog-actions class="justify-content-center">
-  <div class="container-fluid justify-content-between d-flex m-0">
+  <div class="container-fluid justify-content-center d-flex m-0">
     <button *ngIf="isCancelBtn" class="batal" (click)="cancelQ()" mat-button mat-dialog-close>Batal</button>
-    <button *ngIf="isSkipBtn" class="skip" (click)="skipQ()" mat-button mat-dialog-close>Skip</button>
+    <button *ngIf="isSkipBtn" class="skip" (click)="skipQ()" mat-button mat-dialog-close>Selanjutnya</button>
   </div>
   <button *ngIf="isDoneBtn" class="proses" (click)="prosesQ()" mat-button mat-dialog-close>Selesai</button>
   <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->

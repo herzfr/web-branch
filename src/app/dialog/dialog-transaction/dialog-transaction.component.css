@@ -150,12 +150,14 @@ input[type="text"]:focus {
 ::ng-deep .mat-step-header[aria-labelledby="disabled_Resi"] {
   pointer-events: none !important;
   cursor: not-allowed;
+  display: none;
 }
 
 ::ng-deep .mat-step-header[aria-labelledby="disabled_Hori"] {
   pointer-events: none !important;
   cursor: not-allowed;
 }
+
 
 .alert-danger {
   font-size: 30px;
