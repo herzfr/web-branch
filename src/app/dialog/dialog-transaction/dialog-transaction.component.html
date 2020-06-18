@@ -21,9 +21,9 @@
 
 
   <div class="form-group row mb-0 ml-1 mr-1">
-    <label class="col-sm-6 col-form-label font-weight-normal p-0">01 JAN 2020</label>
+    <label class="col-sm-6 col-form-label font-weight-normal p-0">{{dateNow}}</label>
     <div class="col-sm-6 text-right p-0">
-      <label class="font-weight-normal">13:45</label>
+      <label class="font-weight-normal">{{timeNow}}</label>
     </div>
   </div>
 
@@ -37,7 +37,7 @@
       <p class="h6 ml-1 mr-1">Data Nasabah</p>
       <div class="container-fluid d-flex justify-content-between">
         <div class="col text-center">
-          <img [src]="images64()" alt="..." class="img-thumbnail rounded">
+          <img [src]="images64()" class="img-thumbnail rounded">
           <p class="text-center font-weight-bold">Foto Nasabah</p>
         </div>
         <div class="col text-center">
@@ -47,9 +47,10 @@
       </div>
     </div>
     <div class="col-4 col-md-4 text-center">
-      <button class="col-12 btn-nasabah mb-2 mt-2"><i class="fad fa-plus mr-3"></i><span class="align-items-center">Foto
+      <button class="col-12 btn-nasabah mb-2 mt-2" (click)="fotoNasabahDialog()"><i class="fad fa-plus mr-3"></i><span
+          class="align-items-center">Foto
           Nasabah</span></button>
-      <button class="col-12 btn-nasabah mb-2 mt-2">SCAN TTD/ Surat Kuasa</button>
+      <button class="col-12 btn-nasabah mb-2 mt-2" (click)="nasabahSignDialog()">SCAN TTD/ Surat Kuasa</button>
     </div>
   </div>
 

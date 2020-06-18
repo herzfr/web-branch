@@ -50,6 +50,8 @@ import { ListingService } from './services/listing.service';
 import { SortbypipePipe } from './pipes/sortbypipe.pipe';
 import { Titlecustom2Pipe } from './pipes/titlecustom2.pipe';
 import { ValuecustomPipe } from './pipes/valuecustom.pipe';
+import { FotonasabahComponent } from './dialog/fotonasabah/fotonasabah.component';
+import { NasabahsignComponent } from './dialog/nasabahsign/nasabahsign.component';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -93,9 +95,11 @@ export const customCurrencyMaskConfig = {
     Titlecustom2Pipe,
     ValuecustomPipe,
     SortbypipePipe,
+    FotonasabahComponent,
+    NasabahsignComponent
   ],
   entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent, DialogNewCustomerComponent, VerifyDialogComponent,
-    DialogSuccessComponent, HeadCsDialogComponent, HeadConfirmComponent],
+    DialogSuccessComponent, HeadCsDialogComponent, HeadConfirmComponent, FotonasabahComponent, NasabahsignComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

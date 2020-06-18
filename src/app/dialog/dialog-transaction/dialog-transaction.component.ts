@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild, Input, NgZone } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatGridTileHeaderCssMatStyler, MatStepper, MatSidenav, MatDrawer } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatGridTileHeaderCssMatStyler, MatStepper, MatSidenav, MatDrawer, MatDialogConfig } from '@angular/material';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { QueueService } from 'src/app/services/queue.service';
 declare var $: any;
@@ -17,6 +17,8 @@ import { AppConfiguration } from 'src/app/models/app.configuration';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { ListingService } from 'src/app/services/listing.service';
 import { UtilityService } from 'src/app/services/utility.service';
+import { FotonasabahComponent } from '../fotonasabah/fotonasabah.component';
+import { NasabahsignComponent } from '../nasabahsign/nasabahsign.component';
 
 @Component({
   selector: 'app-dialog-transaction',
@@ -129,6 +131,9 @@ export class DialogTransactionComponent implements OnInit {
   private headSelectTeller: any;
   private animationItem: AnimationItem;
 
+  private dateNow;
+  private timeNow;
+
   @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
   @ViewChild('ngOtpInput', { static: true }) ngOtpInputRef: any;
 
@@ -148,8 +153,6 @@ export class DialogTransactionComponent implements OnInit {
     private configuration: ConfigurationService, private listConv: ListingService, private utilityService: UtilityService) {
 
     this.data = data.data;
-    // console.log("data length : ", data.data.length);
-
     this.TERMINAL = JSON.parse(this.ls.get('terminal'))
 
     this.setorTunaiCode = this.configuration.getConfig().typeSetorTunai;
@@ -161,7 +164,6 @@ export class DialogTransactionComponent implements OnInit {
     this.informasiSaldoTabunganCode = this.configuration.getConfig().typeCheckSaldoTabungan;
 
     this.serverUrlSocket = this.appConfig.ipSocketServer;
-
     let forms = new Array;
     for (const key in data.data) {
       if (data.data.hasOwnProperty(key)) {
@@ -173,7 +175,6 @@ export class DialogTransactionComponent implements OnInit {
         this.status_for_while = element.status
 
         console.log("changeKey.tp : ", changeKey.tp);
-
 
         switch (changeKey.tp) {
           case this.tarikTunaiCode:
@@ -268,6 +269,7 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getDateTime();
 
     this.formGroup = this._formBuilder.group({
       form: this._formBuilder.array([this.init('')])
@@ -280,6 +282,12 @@ export class DialogTransactionComponent implements OnInit {
       }
     }
     this.form.removeAt(0)
+  }
+
+  getDateTime() {
+
+    this.dateNow = this.utilityService.getDate();
+    this.timeNow = this.utilityService.getTime();
   }
 
   init(event) {
@@ -958,6 +966,9 @@ export class DialogTransactionComponent implements OnInit {
         });
         break;
       case 'vldspv':
+        console.log("koneksi ke : ", socket);
+        
+
         this.stompClient.connect({}, function (frame) {
           // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
           that.stompClient.subscribe("/" + socket, (message) => {
@@ -1021,6 +1032,7 @@ export class DialogTransactionComponent implements OnInit {
           // console.log("socket value: ", receivedValue);
           // console.log("rejected", receivedValue.rejected);
           // console.log("success", receivedValue.success);
+
           if (receivedValue.rejected) {
             console.log("transaction rejected");
             that.isDisplayPrint = false;
@@ -1224,6 +1236,37 @@ export class DialogTransactionComponent implements OnInit {
 
   onCheckBalance() {
     this.isDisplayPrintSaldo = true;
+  }
+
+  fotoNasabahDialog() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.backdropClass = 'backdropBackground';
+    dialogConfig.disableClose = true;
+    dialogConfig.width = '1000px';
+    dialogConfig.data = {
+      name: "name",
+      message: "test"
+    };
+
+    this.dialog.open(FotonasabahComponent, dialogConfig).afterClosed().subscribe(resBack => {
+      this.base64Image = resBack;
+    });
+  }
+
+  nasabahSignDialog() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.backdropClass = 'backdropBackground';
+    dialogConfig.disableClose = true;
+    dialogConfig.width = '1000px';
+    dialogConfig.data = {
+      name: "name",
+      message: "test"
+    };
+
+    this.dialog.open(NasabahsignComponent, dialogConfig).afterClosed().subscribe(resBack => {
+      this.base64Sign = resBack;
+    });
+
   }
 
 }

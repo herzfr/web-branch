@@ -46,8 +46,7 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
   private userIDChange: string;
   private dataAllBrch: any;
   private userTerminalData: any = [];
-  // private sidenav: MatSidenav;
-  // dates = new FormControl(new Date());
+
   serializedDate = new FormControl((new Date()).toISOString());
 
   private roles: any = [
@@ -57,7 +56,6 @@ export class AccountComponent implements OnInit, AfterViewInit, OnDestroy {
     { role: "Head Teller", value: "headteller" },
     { role: "Head CS", value: "headcs" },
   ];
-
 
   private enabledValue = 1;
 
