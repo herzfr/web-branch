@@ -1,27 +1,30 @@
 import { Component, OnInit, Inject, ViewChild, Input, NgZone, ElementRef, Renderer2, ViewContainerRef, QueryList, ViewChildren, ComponentFactoryResolver } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatGridTileHeaderCssMatStyler, MatStepper, MatSidenav, MatDrawer, MatHorizontalStepper } from '@angular/material';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl, AbstractControl } from '@angular/forms';
-import { QueueService } from 'src/app/services/queue.service';
-declare var $: any;
-
-import * as SecureLS from 'secure-ls';
 import { AnimationOptions } from 'ngx-lottie';
 import { AnimationItem } from 'lottie-web';
-import { TransactionService } from 'src/app/services/transaction.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import * as securels from 'secure-ls';
 
-import * as Stomp from 'stompjs';
-import * as SockJS from 'sockjs-client';
-import { AppConfiguration } from 'src/app/models/app.configuration';
+// Services
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { ListingService } from 'src/app/services/listing.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { WebsocketService } from 'src/app/services/websocket.service';
-import { BannerLoadingComponent } from 'src/app/banner/banner-loading/banner-loading.component';
-import { BannerSuccessComponent } from 'src/app/banner/banner-success/banner-success.component';
-import { BannerRejectComponent } from 'src/app/banner/banner-reject/banner-reject.component';
+import { QueueService } from 'src/app/services/queue.service';
+import { TransactionService } from 'src/app/services/transaction.service';
+
+// Module
+import * as securels from 'secure-ls';
+import * as SecureLS from 'secure-ls';
+
+// Config
+import { AppConfiguration } from 'src/app/models/app.configuration';
+
+// Model
 import { TransactionModel } from 'src/app/models/transaction-model';
+
+// Declare
+declare var $: any;
 
 @Component({
   selector: 'app-dialog-transaction',
@@ -33,42 +36,50 @@ export class DialogTransactionComponent implements OnInit {
   private BRANCH_CODE;
   private TERMINAL_ID
 
+  // All Data OBJ
   private data: any;
   private dataForm: any;
   private noQ: any;
   private dataObj: any = [];
   // private isCust: any;
 
+  // FORM
+  private form: FormArray;
+  private formGroup: FormGroup;
+  private dataSuccess = new Array;
+
   // Model
   transactionModel: TransactionModel = new TransactionModel();
 
   private isLinear = true;
-  private isProsses = true;
-  private isSuccess = false;
-  private isError = false;
   private isBack = false;
   private isNext = false;
+  private isPreview = true;
+
+  // Keterangan / Info status Otorisasi HeadTeller
+  private isWaiting = false;
+  private isRejected = false;
+  private isApproved = false;
 
   // Main Button
   private isCancelBtn: boolean = true;
   private isSkipBtn: boolean = true;
   private isDoneBtn: boolean = false;
+  private isCloseDialog: boolean = true;
 
-  private form: FormArray;
-  private formGroup: FormGroup;
-  private dataSuccess = new Array;
-
+  // data Status
   private transID_for_while: string;
   private status_for_while: number;
 
+  // Mat Step Operator
   private stepDisabled: boolean = true;
   private stepDisabledHorizontal: boolean = false;
 
-  private dataFormHeadValidation: any;
-  private dataFormActual: any;
+  // Module / Config Variable
+  // private secureLs = new SecureLS({ encodingType: 'aes' });
+  private ls = new securels({ encodingType: 'aes' });
+  private token = this.ls.get('token')
 
-  private isCloseDialog: boolean = true;
-  private secureLs = new SecureLS({ encodingType: 'aes' });
   private config = {
     allowNumbersOnly: true,
     length: 6,
@@ -86,6 +97,7 @@ export class DialogTransactionComponent implements OnInit {
       'border-radius': '0px'
     }
   };
+
   // otorisasi pin Nasabah true false
   private isPinMessageSuccess: boolean = false;
   private isPinMessageError: boolean = false;
@@ -95,6 +107,7 @@ export class DialogTransactionComponent implements OnInit {
   private isCardNumber: boolean = false;
   private isFingerError: boolean = false;
   private isFingerSuccess: boolean = false;
+
   // otorisasi pin Nasabah data
   private cardNum: number;
   private pinMessage: string;
@@ -108,16 +121,19 @@ export class DialogTransactionComponent implements OnInit {
   private isRejectConfirmation: boolean = false;
   // isRejectTeller
 
+  // Data nameHead
   private nameHead: any = [];
 
+  // Head Teller Binding
   private isHeadTeller: boolean = false;
   private isRejectTeller: boolean = true;
   private isSelectHeadTeller: boolean = true;
 
+  // Data Saldo
   private saldoData: any;
 
 
-  // Otorisasi Head Teller
+  // Otorisasi Head Teller Lottie
   private options: AnimationOptions = {
     path: '/assets/lottie/fingerprint.json'
   };
@@ -128,22 +144,22 @@ export class DialogTransactionComponent implements OnInit {
     path: '/assets/lottie/reject.json'
   };
 
+  //  Default Pic Var
   private base64Image = 'assets/png/avatar.png';
   private base64Sign = 'assets/png/signature.png';
   private NAME_CUST = 'John Lennon';
   private imageID;
 
+  // Server Address
   private serverUrl = 'http://localhost:1111/socket';
   private serverUrlSocket;
   private stompClient;
   private stompClientSocket;
 
-  private ls = new securels({ encodingType: 'aes' });
-  private token = this.ls.get('token')
-
   private headSelectTeller: any;
   private animationItem: AnimationItem;
 
+  // ViewChild
   @ViewChild('steppers', { static: false }) private stepmom: MatStepper;
   @ViewChild('stepper', { static: false }) private stepson: MatStepper;
   @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
@@ -159,19 +175,10 @@ export class DialogTransactionComponent implements OnInit {
   informasiSaldoTabunganCode: string;
   informasiSaldoGiroCode: string;
 
-
-  // transLabel: any = new Array;
-
-  // @ViewChild("viewContainerRef", { read: ViewContainerRef })
-  @ViewChildren('viewContainerRef', { read: ViewContainerRef }) containers: QueryList<ViewContainerRef>;
-  VCR: ViewContainerRef;
-
-
-
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
     private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone, private appConfig: AppConfiguration,
     private configuration: ConfigurationService, private listConv: ListingService, private utilityService: UtilityService, private callSocket: WebsocketService,
-    private renderer: Renderer2, private resolver: ComponentFactoryResolver) {
+    private renderer: Renderer2) {
 
     // Get All Data Transaction Form Dashboard
     this.data = data.data;
@@ -208,42 +215,6 @@ export class DialogTransactionComponent implements OnInit {
         this.status_for_while = element.status
 
         console.log("changeKey.tp : ", changeKey.tp);
-
-        // Change Data Key
-        // switch (changeKey.tp) {
-        //   case this.tarikTunaiCode:
-        //     this.transLabel.push("Tarik Tunai");
-        //     changeKey.tp = 'Tarik Tunai'
-        //     break;
-        //   case this.setorTunaiCode:
-        //     this.transLabel.push("Setor Tunai");
-        //     changeKey.tp = 'Setor Tunai'
-        //     break;
-        //   case this.transferAntarBankCode:
-        //     this.transLabel.push("Transfer Antar Bank");
-        //     changeKey.tp = 'Transfer Antar Bank'
-        //     break;
-        //   case this.transferAntarRekCode:
-        //     this.transLabel.push("Transfer Antar Rekening");
-        //     changeKey.tp = 'Transfer Antar Rekening'
-        //     break;
-        //   case this.informasiSaldoGiroCode:
-        //     this.transLabel.push("Informasi Saldo Giro");
-        //     changeKey.tp = 'Informasi Saldo Giro'
-        //     break;
-        //   case this.informasiSaldoTabunganCode:
-        //     this.transLabel.push("Informasi Saldo Tabungan");
-        //     changeKey.tp = 'Informasi Saldo Tabungan'
-        //     break;
-        //   default:
-        //     break;
-        // }
-
-        // if (changeKey.tn === '1') {
-        //   changeKey.tn = 'Ya'
-        // } else if (changeKey.Tunai === '0') {
-        //   changeKey.tn = 'Tidak'
-        // }
 
         // console.log(changeKey.Tunai);
         let dataForm = { "transid": element.transid, "transbuff": element.transbuff[0], "trntype": element.trntype };
@@ -517,9 +488,10 @@ export class DialogTransactionComponent implements OnInit {
     this.isHeadTeller = false;
     this.isRejectTeller = false;
     this.isSelectHeadTeller = false;
+    this.isWaiting = true;
+    this.isPreview = false;
     // this.teSt.nativeElement.insertAdjacentHTML('');
     // console.log(this.containers);
-    this.addComponent('loader')
 
     // console.log(this.stepMom);
 
@@ -544,23 +516,22 @@ export class DialogTransactionComponent implements OnInit {
             dataObj.isValidated = 0;
             dataObj.isRejected = 1;
             console.log(dataObj);
-            this.removeComponent()
-            this.addComponent('reject')
-            this.isProsses = true;
-            this.isError = true;
+            // this.isProsses = true;
+            // this.isError = true;
+            this.isWaiting = false;
+            this.isRejected = true
             this.isHeadTeller = false;
             this.stepDisabledHorizontal = true;
           } else {
             dataObj.isValidated = 1;
             dataObj.isRejected = 0;
             console.log(dataObj);
-            this.removeComponent()
-            // this.addComponent('reject')
             this.cardReader(dataForm.wsfrom)
-            this.isSuccess = true;
+            this.isWaiting = false;
+            this.isApproved = true;
             this.callSocket.disconnectSocket();
             this.stepDisabledHorizontal = true;
-            step.next()
+            // step.next()
           }
         });
 
@@ -571,41 +542,6 @@ export class DialogTransactionComponent implements OnInit {
 
     // this.initializeWebSocketConnection2('vldspv' + this.dataFormHeadValidation.transid, step)
   }
-
-  //  ------------------------------------------------------------------------------------------------
-  //  Add Component                                                                          |   2   |
-  //  ------------------------------------------------------------------------------------------------
-  addComponent(event) {
-
-    switch (event) {
-      case 'loader':
-        this.VCR = this.containers.first;
-        const factoryLoad = this.resolver.resolveComponentFactory(BannerLoadingComponent);
-        this.VCR.createComponent(factoryLoad);
-        break;
-      case 'success':
-        this.VCR = this.containers.first;
-        const factorySuccess = this.resolver.resolveComponentFactory(BannerSuccessComponent);
-        this.VCR.createComponent(factorySuccess);
-        break;
-      case 'reject':
-        this.VCR = this.containers.first;
-        const factoryReject = this.resolver.resolveComponentFactory(BannerRejectComponent);
-        this.VCR.createComponent(factoryReject);
-        break;
-      default:
-        break;
-    }
-  }
-
-  //  ------------------------------------------------------------------------------------------------
-  //  Remove Component                                                                       |   2   |
-  //  ------------------------------------------------------------------------------------------------
-  removeComponent() {
-    console.log(this.containers);
-    this.VCR.remove();
-  }
-
 
   //  ------------------------------------------------------------------------------------------------
   //  Btn OK Reject                                                                           |   2   |
@@ -730,7 +666,7 @@ export class DialogTransactionComponent implements OnInit {
     this.transactionModel.wbproc = this.utilityService.asciiToHexa("900000");
     this.transactionModel.wbtrid = this.utilityService.asciiToHexa(dataObj.transid);
     this.transactionModel.wbbrcd = this.utilityService.asciiToHexa(dataObj.branchcode);
-    this.transactionModel.wbfgid = this.utilityService.asciiToHexa(dataObj.userid);
+    this.transactionModel.wbfgid = this.utilityService.asciiToHexa(dataObj.userid ? dataObj.userid : "");
     this.transactionModel.wbscid = "";
     this.transactionModel.wbicsh = "";
     this.transactionModel.wbicus = this.utilityService.asciiToHexa(this.utilityService.leftPadding(dataObj.iscustomer.toString(), "0", 3));
@@ -832,6 +768,9 @@ export class DialogTransactionComponent implements OnInit {
             this.callSocket.initSocketCustomer('vldnas').then(value => {
 
               const res = JSON.parse(value.toString())
+
+              console.log(res);
+
               if (res['success']) {
 
                 this.fingerMessage = 'Finger Valid'
@@ -949,8 +888,6 @@ export class DialogTransactionComponent implements OnInit {
     // let dataLength = this.dataSuccess.length
     if (this.dataSuccess.length === this.form.length) {
       this.isDoneBtn = true;
-      this.isSkipBtn = true;
-      this.isCloseDialog = true;
     } else {
       console.log('masih belum');
     }
@@ -965,9 +902,10 @@ export class DialogTransactionComponent implements OnInit {
     this.isHeadTeller = false;
     this.isRejectTeller = true;
     this.isSelectHeadTeller = true;
-    this.isError = false
-    this.isProsses = true;
-    this.isSuccess = false;
+    this.isWaiting = false;
+    this.isRejected = false;
+    this.isApproved = false;
+    this.isPreview = true;
     // otorisasi pin Nasabah true false
     this.isPinMessageSuccess = false;
     this.isPinMessageError = false;
@@ -983,9 +921,10 @@ export class DialogTransactionComponent implements OnInit {
   }
 
 
-
-  //  ------------------------------------------------------------------------------------------------
-  //  Print                                                                                  |   x   |
+  //  ================================================================================================
+  //  Result and Print STEP 4
+  //  ================================================================================================
+  //  Print                                                                                   |   4   |
   //  ------------------------------------------------------------------------------------------------
   print() {
     $('#print-section').printThis({

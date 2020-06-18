@@ -199,13 +199,48 @@
                 </mat-card>
               </div>
 
-              <ng-template #viewContainerRef></ng-template>
+              <!-- <ng-template #viewContainerRef></ng-template> -->
+
+              <div *ngIf="isWaiting" class="row alert alert-info d-flex align-items-center" role="alert"
+                style="min-height: 100px;">
+                <h1 class="alert-heading col-12 mb-0"> <i class="fad fa-spinner"></i> Sedang menunggu
+                  konfirmasi otorisasi!
+                </h1>
+                <div class="col-12 d-flex justify-content-between">
+                  <h3 class="mr-3">Mohon tunggu sampai di konfirmasi kembali oleh Supervisor.
+                  </h3>
+                  <div class="LoaderBalls">
+                    <div class="LoaderBalls__item"></div>
+                    <div class="LoaderBalls__item"></div>
+                    <div class="LoaderBalls__item"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="isRejected" class="row alert alert-danger d-flex align-items-center" role="alert"
+                style="min-height: 100px;">
+                <h1 class="alert-heading col-12 mb-0"> <i class="fad fa-exclamation-triangle"></i> Data ditolak oleh
+                  Supervisor!
+                </h1>
+                <h3 class="col-12">Mohon reject data terlebih dahulu untuk melakukan transaksi lain.</h3>
+              </div>
+
+              <div *ngIf="isApproved" class="row alert alert-success d-flex align-items-center" role="alert"
+                style="min-height: 100px;">
+                <h1 class="alert-heading col-12 mb-2"> <i class="fad fa-shield-check"></i> Data telah di
+                  setujui!
+                </h1>
+                <h3 class="col-12 mb-0">Data transaksi ini telah disetujui oleh Supervisor anda.</h3>
+                <h3 class="col-12">Klik "Lanjutkan" untuk ke langkah selanjutnya.</h3>
+              </div>
+
               <div class="row justify-content-center">
-                <button *ngIf="isError" (click)="btnOK(i)" class="btn btn-ls">REJECT</button>
+                <button *ngIf="isRejected" (click)="btnOK(i)" class="btn btn-ls">REJECT</button>
+                <button *ngIf="isApproved" (click)="stepper.next()" class="btn btn-ls">Lanjutkan</button>
                 <!-- <button *ngIf="isProsses" (click)="btnOK(i)" class="btn btn-ls">OTHER TRANSACTION</button> -->
               </div>
 
-              <div class="d-flex justify-content-end">
+              <div *ngIf="isPreview" class="d-flex justify-content-end">
                 <button (click)="backStep(stepper)" mat-button>Back</button>
               </div>
             </mat-step>
@@ -383,7 +418,7 @@
 
 </mat-dialog-content>
 <mat-dialog-actions class="justify-content-center">
-  <div class="container-fluid justify-content-center d-flex m-0">
+  <div class="container-fluid justify-content-center d-flex m-0 mb-3">
     <button *ngIf="isCancelBtn" class="batal" (click)="cancelQ()" mat-button mat-dialog-close>Batal</button>
     <button *ngIf="isSkipBtn" class="skip" (click)="skipQ()" mat-button mat-dialog-close>Selanjutnya</button>
   </div>
