@@ -254,6 +254,7 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   ngOnInit() {
+    // this.getDateTime();
 
     //  ================================================================================================
     //  Init Dynamic Form

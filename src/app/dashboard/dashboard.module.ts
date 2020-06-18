@@ -10,6 +10,7 @@ import { TellerTransactionComponent } from './teller-transaction/teller-transact
   imports: [
     CommonModule,
     DashboardRoutingModule
-  ]
+  ],
+  entryComponents: []
 })
 export class DashboardModule { }

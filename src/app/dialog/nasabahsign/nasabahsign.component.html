@@ -1,0 +1,23 @@
+<div mat-dialog-title class="d-flex justify-content-between align-items-center">
+  <p class="h4 mb-0"></p>
+  <button class="btn" mat-dialog-close><i class="fad fa-times fa-2x"></i></button>
+</div>
+<mat-dialog-content class="mat-typography">
+
+
+  <!-- Signature -->
+  <h2 class="text-info">Signature</h2>
+  <div class="row justify-content-center mb-3">
+    <ng-signature-pad [height]="250" doneButtonText="Done" doneButtonClass="btn-sign" clearButtonClass="btn-sign"
+      format="base64" (done)="showImage($event)">
+    </ng-signature-pad>
+  </div>
+  <p class="text-success text-center" *ngIf="signatureImage">Signature Success!</p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-center">
+  <div class="button_cont">
+    <button (click)="save()" mat-raised-button color="primary">Ok</button>
+  </div>
+</mat-dialog-actions>

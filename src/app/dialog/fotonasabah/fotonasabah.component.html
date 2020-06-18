@@ -1,0 +1,33 @@
+<div mat-dialog-title class="d-flex justify-content-between align-items-center">
+  <p class="h4 mb-0">Data Biometri User</p>
+  <button mat-dialog-close class="btn"><i class="fad fa-times fa-2x"></i></button>
+</div>
+
+<mat-dialog-content class="mat-typography">
+
+  <!-- Images -->
+  <h2 class="text-info">Photo</h2>
+  <div class="row justify-content-center mb-3">
+
+    <div class="col-sm-5 d-flex justify-content-center">
+      <video #video class="vid" autoplay></video>
+    </div>
+    <div class="col-sm-2">
+      <button mat-raised-button class="container-fluid card-capt justify-content-center align-items-center mb-2"
+        (click)="capture()"><i class="fad fa-camera-alt fa-2x"></i></button>
+
+      <button mat-raised-button class="container-fluid card-capt justify-content-center align-items-center mb-2"
+        (click)="compressFile()"><i class="fad fa-upload fa-2x"></i></button>
+    </div>
+    <div class="col-sm-5 d-flex justify-content-center">
+      <canvas #canvas class="vid"></canvas>
+    </div>
+
+  </div>
+
+</mat-dialog-content>
+
+<div mat-dialog-actions class="mb-2 mt-2">
+  <button mat-button mat-raised-button color="primary" (click)="save()">Save</button>
+  <button mat-button mat-raised-button mat-dialog-close color="warn">Close</button>
+</div>
