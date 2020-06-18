@@ -203,10 +203,18 @@
 
               <div *ngIf="isWaiting" class="row alert alert-info d-flex align-items-center" role="alert"
                 style="min-height: 100px;">
-                <h1 class="alert-heading col-12 mb-0"> <i class="fad fa-exclamation-triangle"></i> Sedang menunggu
+                <h1 class="alert-heading col-12 mb-0"> <i class="fad fa-spinner"></i> Sedang menunggu
                   konfirmasi otorisasi!
                 </h1>
-                <h3 class="col-12">Mohon tunggu sampai di konfirmasi kembali oleh Supervisor.</h3>
+                <div class="col-12 d-flex justify-content-between">
+                  <h3 class="mr-3">Mohon tunggu sampai di konfirmasi kembali oleh Supervisor.
+                  </h3>
+                  <div class="LoaderBalls">
+                    <div class="LoaderBalls__item"></div>
+                    <div class="LoaderBalls__item"></div>
+                    <div class="LoaderBalls__item"></div>
+                  </div>
+                </div>
               </div>
 
               <div *ngIf="isRejected" class="row alert alert-danger d-flex align-items-center" role="alert"
@@ -219,14 +227,16 @@
 
               <div *ngIf="isApproved" class="row alert alert-success d-flex align-items-center" role="alert"
                 style="min-height: 100px;">
-                <h1 class="alert-heading col-12 mb-0"> <i class="fad fa-exclamation-triangle"></i> Data telah di
+                <h1 class="alert-heading col-12 mb-2"> <i class="fad fa-shield-check"></i> Data telah di
                   setujui!
                 </h1>
-                <h3 class="col-12">Data transaksi ini telah disetujui oleh Supervisor anda.</h3>
+                <h3 class="col-12 mb-0">Data transaksi ini telah disetujui oleh Supervisor anda.</h3>
+                <h3 class="col-12">Klik "Lanjutkan" untuk ke langkah selanjutnya.</h3>
               </div>
 
               <div class="row justify-content-center">
                 <button *ngIf="isRejected" (click)="btnOK(i)" class="btn btn-ls">REJECT</button>
+                <button *ngIf="isApproved" (click)="stepper.next()" class="btn btn-ls">Lanjutkan</button>
                 <!-- <button *ngIf="isProsses" (click)="btnOK(i)" class="btn btn-ls">OTHER TRANSACTION</button> -->
               </div>
 

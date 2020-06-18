@@ -531,7 +531,7 @@ export class DialogTransactionComponent implements OnInit {
             this.isApproved = true;
             this.callSocket.disconnectSocket();
             this.stepDisabledHorizontal = true;
-            step.next()
+            // step.next()
           }
         });
 
