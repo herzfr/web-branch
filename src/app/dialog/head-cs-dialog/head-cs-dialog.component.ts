@@ -76,10 +76,12 @@ export class HeadCsDialogComponent implements OnInit {
     this.id = data.id
     this.dataLs = data.message;
 
-    console.log(this.dataLs.wbimage);
+    console.log("data ls : ", data);
 
-    this.allImage = this.dataLs.wbimage
-    console.log("data : ", this.dataLs);
+
+
+    this.allImage = this.dataLs.wsbiom;
+    // console.log("data : ", this.dataLs);
 
     // INIT FORM GROUP
     this.productInfo = this.getproductInfo()
@@ -110,59 +112,61 @@ export class HeadCsDialogComponent implements OnInit {
 
   getproductInfo() {
     let group: any = {};
-    // console.log(this.dataLs.produkInfo);
-    for (const key in this.dataLs.produkInfo) {
-      if (this.dataLs.produkInfo.hasOwnProperty(key)) {
-        const element = this.dataLs.produkInfo[key];
+    for (const key in this.dataLs.wspinf) {
+      if (this.dataLs.wspinf.hasOwnProperty(key)) {
+        const element = this.dataLs.wspinf[key];
         group[key] = new FormControl(element, Validators.required)
       }
     }
-    console.log(group);
     return new FormGroup(group);
   }
 
   getDataPemohon() {
 
     let group: any = {};
-    // console.log(this.dataLs.dataPemohon);
-    for (const key in this.dataLs.dataPemohon) {
-      if (this.dataLs.dataPemohon.hasOwnProperty(key)) {
-        const element = this.dataLs.dataPemohon[key];
+    for (const key in this.dataLs.wscdat) {
+      if (this.dataLs.wscdat.hasOwnProperty(key)) {
+        const element = this.dataLs.wscdat[key];
 
 
         switch (key) {
-          case 'tanggalLahir':
-            var m = moment(element, 'DD-MM-YYYY', true)
-            // return m.isValid() ? m.toDate() : new Date(NaN);
-            if (m.isValid()) {
-              console.log(m.toDate());
-              group[key] = new FormControl(m.toDate());
-            } else {
-              group[key] = new FormControl(new Date(NaN));
-            }
+          case 'wslhir':
+            console.log("raw element ", element);
+
+            // var m = moment(element, 'DD-MM-YYYY', true)
+            // console.log("return : ", m);
+
+
+            // if (m.isValid()) {
+            //   console.log(m.toDate());
+            group[key] = new FormControl(element);
+            // } else {
+            //   group[key] = new FormControl(new Date(NaN));
+            // }
+
             break;
-          case 'noHandphone':
+          case 'wsnohp':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
             break;
-          case 'telpRumah':
+          case 'wstlp1':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
             break;
-          case 'telpDomisili':
+          case 'wstlp2':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
             break;
-          case 'noNpwp':
+          case 'wsnpwp':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/), Validators.min(100000000000000), Validators.max(999999999999999)]);
             break;
-          case 'tempatLahir':
+          case 'wstlhr':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern('[a-zA-Z ]*')]);
             break;
-          case 'kodePos':
+          case 'wspos1':
             group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
             break;
-          case 'kodePosDomisili':
+          case 'wspos2':
             group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
             break;
-          case 'pendidikan':
+          case 'wseduc':
             group[key] = new FormControl({ value: element, disabled: true }, Validators.required);
             break;
           default:
@@ -171,22 +175,22 @@ export class HeadCsDialogComponent implements OnInit {
         }
       }
     }
-    console.log(group);
+    console.log("group : ", group);
 
     return new FormGroup(group);
   }
 
   getdataPekerjaan() {
     let group: any = {};
-    // console.log(this.dataLs.dataPekerjaan);
-    for (const key in this.dataLs.dataPekerjaan) {
-      if (this.dataLs.dataPekerjaan.hasOwnProperty(key)) {
-        const element = this.dataLs.dataPekerjaan[key];
+    console.log(this.dataLs.wscjob);
+    for (const key in this.dataLs.wscjob) {
+      if (this.dataLs.wscjob.hasOwnProperty(key)) {
+        const element = this.dataLs.wscjob[key];
         switch (key) {
-          case 'kodePos':
+          case 'wsposk':
             group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
             break;
-          case 'telp':
+          case 'wstlpk':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
             break;
           default:
@@ -202,23 +206,23 @@ export class HeadCsDialogComponent implements OnInit {
 
   getdataKerabat() {
     let group: any = {};
-    // console.log(this.dataLs.dataKerabat);
-    for (const key in this.dataLs.dataKerabat) {
-      if (this.dataLs.dataKerabat.hasOwnProperty(key)) {
-        const element = this.dataLs.dataKerabat[key];
+    console.log(this.dataLs.wscfam);
+    for (const key in this.dataLs.wscfam) {
+      if (this.dataLs.wscfam.hasOwnProperty(key)) {
+        const element = this.dataLs.wscfam[key];
         group[key] = new FormControl(element)
 
         switch (key) {
-          case 'telpKerabat':
+          case 'wstpkr':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
             break;
-          case 'telpAhliWaris':
+          case 'wstpaw':
             group[key] = new FormControl(element, [Validators.required, Validators.pattern(/^-?(0|[0-9]\d*)?$/)]);
             break;
-          case 'kodePosKerabat':
+          case 'wspskr':
             group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
             break;
-          case 'kodePosAhliWaris':
+          case 'wspsaw':
             group[key] = new FormControl(element, [Validators.required, Validators.min(10000), Validators.max(999999)]);
             break;
           default:
@@ -234,59 +238,59 @@ export class HeadCsDialogComponent implements OnInit {
 
   getDataLocation() {
     this.formServ.getProvince().subscribe(e => {
-      // console.log(e);
+      console.log(e);
       this.province = e;
 
       // GET DATA DAERAH I
-      this.formServ.getCity(this.dataPemohon.get('provinsi').value).subscribe(e => {
+      this.formServ.getCity(this.dataPemohon.get('wsprv1').value).subscribe(e => {
         // console.log(e);
         this.kabkot = e;
         console.log(this.dataPemohon);
 
-        this.dataPemohon.get('kabupaten').disable()
-        this.formServ.getDistrict(this.dataPemohon.get('kabupaten').value).subscribe(e => {
+        this.dataPemohon.get('wskot1').disable()
+        this.formServ.getDistrict(this.dataPemohon.get('wskot1').value).subscribe(e => {
           // console.log(e);
           this.dataKec = e;
-          this.dataPemohon.get('kecamatan').disable()
-          this.formServ.getVillage(this.dataPemohon.get('kecamatan').value).subscribe(e => {
+          this.dataPemohon.get('wskec1').disable()
+          this.formServ.getVillage(this.dataPemohon.get('wskec1').value).subscribe(e => {
             // console.log(e);
             this.dataKel = e;
-            this.dataPemohon.get('kelurahan').disable()
+            this.dataPemohon.get('wskel1').disable()
           })
         })
       })
 
 
       // GET DATA DAERAH II
-      this.formServ.getCity(this.dataPemohon.get('provinsiDomisili').value).subscribe(e => {
+      this.formServ.getCity(this.dataPemohon.get('wsprv2').value).subscribe(e => {
         // console.log(e);
         this.kabkot2 = e;
-        this.dataPemohon.get('kabupatenDomisili').disable()
-        this.formServ.getDistrict(this.dataPemohon.get('kabupatenDomisili').value).subscribe(e => {
+        this.dataPemohon.get('wskot2').disable()
+        this.formServ.getDistrict(this.dataPemohon.get('wskot2').value).subscribe(e => {
           // console.log(e);
           this.dataKec2 = e;
-          this.dataPemohon.get('kecamatanDomisili').disable()
-          this.formServ.getVillage(this.dataPemohon.get('kecamatanDomisili').value).subscribe(e => {
+          this.dataPemohon.get('wskec2').disable()
+          this.formServ.getVillage(this.dataPemohon.get('wskec2').value).subscribe(e => {
             // console.log(e);
             this.dataKel2 = e;
-            this.dataPemohon.get('kelurahanDomisili').disable()
+            this.dataPemohon.get('wskel2').disable()
           })
         })
       })
 
       // GET DATA DAERAH III
-      this.formServ.getCity(this.dataPekerjaan.get('provinsi').value).subscribe(e => {
+      this.formServ.getCity(this.dataPekerjaan.get('wsprvk').value).subscribe(e => {
         // console.log(e);
         this.kabkot3 = e;
-        this.dataPekerjaan.get('kabupaten').disable()
-        this.formServ.getDistrict(this.dataPekerjaan.get('kabupaten').value).subscribe(e => {
+        this.dataPekerjaan.get('wskotk').disable()
+        this.formServ.getDistrict(this.dataPekerjaan.get('wskotk').value).subscribe(e => {
           // console.log(e);
           this.dataKec3 = e;
-          this.dataPekerjaan.get('kecamatan').disable()
-          this.formServ.getVillage(this.dataPekerjaan.get('kecamatan').value).subscribe(e => {
+          this.dataPekerjaan.get('wskeck').disable()
+          this.formServ.getVillage(this.dataPekerjaan.get('wskeck').value).subscribe(e => {
             // console.log(e);
             this.dataKel3 = e;
-            this.dataPekerjaan.get('kelurahan').disable()
+            this.dataPekerjaan.get('wskelk').disable()
           })
         })
       })
@@ -298,45 +302,45 @@ export class HeadCsDialogComponent implements OnInit {
 
 
       // GET DATA DAERAH IV
-      this.formServ.getCity(this.dataKerabat.get('provinsiKerabat').value).subscribe(e => {
+      this.formServ.getCity(this.dataKerabat.get('wspvkr').value).subscribe(e => {
         // console.log(e);
         this.kabkot4 = e;
-        this.dataKerabat.get('kabupatenKerabat').disable()
-        this.formServ.getDistrict(this.dataKerabat.get('kabupatenKerabat').value).subscribe(e => {
+        this.dataKerabat.get('wsktkr').disable()
+        this.formServ.getDistrict(this.dataKerabat.get('wsktkr').value).subscribe(e => {
           // console.log(e);
           this.dataKec4 = e;
-          this.dataKerabat.get('kecamatanKerabat').disable()
-          this.formServ.getVillage(this.dataKerabat.get('kecamatanKerabat').value).subscribe(e => {
+          this.dataKerabat.get('wskckr').disable()
+          this.formServ.getVillage(this.dataKerabat.get('wskckr').value).subscribe(e => {
             // console.log(e);
             this.dataKel4 = e;
-            this.dataKerabat.get('kelurahanKerabat').disable()
+            this.dataKerabat.get('wsklkr').disable()
           })
         })
-      }) 
+      })
 
       // GET DATA DAERAH V
-      this.formServ.getCity(this.dataKerabat.get('provinsiAhliWaris').value).subscribe(e => {
+      this.formServ.getCity(this.dataKerabat.get('wspvaw').value).subscribe(e => {
         // console.log(e);
         this.kabkot5 = e;
-        this.dataKerabat.get('kabupatenAhliWaris').disable()
-        this.formServ.getDistrict(this.dataKerabat.get('kabupatenAhliWaris').value).subscribe(e => {
+        this.dataKerabat.get('wsktaw').disable()
+        this.formServ.getDistrict(this.dataKerabat.get('wsktaw').value).subscribe(e => {
           // console.log(e);
           this.dataKec5 = e;
-          this.dataKerabat.get('kecamatanAhliWaris').disable()
-          this.formServ.getVillage(this.dataKerabat.get('kecamatanAhliWaris').value).subscribe(e => {
+          this.dataKerabat.get('wskcaw').disable()
+          this.formServ.getVillage(this.dataKerabat.get('wskcaw').value).subscribe(e => {
             // console.log(e);
             this.dataKel5 = e;
-            this.dataKerabat.get('kelurahanAhliWaris').disable()
+            this.dataKerabat.get('wsklaw').disable()
           })
         })
       })
     })
 
-    this.dataPemohon.get('provinsi').disable()
-    this.dataPemohon.get('provinsiDomisili').disable()
-    this.dataPekerjaan.get('provinsi').disable()
-    this.dataKerabat.get('provinsiKerabat').disable()
-    this.dataKerabat.get('provinsiAhliWaris').disable()
+    this.dataPemohon.get('wsprv1').disable()
+    this.dataPemohon.get('wsprv2').disable()
+    this.dataPekerjaan.get('wsprvk').disable()
+    this.dataKerabat.get('wspvkr').disable()
+    this.dataKerabat.get('wspvaw').disable()
   }
 
   onChangeProv(formGroup, formcontrol, chapter) {
@@ -527,66 +531,66 @@ export class HeadCsDialogComponent implements OnInit {
 
 
   photoImg() {
-    if (this.allImage.imagepict === undefined) {
+    if (this.allImage.wsbiom === undefined) {
       return 'assets/png/avatar.png';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagepict);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.wsimgs);
     }
   }
 
   signImg() {
-    if (this.allImage.imagesign === undefined) {
+    if (this.allImage.wssign === undefined) {
       return 'assets/png/signature.png';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagesign);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.wssign);
     }
   }
 
   finger1() {
     // console.log(this.allFinger);
 
-    if (this.allImage.imagefinger1 === undefined) {
+    if (this.allImage.wsfim1 === undefined) {
       return 'assets/svgs/finger-empty.svg';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagefinger1);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.wsfim1);
     }
   }
 
   finger2() {
     // console.log(this.allFinger);
-    if (this.allImage.imagefinger2 === undefined) {
+    if (this.allImage.wsfim2 === undefined) {
       return 'assets/svgs/finger-empty.svg';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagefinger2);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.wsfim2);
     }
   }
 
   finger3() {
     // console.log(this.allFinger);
-    if (this.allImage.imagefinger3 === undefined) {
+    if (this.allImage.wsfim3 === undefined) {
       return 'assets/svgs/finger-empty.svg';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagefinger3);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.wsfim3);
     }
   }
 
   finger4() {
     // console.log(this.allFinger);
 
-    if (this.allImage.imagefinger4 === undefined) {
+    if (this.allImage.wsfim4 === undefined) {
       return 'assets/svgs/finger-empty.svg';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagefinger4);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.wsfim4);
     }
   }
 
   finger5() {
     // console.log(this.allFinger);
 
-    if (this.allImage.imagefinger5 === undefined) {
+    if (this.allImage.wsfim5 === undefined) {
       return 'assets/svgs/finger-empty.svg';
     } else {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.imagefinger5);
+      return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/png;base64,' + this.allImage.wsfim5);
     }
   }
 

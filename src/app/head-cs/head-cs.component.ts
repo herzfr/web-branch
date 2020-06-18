@@ -90,6 +90,8 @@ export class HeadCsComponent implements OnInit {
   MainFunction(event, num: string) {
     this.formData = event;
     console.log("event value : ", event);
+    console.log("event number : ", num);
+
 
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
@@ -212,7 +214,6 @@ export class HeadCsComponent implements OnInit {
                   }
                 });
 
-                
 
               }
             });
