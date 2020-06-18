@@ -50,8 +50,12 @@ import { ListingService } from './services/listing.service';
 import { SortbypipePipe } from './pipes/sortbypipe.pipe';
 import { Titlecustom2Pipe } from './pipes/titlecustom2.pipe';
 import { ValuecustomPipe } from './pipes/valuecustom.pipe';
-import { FotonasabahComponent } from './dialog/fotonasabah/fotonasabah.component';
-import { NasabahsignComponent } from './dialog/nasabahsign/nasabahsign.component';
+import { AlltransactionService } from './services/alltransaction.service';
+import { BannerLoadingComponent } from './banner/banner-loading/banner-loading.component';
+import { LoaderService } from './services/loader.service';
+import { BannerSuccessComponent } from './banner/banner-success/banner-success.component';
+import { BannerRejectComponent } from './banner/banner-reject/banner-reject.component';
+import { TestDialogComponent } from './dialog/test-dialog/test-dialog.component';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -95,11 +99,13 @@ export const customCurrencyMaskConfig = {
     Titlecustom2Pipe,
     ValuecustomPipe,
     SortbypipePipe,
-    FotonasabahComponent,
-    NasabahsignComponent
+    BannerLoadingComponent,
+    BannerSuccessComponent,
+    BannerRejectComponent,
+    TestDialogComponent,
   ],
-  entryComponents: [DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent, DialogNewCustomerComponent, VerifyDialogComponent,
-    DialogSuccessComponent, HeadCsDialogComponent, HeadConfirmComponent, FotonasabahComponent, NasabahsignComponent],
+  entryComponents: [TestDialogComponent, DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent, DialogNewCustomerComponent, VerifyDialogComponent,
+    DialogSuccessComponent, HeadCsDialogComponent, HeadConfirmComponent, BannerLoadingComponent, BannerRejectComponent, BannerSuccessComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -121,7 +127,7 @@ export const customCurrencyMaskConfig = {
   providers: [
     CryptoService, AuthenticateService, AuthGuard, JsonAppConfigService, DialogService, WebsocketService, UtilityService,
     TestService, TransactionService, SharedService, HeadService, UserDataService, NgxImageCompressService, NasabahService,
-    ConfigurationService, ListingService,
+    ConfigurationService, ListingService, AlltransactionService, LoaderService,
     {
       provide: AppConfiguration,
       deps: [HttpClient],

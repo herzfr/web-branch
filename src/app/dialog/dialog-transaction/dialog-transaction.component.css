@@ -85,6 +85,20 @@ h6 {
   background: #d4e0b0;
 }
 
+.btn-ls {
+  background: #fff;
+  color: #234a7b;
+  box-shadow: none;
+  border: 1px solid #234a7b;
+  min-width: 100px;
+}
+
+.btn-ls:hover {
+  background: #234a7b;
+  color: #fff;
+  box-shadow: none;
+}
+
 .fa-plus {
   font-size: larger;
 }
@@ -136,12 +150,14 @@ input[type="text"]:focus {
 ::ng-deep .mat-step-header[aria-labelledby="disabled_Resi"] {
   pointer-events: none !important;
   cursor: not-allowed;
+  display: none;
 }
 
 ::ng-deep .mat-step-header[aria-labelledby="disabled_Hori"] {
   pointer-events: none !important;
   cursor: not-allowed;
 }
+
 
 .alert-danger {
   font-size: 30px;

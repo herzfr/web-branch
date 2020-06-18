@@ -2,12 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
-import { FotonasabahComponent } from '../dialog/fotonasabah/fotonasabah.component';
+import { TellerTransactionComponent } from './teller-transaction/teller-transaction.component';
 
 
 @NgModule({
-  declarations: [
-  ],
+  declarations: [TellerTransactionComponent],
   imports: [
     CommonModule,
     DashboardRoutingModule
