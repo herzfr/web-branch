@@ -33,6 +33,12 @@ export class ValuecustomPipe implements PipeTransform {
                 case this.config.getConfig().typeNewAccount:
                     return 'New Account';
                     break;
+                case this.config.getConfig().typeCheckSaldoGiro:
+                    return 'Saldo Giro';
+                    break;
+                case this.config.getConfig().typeCheckSaldoTabungan:
+                    return 'Saldo Tabungan';
+                    break;
                 case "0":
                     return 'No';
                     break;
