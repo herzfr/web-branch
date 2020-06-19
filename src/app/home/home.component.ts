@@ -39,19 +39,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   secureLs = new securels({ encodingType: 'aes' });
 
   // version = VERSION;
-  navItems: NavItem[] = [
+   // version = VERSION;
+   navItems: NavItem[] = [
     {
       displayName: 'Financial Retail',
       iconName: 'financial-retail.svg',
       children: [
         {
-          displayName: 'Teller DashBoard',
+          displayName: 'Antrian Teller',
           iconName: 'chevron_right',
           route: "/home/teller",
           children: []
         },
         {
-          displayName: 'CS DashBoard',
+          displayName: 'Antrian CS',
           iconName: 'chevron_right',
           route: "/home/cs",
           children: []
@@ -69,83 +70,86 @@ export class HomeComponent implements OnInit, OnDestroy {
           children: []
         },
         {
-          displayName: 'History Transaksi',
+          displayName: 'Penerimaan dari Teller lain',
           iconName: 'chevron_right',
-          route: "/home/history",
-          children: []
-        },
-        {
-          displayName: 'Pembayaran dari Teller Lain',
-          iconName: 'chevron_right',
+          route: "/home/",
           children: []
         },
         {
           displayName: 'Setoran Tunai',
           iconName: 'chevron_right',
+          route: "/home/",
           children: []
         },
         {
           displayName: 'Penarikan Tunai',
           iconName: 'chevron_right',
-          children: []
-        },
-        {
-          displayName: 'Pemindahbukuan Tanpa Cek',
-          iconName: 'chevron_right',
+          route: "/home/",
           children: []
         },
         {
           displayName: 'Pemindahbukuan Beda Mata Uang',
           iconName: 'chevron_right',
+          route: "/home/",
           children: []
         },
         {
-          displayName: 'Selisih Kas Lebih',
+          displayName: 'Banknote Cross Currency',
           iconName: 'chevron_right',
+          route: "/home/",
           children: []
-        },
-        {
-          displayName: 'Setoran Tunai Beda Mata Uang',
-          iconName: 'chevron_right',
-          children: []
-        },
-        {
-          displayName: 'Penarikan Tunai Beda Mata Uang',
-          iconName: 'chevron_right',
-          children: []
-        },
-        {
-          displayName: 'Jual Beli Valas',
-          iconName: 'chevron_right',
-          children: []
-        },
-        {
-          displayName: 'Input Transaksi WIC',
-          iconName: 'chevron_right',
-          children: []
-        },
+        }
+
       ]
     },
     {
       displayName: 'Report',
       iconName: 'report.svg',
-      children: []
-    },
-    {
-      displayName: 'Passbook',
-      iconName: 'passbook.svg',
-      route: 'feedback'
+      children: [
+        {
+          displayName: 'Report Transaksi Harian Teller',
+          iconName: 'chevron_right',
+          route: "/home/",
+          children: []
+        },
+      ]
     },
     {
       displayName: 'Pembayaran',
       iconName: 'payment.svg',
-      children: []
+      children: [
+        {
+          displayName: 'Open Payment',
+          iconName: 'chevron_right',
+          route: "/home/",
+          children: []
+        },
+        {
+          displayName: 'Close Payment',
+          iconName: 'chevron_right',
+          route: "/home/",
+          children: []
+        },
+      ]
     },
     {
       displayName: 'Cash Drawer',
-      disabled: true,
+      disabled: false,
       iconName: 'cash-drawer.svg',
-      children: []
+      children: [
+        {
+          displayName: 'Teller Cash Drawer',
+          iconName: 'chevron_right',
+          route: "/home/",
+          children: []
+        },
+        {
+          displayName: 'Denominasi',
+          iconName: 'chevron_right',
+          route: "/home/",
+          children: []
+        }
+      ]
     },
     {
       displayName: 'Setting',
@@ -160,6 +164,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       ]
     }
   ];
+
 
   @ViewChild('drawer', { static: false }) public drawer: MatSidenav;
 
