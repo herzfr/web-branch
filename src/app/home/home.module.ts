@@ -11,16 +11,29 @@ import { ConfirmTransactionComponent } from '../dialog/confirm-transaction/confi
 import { DashboardCsComponent } from '../dashboard-cs/dashboard-cs.component';
 import { HeadCsComponent } from '../head-cs/head-cs.component';
 import { HistoryTransaksiComponent } from '../history-transaksi/history-transaksi.component';
+import { FotonasabahComponent } from '../dialog/fotonasabah/fotonasabah.component';
+import { NasabahsignComponent } from '../dialog/nasabahsign/nasabahsign.component';
+import { SignaturePadModule } from '@ng-plus/signature-pad';
 
 
 @NgModule({
-  declarations: [DashboardComponent, HeadTellerComponent, RejectTransactionComponent, ConfirmTransactionComponent, DashboardCsComponent, HeadCsComponent, HistoryTransaksiComponent],
-  entryComponents: [RejectTransactionComponent, ConfirmTransactionComponent],
+  declarations: [DashboardComponent,
+    HeadTellerComponent,
+    RejectTransactionComponent,
+    ConfirmTransactionComponent,
+    DashboardCsComponent,
+    HeadCsComponent,
+    HistoryTransaksiComponent,
+    NasabahsignComponent,
+    FotonasabahComponent
+  ],
+  entryComponents: [RejectTransactionComponent, ConfirmTransactionComponent, FotonasabahComponent, NasabahsignComponent],
   imports: [
     CommonModule,
     HomeRoutingModule,
     MaterialModule,
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
+    SignaturePadModule
   ]
 })
 export class HomeModule { }

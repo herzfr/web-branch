@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild, Input, NgZone, ElementRef, Renderer2, ViewContainerRef, QueryList, ViewChildren, ComponentFactoryResolver } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatGridTileHeaderCssMatStyler, MatStepper, MatSidenav, MatDrawer, MatHorizontalStepper } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatGridTileHeaderCssMatStyler, MatStepper, MatSidenav, MatDrawer, MatHorizontalStepper, MatDialogConfig } from '@angular/material';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { AnimationOptions } from 'ngx-lottie';
 import { AnimationItem } from 'lottie-web';
@@ -22,6 +22,8 @@ import { AppConfiguration } from 'src/app/models/app.configuration';
 
 // Model
 import { TransactionModel } from 'src/app/models/transaction-model';
+import { FotonasabahComponent } from '../fotonasabah/fotonasabah.component';
+import { NasabahsignComponent } from '../nasabahsign/nasabahsign.component';
 
 // Declare
 declare var $: any;
@@ -1078,6 +1080,37 @@ export class DialogTransactionComponent implements OnInit {
     this.isSkipBtn = true;
     this.isCloseDialog = true;
     step.previous()
+  }
+
+  fotoNasabahDialog() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.backdropClass = 'backdropBackground';
+    dialogConfig.disableClose = true;
+    dialogConfig.width = '1000px';
+    dialogConfig.data = {
+      name: "name",
+      message: "test"
+    };
+
+    this.dialog.open(FotonasabahComponent, dialogConfig).afterClosed().subscribe(resBack => {
+      this.base64Image = resBack;
+    });
+  }
+
+  nasabahSignDialog() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.backdropClass = 'backdropBackground';
+    dialogConfig.disableClose = true;
+    dialogConfig.width = '1000px';
+    dialogConfig.data = {
+      name: "name",
+      message: "test"
+    };
+
+    this.dialog.open(NasabahsignComponent, dialogConfig).afterClosed().subscribe(resBack => {
+      this.base64Sign = resBack;
+    });
+
   }
 
 }
