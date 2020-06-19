@@ -3,6 +3,7 @@ import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { DialogService } from './dialog.service';
 import { AppConfiguration } from '../models/app.configuration';
+import { async } from '@angular/core/testing';
 
 @Injectable({
   providedIn: 'root'
@@ -93,7 +94,7 @@ export class WebsocketService {
     return proms;
   }
 
-  initSocketCustomer(code) {
+  async initSocketCustomer(code) {
 
     let ws = new SockJS(this.serverLocal);
     this.stompClient = Stomp.over(ws);
@@ -105,8 +106,20 @@ export class WebsocketService {
         that.stompClient.subscribe("/" + code, (message) => {
           if (message.body) {
             let receivedValue = JSON.parse(message.body);
-            console.log(receivedValue);
-            res(message.body)
+
+            if (receivedValue['success']) {
+              res(message.body)
+              // } else {
+              //   try {
+              //     this.asyncMethod(code)
+              //   } catch (error) {
+              //     console.log(error);
+
+              //   }
+            }
+
+            // console.log(receivedValue);
+
           }
         }, () => {
           rej("Data Error")
@@ -126,6 +139,13 @@ export class WebsocketService {
     console.log("disconnected");
     this.stompClient.disconnect()
   }
+
+  async asyncMethod(code) {
+    const value = await this.initSocketCustomer(code)
+    console.log(value);
+    return value;
+  }
+
 
 
 

@@ -767,7 +767,12 @@ export class DialogTransactionComponent implements OnInit {
             // })
 
             this.callFingerVerify()
-            this.callSocket.initSocketCustomer('vldnas').then(value => {
+            this.callSocket.asyncMethod('vldnas').then(value => {
+              console.log(value);
+            })
+
+            // this.callSocket.initSocketCustomer('vldnas').then(value => {
+            this.callSocket.asyncMethod('vldnas').then(value => {
 
               const res = JSON.parse(value.toString())
 
@@ -814,7 +819,6 @@ export class DialogTransactionComponent implements OnInit {
                   })
                 }
               }
-
             })
 
             // this.initializeWebSocketConnection('vldnas', step)
