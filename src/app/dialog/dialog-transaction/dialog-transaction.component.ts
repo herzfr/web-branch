@@ -774,8 +774,6 @@ export class DialogTransactionComponent implements OnInit {
     // wbicus // is customer or nasabah
 
 
-
-
     // Date Time Process
     let processTime = new Date().getTime();
 
