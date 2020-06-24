@@ -75,6 +75,14 @@ export class TransactionService {
     return this.http.get(this.localHost + "api/wbservice/call");
   }
 
+  getDataPayment() {
+    return this.http.get(this.apiUrl + 'api/payment/', this.httpOptions)
+  }
+
+  getDataSubPayment(param) {
+    return this.http.get(this.apiUrl + 'api/payment/byCode?code=' + param, this.httpOptions)
+  }
+
 
 
 }

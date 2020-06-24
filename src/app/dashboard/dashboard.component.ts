@@ -52,10 +52,13 @@ export class DashboardComponent implements OnInit {
   transferAntarRekCode: string;
   informasiSaldoTabunganCode: string;
   informasiSaldoGiroCode: string;
+  payment: string;
 
   constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService,
     private appConfig: AppConfiguration, private sharedService: SharedService, private config: ConfigurationService) {
     this.serverUrl = appConfig.ipSocketServer + "socket";
+    // console.log(this.secureLs.get('token'));
+
     // console.log("dashboar socket : ", this.serverUrl);
 
     if (localStorage.getItem('skip')) {
@@ -70,6 +73,7 @@ export class DashboardComponent implements OnInit {
     this.transferAntarRekCode = this.config.getConfig().typeTransferAntarRek;
     this.informasiSaldoGiroCode = this.config.getConfig().typeCheckSaldoGiro;
     this.informasiSaldoTabunganCode = this.config.getConfig().typeCheckSaldoTabungan;
+    this.payment = this.config.getConfig().typePayment;
 
   }
 
@@ -115,6 +119,9 @@ export class DashboardComponent implements OnInit {
               break;
             case this.informasiSaldoTabunganCode:
               transBf.tp = 'Informasi Saldo Tabungan';
+              break;
+            case this.payment:
+              transBf.tp = 'Payment';
               break;
             case '0002001':
               transBf.tp = 'Informasi Saldo Tabungan';

@@ -152,7 +152,6 @@ export class LoginComponent implements OnInit, OnDestroy {
             that.stompClient.disconnect();
           }
         }
-
       }, () => {
         that.dialog.errorDialog("Error", "Koneksi Terputus");
       });

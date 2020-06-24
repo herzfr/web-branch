@@ -39,6 +39,9 @@ export class ValuecustomPipe implements PipeTransform {
                 case this.config.getConfig().typeCheckSaldoTabungan:
                     return 'Saldo Tabungan';
                     break;
+                case this.config.getConfig().typePayment:
+                    return 'Transaksi Payment';
+                    break;
                 case "0":
                     return 'No';
                     break;
@@ -58,7 +61,6 @@ export class ValuecustomPipe implements PipeTransform {
                 default: break;
             }
         }
-
 
     }
 

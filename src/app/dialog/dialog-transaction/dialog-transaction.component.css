@@ -120,6 +120,21 @@ input[type="text"]:focus {
   box-shadow: none;
 }
 
+/* Select
+ ------------------------------------------------------------- */
+select.form-control-plaintext:not([size]):not([multiple]) {
+  background: #EEF3F8;
+  border: 1px solid #133764;
+  box-sizing: border-box;
+  border-radius: 20px;
+  outline: none;
+  padding-left: 10px;
+  padding-right: 10px;
+  transition: all 0.3s ease;
+  color: #133764;
+}
+
+
 .mat-button {
   background: linear-gradient(170.06deg, #2B5876 3.56%, #4E4376 96.21%);
   border: 0px solid transparent;

@@ -103,6 +103,13 @@ export class WebsocketService {
     let proms = new Promise((res, rej) => {
       this.stompClient.connect({}, function (frame) {
         // that.subOpenFinger = that.auth.openLoginApp().subscribe(() => { });
+        // console.log(this.stomp.status);
+
+
+        //   if (this.stomp.status === 'CONNECTED') {
+        //     // do stuff that requires a connection, like establish subscriptions
+        // }
+
         that.stompClient.subscribe("/" + code, (message) => {
           if (message.body) {
             let receivedValue = JSON.parse(message.body);
@@ -131,7 +138,6 @@ export class WebsocketService {
       });
     });
     return proms;
-
   }
 
 

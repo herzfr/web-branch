@@ -64,7 +64,7 @@
   <hr class="m-3">
 
   <form [formGroup]="formGroup">
-    <mat-horizontal-stepper formArrayName="form" #steppers>
+    <mat-horizontal-stepper formArrayName="form" #steppers (click)="trigger()">
       <ng-container>
         <mat-step [aria-labelledby]="stepDisabledHorizontal ? 'disabled_Hori' : null" [completed]="true"
           [formGroupName]="i" *ngFor="let env of formGroup.controls.form.controls;let i = index">
@@ -81,7 +81,7 @@
               <!-- <ng-template matStepLabel>Cek Transaksi</ng-template> -->
 
               <ng-container *ngFor="let a of env.controls | keyvalue">
-                <ng-container *ngIf="a.key != 'TransaksiId' && a.key != 'tp'">
+                <ng-container *ngIf="a.key != 'TransaksiId' && a.key != 'tp' && a.key != 'cd'">
 
                   <div [ngSwitch]="a.key">
                     <div *ngSwitchCase="'nm'" class="form-group row">
@@ -92,6 +92,35 @@
                         <input currencyMask type="text" class="form-control-plaintext col-6"
                           formControlName="{{ a.key }}">
                       </div>
+                    </div>
+                    <div *ngSwitchCase="'py'" class="form-group row">
+                      <label
+                        class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ a.key | titlecustom}}
+                        <span class="text-right">:</span></label>
+                      <div class="col-sm-9">
+                        <select (change)="onChangePayment($event.target.value, i)" class="form-control-plaintext col-6"
+                          formControlName="{{ a.key }}">
+                          <option *ngFor='let s of menuPayment' [selected]="a.value.value === s.code"
+                            [ngValue]="s.code">
+                            {{s.name}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div *ngSwitchCase="'sp'" class="form-group row">
+                      <!-- <ng-templat *ngIf="subMenuPay"> -->
+                      <label
+                        class="col-sm-3 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ a.key | titlecustom}}
+                        <span class="text-right">:</span></label>
+                      <div class="col-sm-9">
+                        <select class="form-control-plaintext col-6" formControlName="{{ a.key }}">
+                          <option [ngValue]="0000">placeholder</option>
+                          <option *ngFor='let s of subMenuPay' [selected]="a.value.value === s.code" [ngValue]="s.code">
+                            {{s.name}}
+                          </option>
+                        </select>
+                      </div>
+                      <!-- </ng-templat> -->
                     </div>
                     <div *ngSwitchCase="'tn'" class="form-group row">
                       <label
@@ -105,7 +134,6 @@
                           <pre class="state">false</pre>
                         </label>
                       </div>
-
                     </div>
                     <div *ngSwitchDefault class="form-group row">
                       <label

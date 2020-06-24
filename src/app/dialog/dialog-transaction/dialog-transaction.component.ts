@@ -35,8 +35,11 @@ declare var $: any;
 })
 export class DialogTransactionComponent implements OnInit {
   private TERMINAL_DATA: any = [];
+  private USERDATA: any = [];
   private BRANCH_CODE;
-  private TERMINAL_ID
+  private TERMINAL_ID;
+
+  private USER_ID;
 
   // All Data OBJ
   private data: any;
@@ -176,6 +179,11 @@ export class DialogTransactionComponent implements OnInit {
   newAccountCode: string;
   informasiSaldoTabunganCode: string;
   informasiSaldoGiroCode: string;
+  paymentCode: string;
+
+  // Data Select Payment
+  private menuPayment: any;
+  private subMenuPay: any = [];
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
     private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone, private appConfig: AppConfiguration,
@@ -184,12 +192,24 @@ export class DialogTransactionComponent implements OnInit {
 
     // Get All Data Transaction Form Dashboard
     this.data = data.data;
+    console.log(this.data);
+
     // console.log("data length : ", data.data.length);
 
     // Get Data Terminal
     this.TERMINAL_DATA = JSON.parse(this.ls.get('terminal'))
     this.BRANCH_CODE = this.TERMINAL_DATA.branchCode;
     this.TERMINAL_ID = this.TERMINAL_DATA.terminalID;
+
+    // Get Data User
+    this.USERDATA = JSON.parse(this.ls.get('data'))
+    this.USER_ID = this.USERDATA.userid;
+
+    // console.log(this.ls.get('terminal'));
+    // console.log(this.ls.get('termdata'));
+    // console.log(this.ls.get('data'));
+
+
 
     // Get Transaction Type Code
     this.setorTunaiCode = this.configuration.getConfig().typeSetorTunai;
@@ -199,6 +219,8 @@ export class DialogTransactionComponent implements OnInit {
     this.newAccountCode = this.configuration.getConfig().typeNewAccount;
     this.informasiSaldoGiroCode = this.configuration.getConfig().typeCheckSaldoGiro;
     this.informasiSaldoTabunganCode = this.configuration.getConfig().typeCheckSaldoTabungan;
+    this.paymentCode = this.configuration.getConfig().typePayment;
+
 
     // Get Ip Config for socket
     this.serverUrlSocket = this.appConfig.ipSocketServer;
@@ -218,12 +240,27 @@ export class DialogTransactionComponent implements OnInit {
 
         console.log("changeKey.tp : ", changeKey.tp);
 
+        if (element.trntype === this.paymentCode) {
+          console.log('ada bro');
+          this.transacServ.getDataPayment().subscribe(res => {
+            console.log(res);
+            this.menuPayment = res;
+            this.trigger()
+          })
+        }
+
         // console.log(changeKey.Tunai);
         let dataForm = { "transid": element.transid, "transbuff": element.transbuff[0], "trntype": element.trntype };
+
+        // console.log(element.transbuff[0].py);
+
         forms.push(dataForm)
       }
     }
     this.dataForm = forms;
+    console.log(this.dataForm);
+    console.log(this.subMenuPay);
+
   }
 
   ngOnInit() {
@@ -339,6 +376,52 @@ export class DialogTransactionComponent implements OnInit {
   //  ================================================================================================
   //  Process Transaction STEP 1
   //  ================================================================================================
+  //  IF Payment Function Trigger                                                            |   1   |
+  //  ------------------------------------------------------------------------------------------------
+
+  trigger() {
+    // console.log(this.stepmom.selectedIndex);
+    // console.log(this.form.at(this.stepmom.selectedIndex).get('py').value);
+    // console.log(this.form.at(this.stepmom.selectedIndex).get('tp').value);
+
+    if (this.form.at(this.stepmom.selectedIndex).get('tp').value === this.paymentCode) {
+      switch (this.form.at(this.stepmom.selectedIndex).get('tp').value) {
+        case this.paymentCode:
+          this.onChangePayment(this.form.at(this.stepmom.selectedIndex).get('py').value, this.stepmom.selectedIndex)
+          break;
+        default: break;
+      }
+    } else {
+      console.log("no payment");
+    }
+
+  }
+
+
+  //  ------------------------------------------------------------------------------------------------
+  //  IF Payment Function                                                                     |   1   |
+  //  ------------------------------------------------------------------------------------------------
+  onChangePayment(event, index) {
+    this.transacServ.getDataSubPayment(event).subscribe(res => {
+      this.subMenuPay = res;
+      // console.log(this.subMenuPay.length);
+      if (this.subMenuPay.length > 0) {
+        this.form.at(index).get('sp').enable()
+        // console.log("ada");
+        // console.log(this.form.at(index).get('sp').value);
+      } else {
+        this.form.at(index).get('sp').setValue("0000")
+        this.form.at(index).get('sp').disable()
+        // console.log("gak ada");
+        // console.log(this.form.at(index).get('sp').value);
+      }
+    })
+
+    console.log(event);
+    console.log(this.form.at(index).value);
+  }
+
+  //  ------------------------------------------------------------------------------------------------
   //  IF PROCESS / Button Process                                                            |   1   |
   //  ------------------------------------------------------------------------------------------------
 
@@ -350,6 +433,8 @@ export class DialogTransactionComponent implements OnInit {
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
         const element = data[key];
+
+        console.log(element);
 
         //  Change Key Name
         switch (key) {
@@ -389,11 +474,25 @@ export class DialogTransactionComponent implements OnInit {
             data.wsidid = element;
             delete data.id;
             break;
+          case 'ib':
+            data.wsbilid = element;
+            delete data.ib;
+            break;
+            break;
           default:
             break;
         }
       }
     }
+
+    // if payment methode
+    if (data.wstype === this.paymentCode) {
+      data.wspayc = data.py + data.sp
+      delete data.py;
+      delete data.sp;
+    }
+
+    console.log(data);
 
     let transId = data.wstran;
     let dataObj = this.findDataByTransactionId(transId, this.data);
@@ -661,7 +760,25 @@ export class DialogTransactionComponent implements OnInit {
       }
     }
 
-    console.log(dataForm);
+    // wstype // tipe
+    // wsbcod // kode bank
+    // wsbrta // berita
+    // wsfrom // dari
+    // wstoto // ke
+    // wspayc // payment code
+    // wsblid // billing id
+    // wsblclr // clear 
+
+
+    // wbicsh // is cash or not
+    // wbicus // is customer or nasabah
+
+
+
+
+    // Date Time Process
+    let processTime = new Date().getTime();
+
     console.log(dataObj);
 
     this.transactionModel.wbtmsg = this.utilityService.asciiToHexa("0100");
@@ -678,13 +795,14 @@ export class DialogTransactionComponent implements OnInit {
     this.transactionModel.wbstat = this.utilityService.asciiToHexa("100");
     this.transactionModel.wbtmid = this.utilityService.asciiToHexa(dataObj.terminalid);
     this.transactionModel.wbtsen = this.utilityService.asciiToHexa(this.utilityService.convertMilisToDateTime(dataObj.timestampentry));
-    this.transactionModel.wbtspr = "";
+    this.transactionModel.wbtspr = this.utilityService.asciiToHexa(processTime.toString());
     this.transactionModel.wbtcno = "";
     this.transactionModel.wbtrbf = dataForm;
     this.transactionModel.wbtrty = this.utilityService.asciiToHexa(dataObj.trntype);
-    this.transactionModel.wbusid = this.utilityService.asciiToHexa(dataObj.userid ? dataObj.userid : "");
+    this.transactionModel.wbusid = this.utilityService.asciiToHexa(this.USER_ID);
     this.transactionModel.wbustm = this.utilityService.asciiToHexa(dataObj.userterminal ? dataObj.userterminal : "");
     this.transactionModel.wbstop = this.utilityService.asciiToHexa("END");
+
     console.log(this.transactionModel);
 
     return this.transactionModel;
@@ -794,29 +912,29 @@ export class DialogTransactionComponent implements OnInit {
                   const dataProcessApi = this.converDataKey(dataObj, dataForm)
                   console.log(dataProcessApi);
 
-                  this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
-                    // console.log(res);
-                    if (res['success']) {
-                      this.dataSuccess.push(res)
-                      switch (dataForm.wstype) {
-                        case this.informasiSaldoGiroCode:
-                          this.isDisplayPrintSaldo = true;
-                          this.done()
-                          step.next()
-                          break;
-                        case this.informasiSaldoTabunganCode:
-                          this.isDisplayPrintSaldo = true;
-                          this.done()
-                          step.next()
-                          break;
-                        default:
-                          this.isDisplayPrint = true;
-                          this.done()
-                          step.next()
-                          break;
-                      }
-                    }
-                  })
+                  // this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
+                  //   console.log(res);
+                  //   if (res['success']) {
+                  //     this.dataSuccess.push(res)
+                  //     switch (dataForm.wstype) {
+                  //       case this.informasiSaldoGiroCode:
+                  //         this.isDisplayPrintSaldo = true;
+                  //         this.done()
+                  //         step.next()
+                  //         break;
+                  //       case this.informasiSaldoTabunganCode:
+                  //         this.isDisplayPrintSaldo = true;
+                  //         this.done()
+                  //         step.next()
+                  //         break;
+                  //       default:
+                  //         this.isDisplayPrint = true;
+                  //         this.done()
+                  //         step.next()
+                  //         break;
+                  //     }
+                  //   }
+                  // })
                 }
               }
             })
@@ -852,6 +970,7 @@ export class DialogTransactionComponent implements OnInit {
   images64() {
     return this.sanitizer.bypassSecurityTrustResourceUrl(this.base64Image);
   }
+
   sign64() {
     return this.sanitizer.bypassSecurityTrustResourceUrl(this.base64Sign);
   }

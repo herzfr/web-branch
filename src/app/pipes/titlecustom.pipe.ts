@@ -9,7 +9,7 @@ export class TitlecustomPipe implements PipeTransform {
 
     switch (name) {
       case 'nm':
-        return 'Nominal';
+        return 'Amount';
         break;
       case 'tn':
         return 'Tunai';
@@ -18,10 +18,10 @@ export class TitlecustomPipe implements PipeTransform {
         return 'Tipe Transaksi';
         break;
       case 'fr':
-        return 'Dari Rek.';
+        return 'Rekening Asal';
         break;
       case 'to':
-        return 'Ke Rek';
+        return 'Rekening Tujuan';
         break;
       case 'br':
         return 'Berita';
@@ -32,12 +32,23 @@ export class TitlecustomPipe implements PipeTransform {
       case 'id':
         return 'ID KTP/Paspor';
         break;
+      case 'cd':
+        return 'Code';
+        break;
+      case 'ib':
+        return 'ID Billing';
+        break;
+      case 'py':
+        return 'Pembayaran';
+        break;
+      case 'sp':
+        return '.';
+        break;
       default:
         break;
     }
   }
 
- 
 
 
 }
