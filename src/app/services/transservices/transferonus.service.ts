@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
-import { UtilityService } from '../utility.service';
-
-import * as securels from 'secure-ls';
-import { QueueService } from '../queue.service';
+import * as SecureLS from 'secure-ls';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { UtilityService } from '../utility.service';
+import { QueueService } from '../queue.service';
 import { AppConfiguration } from 'src/app/models/app.configuration';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SetortunaiService {
+export class TransferonusService {
 
   private userData: any;
   private userId: any;
@@ -18,7 +17,7 @@ export class SetortunaiService {
   private apiUrl;
   private apiSocket;
 
-  private ls = new securels({ encodingType: 'aes' });
+  private ls = new SecureLS({ encodingType: 'aes' });
   private token = this.ls.get('token')
 
   headers_object = new HttpHeaders()
@@ -30,8 +29,7 @@ export class SetortunaiService {
   };
 
 
-  constructor(
-    private utilityService: UtilityService,
+  constructor(private utilityService: UtilityService,
     private queueService: QueueService,
     private http: HttpClient,
     private appConfiguration: AppConfiguration) {
@@ -40,7 +38,7 @@ export class SetortunaiService {
     this.apiUrl = this.appConfiguration.ipServer;
     this.apiSocket = this.appConfiguration.ipSocketServer;
 
-    // Get Data User
+    // Get User Data
     this.userData = JSON.parse(this.ls.get('data'))
     this.userId = this.userData.userid;
     this.userTerminal = this.userData.userterminal;
@@ -48,6 +46,7 @@ export class SetortunaiService {
 
 
   async processInquiry(dataObject: any) {
+
     //change transbuff to stringify
     let dataProses = dataObject;
     let transBuffer = dataProses.transbuff;
@@ -57,11 +56,17 @@ export class SetortunaiService {
     //change transaction status to 200
     dataObject.status = 200;
 
+    console.log("data Object yang dikirimkan : ", dataObject);
+
+
 
     let promise = new Promise((resolve, reject) => {
       // proses transaksi ke table wbtrans 
       this.queueService.processTransactionDataQ(dataProses).subscribe(response => {
         //jika response sukses
+
+        console.log("response wbtrans : ", response);
+
         if (response['success']) {
           let reffNo = response['reffno'];
           let traceNo = response['traceno'];
@@ -69,6 +74,8 @@ export class SetortunaiService {
           // get rekening tujuan & nominal setor tunai 
           let wstoto = dataProses.transbuff.wstoto;
           let wsnom = dataProses.transbuff.wsnomn;
+          let wsfrom = dataProses.transbuff.wsfrom;
+          let wsbrta = dataProses.transbuff.wsbrta;
 
           //create hexa object for inquiry 
           let inquiryObject: any = {
@@ -89,9 +96,11 @@ export class SetortunaiService {
             wbusid: this.utilityService.asciiToHexa(this.userId),
             wbustm: this.utilityService.asciiToHexa(this.userTerminal ? this.userTerminal : ""),
             wbtrbf: {
-              wstype: "0030003000300030003000300031",
+              wstype: "0030003000300030003000300032",
+              wsfrom: this.utilityService.asciiToHexa(wsfrom),
               wstoto: this.utilityService.asciiToHexa(wstoto),
               wsnomn: this.utilityService.asciiToHexa(wsnom),
+              wsbrta: this.utilityService.asciiToHexa(wsbrta),
               wbicsh: this.utilityService.asciiToHexa(dataProses.isCash ? dataObject.isCash : "000"),
               wbicus: "003000300031"
             },
@@ -100,6 +109,7 @@ export class SetortunaiService {
 
           // send inquiry to server 
           this.sendInquiry(inquiryObject).subscribe(resp => {
+            // console.log("response inquiry", resp);
             resp["reffNo"] = reffNo;
             resolve(resp);
           }, err => {
@@ -120,7 +130,7 @@ export class SetortunaiService {
       })
     });
 
-    return promise;
+    // return promise;
   }
 
   // posting setor tunai function 
@@ -167,9 +177,11 @@ export class SetortunaiService {
           wbusid: this.utilityService.asciiToHexa(this.userId),
           wbustm: this.utilityService.asciiToHexa(this.userTerminal ? this.userTerminal : ""),
           wbtrbf: {
-            wstype: "0039003000300030003000300031",
+            wstype: "0039003000300030003000300032",
+            wsfrom: this.utilityService.asciiToHexa(transBuffer.wsfrom),
             wstoto: this.utilityService.asciiToHexa(transBuffer.wstoto),
             wsnomn: this.utilityService.asciiToHexa(transBuffer.wsnomn),
+            wsbrta: this.utilityService.asciiToHexa(transBuffer.wsbrta),
             wbicsh: this.utilityService.asciiToHexa(dataProses.isCash ? dataProses.isCash : "000"),
             wbicus: "003000300031"
           },
@@ -191,8 +203,8 @@ export class SetortunaiService {
 
     return promise;
 
-  }
 
+  }
 
   sendInquiry(body: any) {
     return this.http.post(this.apiUrl + 'api/inquiry/setor', body, this.httpOptions)
@@ -201,7 +213,6 @@ export class SetortunaiService {
   sendPosting(body: any) {
     return this.http.post(this.apiUrl + 'api/posting/setor', body, this.httpOptions)
   }
-
 
 
 }

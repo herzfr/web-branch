@@ -109,7 +109,7 @@ export class DashboardComponent implements OnInit {
               transBf.tp = 'Setor Tunai';
               break;
             case this.transferAntarRekCode:
-              transBf.tp = 'Transfer Antar Rekening';
+              transBf.tp = 'Over Booking';
               break;
             case this.transferAntarBankCode:
               transBf.tp = 'Transfer Antar Bank';

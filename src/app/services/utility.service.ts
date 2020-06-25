@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 
+import * as angkaTerbilang from "@develoka/angka-terbilang-js";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -25,7 +27,7 @@ export class UtilityService {
   convertMilisToDateTime(value: number) {
     return moment.utc(value).format('DDMMYYYYHHmm');
   }
-  
+
   convertMilisToDateTimeStamp(value: number) {
     return moment.utc(value).format('DDMMYYYYHHmmss');
   }
@@ -36,7 +38,17 @@ export class UtilityService {
     return moment(log).format('DD/MM/YYYY');
   }
 
-  getDateTimeStamp(){
+  getDateWithoutSeparator() {
+    var log = new Date();
+    return moment(log).format('DD/MM/YYYY');
+  }
+
+  getDateWithDash() {
+    var log = new Date();
+    return moment(log).format('DD-MM-YYYY');
+  }
+
+  getDateTimeStamp() {
     var log = new Date();
     return moment(log).format('DDMMYYYYHHmmss');
   }
@@ -88,7 +100,80 @@ export class UtilityService {
     return str;
   }
 
-  
+
+  numToWord() {
+
+    var tens = ['', '', 'duapuluh', 'tigapuluh', 'empatpuluh', 'limapuluh', 'enampuluh', 'tujuhpuluh', 'delapanpuluh', 'sembilanpuluh'];
+    var teens = ['sepuluh', 'sebelas', 'duabelas', 'tigabelas', 'empatbelas', 'limabelas', 'enambelas', 'tujuhbelas', 'delapanbelas', 'sembilanbelas'];
+
+
+
+  }
+
+
+
+  convert_trillions(num) {
+    if (num >= 1000000000) {
+      return this.convert_trillions(Math.floor(num / 1000000000000)) + " Milyar " + this.convert_billions(num % 1000000000000);
+    } else {
+      return this.convert_billions(num);
+    }
+  }
+
+  convert_billions(num) {
+    if (num >= 1000000000) {
+      return this.convert_billions(Math.floor(num / 1000000000)) + " Milyar " + this.convert_millions(num % 1000000000);
+    } else {
+      return this.convert_millions(num);
+    }
+  }
+
+  convert_millions(num) {
+    if (num >= 1000000) {
+      return this.convert_millions(Math.floor(num / 1000000)) + " juta " + this.convert_thousands(num % 1000000);
+    } else {
+      return this.convert_thousands(num);
+    }
+  }
+
+  convert_thousands(num) {
+    if (num >= 1000) {
+      return this.convert_hundreds(Math.floor(num / 1000)) + " ribu " + this.convert_hundreds(num % 1000);
+    } else {
+      return this.convert_hundreds(num);
+    }
+  }
+
+  convert_hundreds(num) {
+    var ones = ['', 'seribu', 'duaribu', 'tigaribu', 'empatribu', 'limaribu', 'enamribu', 'tujuhribu', 'delapanribu', 'sembilanribu'];
+    if (num > 99) {
+      return ones[Math.floor(num / 100)] + " ratus " + this.convert_tens(num % 100);
+    } else {
+      return this.convert_tens(num);
+    }
+  }
+
+  convert_tens(num) {
+    var ones = ['', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan'];
+    var tens = ['', '', 'duapuluh', 'tigapuluh', 'empatpuluh', 'limapuluh', 'enampuluh', 'tujuhpuluh', 'delapanpuluh', 'sembilanpuluh'];
+    var teens = ['sepuluh', 'sebelas', 'duabelas', 'tigabelas', 'empatbelas', 'limabelas', 'enambelas', 'tujuhbelas', 'delapanbelas', 'sembilanbelas'];
+    if (num < 10) return ones[num];
+    else if (num >= 10 && num < 20) return teens[num - 10];
+    else {
+      return tens[Math.floor(num / 10)] + " " + ones[num % 10];
+    }
+  }
+
+  convert(num) {
+    // console.log("angka terbilang : " + angkaTerbilang(num));
+
+    if (num == 0) return "zero";
+    else return angkaTerbilang(num.toString());
+  }
+
+
+
+
 
 
 }

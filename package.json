@@ -21,6 +21,7 @@
     "@angular/platform-browser": "~8.2.14",
     "@angular/platform-browser-dynamic": "~8.2.14",
     "@angular/router": "~8.2.14",
+    "@develoka/angka-terbilang-js": "^1.2.3",
     "@ng-bootstrap/ng-bootstrap": "^5.2.2",
     "@ng-plus/signature-pad": "0.0.5",
     "angular2-signaturepad": "^2.11.0",

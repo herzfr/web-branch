@@ -25,6 +25,7 @@ import { FotonasabahComponent } from '../fotonasabah/fotonasabah.component';
 import { NasabahsignComponent } from '../nasabahsign/nasabahsign.component';
 import { SetortunaiService } from 'src/app/services/transservices/setortunai.service';
 import { DialogPaymentComponent } from '../dialog-payment/dialog-payment.component';
+import { TransferonusService } from 'src/app/services/transservices/transferonus.service';
 
 // Declare
 declare var $: any;
@@ -85,6 +86,9 @@ export class DialogTransactionComponent implements OnInit {
   // private secureLs = new SecureLS({ encodingType: 'aes' });
   private ls = new securels({ encodingType: 'aes' });
   private token = this.ls.get('token')
+
+
+  private reffNo;
 
   private config = {
     allowNumbersOnly: true,
@@ -189,7 +193,7 @@ export class DialogTransactionComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
     private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone, private appConfig: AppConfiguration,
     private configuration: ConfigurationService, private listConv: ListingService, private utilityService: UtilityService, private callSocket: WebsocketService,
-    private renderer: Renderer2, private setorTunaiService: SetortunaiService) {
+    private renderer: Renderer2, private setorTunaiService: SetortunaiService, private transferOnUsService: TransferonusService) {
 
     // Get All Data Transaction Form Dashboard
     this.data = data.data;
@@ -590,9 +594,26 @@ export class DialogTransactionComponent implements OnInit {
         this.setorTunaiService.processInquiry(dataObj).then(
           res => {
             // console.log("res", res);
+            this.reffNo = res['traceNo'];
+            console.log("trace no result ", this.reffNo);
+
             return res;
           }
         );
+
+        break;
+
+
+      case this.transferAntarRekCode:
+        console.log("type transfer on us", dataObj);
+
+        this.transferOnUsService.processInquiry(dataObj)
+          .then(
+            res => {
+              console.log("respons balikan as : ", res);
+              this.reffNo = res['traceNo'];
+            }
+          )
 
         break;
       default:
@@ -626,14 +647,14 @@ export class DialogTransactionComponent implements OnInit {
           console.log('type : ', data);
 
           if (data.wstype === this.setorTunaiCode) {
+            console.log("data setor tunai");
+
             this.cardReader(data.wstoto)
           } else {
             this.cardReader(data.wsfrom);
           }
 
-
           this.isCloseDialog = false;
-          this.cardReader(data.wsfrom)
           // this.isCloseDialog = false;
           this.stepDisabledHorizontal = true;
           this.isCancelBtn = false;
@@ -1036,8 +1057,31 @@ export class DialogTransactionComponent implements OnInit {
                   const dataProcessApi = this.converDataKey(dataObj, dataForm)
                   console.log(dataProcessApi);
 
+
+                  if (dataObj.trntype == this.setorTunaiCode) {
+                    console.log("data setor  tunai ");
+
+                    dataObj.reffno = this.reffNo;
+
+                    this.setorTunaiService.prosesPosting(dataObj).then(response => {
+                      console.log("balikan response  as : ", response);
+
+                    });
+
+                  } else if (dataObj.trntype == this.transferAntarRekCode) {
+
+                    dataObj.reffno = this.reffNo;
+                    this.transferOnUsService.prosesPosting(dataObj).then(response => {
+                      console.log("balikan reponse as : ", response);
+
+                    })
+
+                  }
+
+
                   this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
-                    console.log(res);
+                    console.log("hasil proses balikan ", res);
+
                     if (res['success']) {
                       this.dataSuccess.push(res)
                       switch (dataForm.wstype) {
@@ -1058,7 +1102,8 @@ export class DialogTransactionComponent implements OnInit {
                           break;
                       }
                     }
-                  })
+                  });
+
                 }
               }
             })
