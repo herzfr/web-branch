@@ -1062,11 +1062,33 @@ export class DialogTransactionComponent implements OnInit {
                     dataObj.reffno = this.reffNo;
                     dataObj.wbtrbf = this.transBuffReply;
 
-                    this.setorTunaiService.prosesPosting(dataObj)
-                      .then(response => {
-                        console.log("balikan response  as : ", response);
+                    let dataConfirm = new Promise((resolve, reject) => {
+                      this.setorTunaiService.prosesPosting(dataObj)
+                        .then(response => {
+                          console.log("balikan response  as : ", response);
 
-                      });
+
+                          if (response['success']) {
+                            // this.dataSuccess.push(res)
+                            // console.log(this.dataSuccess);
+
+                            resolve(response)
+
+                            this.isDisplayPrint = true;
+                            this.done()
+                            step.next()
+
+                          }
+
+                        });
+                    });
+
+                    console.log(dataConfirm.then(callback => {
+                      // console.log(callback);
+                      this.dataSuccess.push(callback)
+                      console.log(this.dataSuccess);
+
+                    }));
 
                   } else if (dataObj.trntype == this.transferAntarRekCode) {
                     console.log("data transfer on us ", dataObj);
@@ -1075,54 +1097,81 @@ export class DialogTransactionComponent implements OnInit {
 
                     dataObj.reffno = this.reffNo;
                     dataObj.wbtrbf = this.transBuffReply;
-                    this.transferOnUsService.prosesPosting(dataObj).then(response => {
-                      console.log("balikan reponse as : ", response);
+
+                    let dataConfirm = new Promise((resolve, reject) => {
+                      this.transferOnUsService.prosesPosting(dataObj).then(response => {
+                        console.log("balikan reponse as : ", response);
+
+                        if (response['success']) {
+                          // this.dataSuccess.push(res)
+                          // console.log(this.dataSuccess);
+
+                          resolve(response)
+
+                          this.isDisplayPrint = true;
+                          this.done()
+                          step.next()
+
+                        }
+
+                      })
+                    })
+
+                    console.log(dataConfirm.then(callback => {
+                      // console.log(callback);
+                      this.dataSuccess.push(callback)
+                      console.log(this.dataSuccess);
+
+                    }));
+
+                  } else {
+
+                    let dataConfirm = new Promise((resolve, reject) => {
+
+                      this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
+                        console.log(res);
+                        if (res['success']) {
+                          // this.dataSuccess.push(res)
+                          // console.log(this.dataSuccess);
+
+                          resolve(res)
+
+                          switch (dataForm.wstype) {
+                            case this.informasiSaldoGiroCode:
+                              this.isDisplayPrintSaldo = true;
+                              this.done()
+                              step.next()
+                              break;
+                            case this.informasiSaldoTabunganCode:
+                              this.isDisplayPrintSaldo = true;
+                              this.done()
+                              step.next()
+                              break;
+                            default:
+                              this.isDisplayPrint = true;
+                              this.done()
+                              step.next()
+                              break;
+                          }
+                        }
+                      })
 
                     })
+
+                    console.log(dataConfirm.then(callback => {
+                      // console.log(callback);
+                      this.dataSuccess.push(callback)
+                      console.log(this.dataSuccess);
+
+                    }));
 
                   }
 
 
 
-                  let dataConfirm = new Promise((resolve, reject) => {
-
-                    this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
-                      console.log(res);
-                      if (res['success']) {
-                        // this.dataSuccess.push(res)
-                        // console.log(this.dataSuccess);
-
-                        resolve(res)
-
-                        switch (dataForm.wstype) {
-                          case this.informasiSaldoGiroCode:
-                            this.isDisplayPrintSaldo = true;
-                            this.done()
-                            step.next()
-                            break;
-                          case this.informasiSaldoTabunganCode:
-                            this.isDisplayPrintSaldo = true;
-                            this.done()
-                            step.next()
-                            break;
-                          default:
-                            this.isDisplayPrint = true;
-                            this.done()
-                            step.next()
-                            break;
-                        }
-                      }
-                    })
-
-                  })
 
 
-                  console.log(dataConfirm.then(callback => {
-                    // console.log(callback);
-                    this.dataSuccess.push(callback)
-                    console.log(this.dataSuccess);
 
-                  }));
 
 
                 }
@@ -1165,6 +1214,8 @@ export class DialogTransactionComponent implements OnInit {
 
 
     let show: any = new Object();
+
+
     switch (data.wstype) {
       case this.setorTunaiCode:
         show.wstype = data.wstype;
