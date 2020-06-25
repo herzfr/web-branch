@@ -26,7 +26,6 @@ export class TransactionService {
   constructor(private appConfiguration: AppConfiguration, private http: HttpClient) {
     this.apiUrl = this.appConfiguration.ipServer;
     this.apiSocket = this.appConfiguration.ipSocketServer;
-    // console.log(this.ls.get('token'));
   }
 
   requestValidation(body) {

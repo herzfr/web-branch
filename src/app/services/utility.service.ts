@@ -25,10 +25,20 @@ export class UtilityService {
   convertMilisToDateTime(value: number) {
     return moment.utc(value).format('DDMMYYYYHHmm');
   }
+  
+  convertMilisToDateTimeStamp(value: number) {
+    return moment.utc(value).format('DDMMYYYYHHmmss');
+  }
+
 
   getDate() {
     var log = new Date();
     return moment(log).format('DD/MM/YYYY');
+  }
+
+  getDateTimeStamp(){
+    var log = new Date();
+    return moment(log).format('DDMMYYYYHHmmss');
   }
 
   getTime() {
