@@ -478,7 +478,6 @@ export class DialogTransactionComponent implements OnInit {
               console.log("batal");
               // this.onReject(index)
             }
-
           });
 
           this.dialog.open
@@ -495,7 +494,7 @@ export class DialogTransactionComponent implements OnInit {
   //  ON PROCESS DATA                                                                         |   1   |
   //  ------------------------------------------------------------------------------------------------
   onProcessData(index, step: MatStepper, response) {
-
+    console.log(this.form.at(index).value);
     let data: any = this.form.at(index).value;
     console.log(this.form.at(index).value);
 
@@ -574,14 +573,7 @@ export class DialogTransactionComponent implements OnInit {
       }
     }
 
-    // if payment methode
-    if (data.wstype === this.paymentCode) {
-      console.log("data payment ");
-
-      data.wspayc = data.py + data.sp
-      delete data.py;
-      delete data.sp;
-    }
+    // console.log(data);
 
     let transId = data.wstran;
     let dataObj = this.findDataByTransactionId(transId, this.data);
@@ -667,7 +659,7 @@ export class DialogTransactionComponent implements OnInit {
             this.cardReader(data.wsfrom);
           }
 
-          this.isCloseDialog = false;
+          // this.isCloseDialog = false;
           // this.isCloseDialog = false;
           this.stepDisabledHorizontal = true;
           this.isCancelBtn = false;
@@ -876,7 +868,7 @@ export class DialogTransactionComponent implements OnInit {
   //  Change Key Object                                                                      |   x   |
   //  ------------------------------------------------------------------------------------------------
   converDataKey(dataObj, dataForm) {
-    // console.log(dataForm);
+    console.log(dataForm);
     for (const key in dataForm) {
       if (dataForm.hasOwnProperty(key)) {
         const element = dataForm[key];
@@ -887,7 +879,7 @@ export class DialogTransactionComponent implements OnInit {
             dataForm[key] = this.utilityService.asciiToHexa(this.utilityService.leftPadding(element, "0", 17));
             break;
           default:
-            dataForm[key] = this.utilityService.asciiToHexa(element);
+            dataForm[key] = this.utilityService.asciiToHexa(element ? element : "");
             break;
         }
       }
@@ -1170,7 +1162,45 @@ export class DialogTransactionComponent implements OnInit {
 
   cek(event) {
     // console.log(event);
-    return event.wbtrbf;
+    let data: any = event.wbtrbf;
+    console.log(data.wstype);
+    console.log(this.setorTunaiCode);
+
+
+    let show: any = new Object();
+    switch (data.wstype) {
+      case this.setorTunaiCode:
+        show.wstype = data.wstype;
+        show.wstonm = data.wstonm;
+        show.wstoto = data.wstoto;
+        show.wsnomn = data.wsnomn;
+        break;
+      default: break;
+    }
+
+
+    // wbicsh: ""
+    // wbicus: "001"
+    // wsapprc: "20200626200747761000"
+    // wsbcod: ""
+    // wsbilid: ""
+    // wsblclr: ""
+    // wsblhld: ""
+    // wsbllg: ""
+    // wsbloth: ""
+    // wsbrta: ""
+    // wsdspo: ""
+    // wsfrnm: ""
+    // wsfrom: ""
+    // wsnomn: "00000000001000000"
+    // wsotov: ""
+    // wspayc: ""
+    // wsprto: ""
+    // wstonm: "Cox Ganteng Banget"
+    // wstoto: "1001000002"
+    // wstype: "0000001"
+
+    return show;
   }
 
   //  ------------------------------------------------------------------------------------------------
