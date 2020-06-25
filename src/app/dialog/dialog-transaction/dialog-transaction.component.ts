@@ -26,6 +26,7 @@ import { NasabahsignComponent } from '../nasabahsign/nasabahsign.component';
 import { SetortunaiService } from 'src/app/services/transservices/setortunai.service';
 import { DialogPaymentComponent } from '../dialog-payment/dialog-payment.component';
 import { TransferonusService } from 'src/app/services/transservices/transferonus.service';
+import { Observable } from 'rxjs';
 
 // Declare
 declare var $: any;
@@ -54,6 +55,7 @@ export class DialogTransactionComponent implements OnInit {
   private form: FormArray;
   private formGroup: FormGroup;
   private dataSuccess = new Array;
+  // private dataSuccess: Observable<Array<any>>
 
   // Model
   transactionModel: TransactionModel = new TransactionModel();
@@ -89,6 +91,7 @@ export class DialogTransactionComponent implements OnInit {
 
 
   private reffNo;
+  private transBuffReply: any;
 
   private config = {
     allowNumbersOnly: true,
@@ -189,6 +192,7 @@ export class DialogTransactionComponent implements OnInit {
   // Data Select Payment
   private menuPayment: any;
   private subMenuPay: any = [];
+
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
     private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone, private appConfig: AppConfiguration,
@@ -404,6 +408,13 @@ export class DialogTransactionComponent implements OnInit {
   }
 
 
+  // getDataSuccess(event) {
+  //   console.log(event);
+  //   let data = this.dataSuccess.find(x => x.code === event);
+  //   console.log(data);
+  //   return data;
+  // }
+
   //  ------------------------------------------------------------------------------------------------
   //  IF Payment Function                                                                     |   1   |
   //  ------------------------------------------------------------------------------------------------
@@ -583,19 +594,17 @@ export class DialogTransactionComponent implements OnInit {
     dataObj.transbuff = JSON.parse(payLoad)
     // let payLoadHex = JSON.parse(JSON.stringify(data.value))
 
-
-    // console.log("object inquiry : ", dataObj);
-
-    //case dataobject inquiry by transaction type : 
-
     switch (dataObj.trntype) {
       case this.setorTunaiCode:
-        // console.log("setor tunai code ");
+        console.log("setor tunai code ", dataObj);
         this.setorTunaiService.processInquiry(dataObj).then(
           res => {
-            // console.log("res", res);
+            console.log("res", "respons balikan as : ", res);
             this.reffNo = res['traceNo'];
+            this.transBuffReply = res['wbtrbf']
             console.log("trace no result ", this.reffNo);
+            console.log("transbuff dari as : ", this.transBuffReply);
+
 
             return res;
           }
@@ -619,17 +628,28 @@ export class DialogTransactionComponent implements OnInit {
       default:
         break;
     }
+
+
+    // console.log("object inquiry : ", dataObj);
+
+    //case dataobject inquiry by transaction type : 
+
     // console.log("data object : ", dataObj);
 
     // get process validation / inquiry 
     // Post STEP 1 DATA for Validation true or false
 
-    try {
-      dataObj.transbuff = JSON.parse(dataObj.transbuff);
-    } catch (error) {
-      console.log("tidak perlu parse");
+    // try {
+    dataObj.transbuff = JSON.parse(dataObj.transbuff);
+    // } catch (error) {
+    //   console.log("tidak perlu parse");
 
-    }   //set data transbufff to objek 
+    // }   //set data transbufff to objek 
+
+
+    console.log("data validation : ", dataObj);
+
+
     this.transacServ.requestValidation(dataObj).subscribe(e => {
       // console.log(e);
       if (e['success']) {
@@ -1062,11 +1082,13 @@ export class DialogTransactionComponent implements OnInit {
                     console.log("data setor  tunai ");
 
                     dataObj.reffno = this.reffNo;
+                    dataObj.wbtrbf = this.transBuffReply;
 
-                    this.setorTunaiService.prosesPosting(dataObj).then(response => {
-                      console.log("balikan response  as : ", response);
+                    this.setorTunaiService.prosesPosting(dataObj)
+                    // .then(response => {
+                    //   console.log("balikan response  as : ", response);
 
-                    });
+                    // });
 
                   } else if (dataObj.trntype == this.transferAntarRekCode) {
 
@@ -1079,30 +1101,47 @@ export class DialogTransactionComponent implements OnInit {
                   }
 
 
-                  this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
-                    console.log("hasil proses balikan ", res);
 
-                    if (res['success']) {
-                      this.dataSuccess.push(res)
-                      switch (dataForm.wstype) {
-                        case this.informasiSaldoGiroCode:
-                          this.isDisplayPrintSaldo = true;
-                          this.done()
-                          step.next()
-                          break;
-                        case this.informasiSaldoTabunganCode:
-                          this.isDisplayPrintSaldo = true;
-                          this.done()
-                          step.next()
-                          break;
-                        default:
-                          this.isDisplayPrint = true;
-                          this.done()
-                          step.next()
-                          break;
+                  let dataConfirm = new Promise((resolve, reject) => {
+
+                    this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
+                      console.log(res);
+                      if (res['success']) {
+                        // this.dataSuccess.push(res)
+                        // console.log(this.dataSuccess);
+
+                        resolve(res)
+
+                        switch (dataForm.wstype) {
+                          case this.informasiSaldoGiroCode:
+                            this.isDisplayPrintSaldo = true;
+                            this.done()
+                            step.next()
+                            break;
+                          case this.informasiSaldoTabunganCode:
+                            this.isDisplayPrintSaldo = true;
+                            this.done()
+                            step.next()
+                            break;
+                          default:
+                            this.isDisplayPrint = true;
+                            this.done()
+                            step.next()
+                            break;
+                        }
                       }
-                    }
-                  });
+                    })
+
+                  })
+
+
+                  console.log(dataConfirm.then(callback => {
+                    // console.log(callback);
+                    this.dataSuccess.push(callback)
+                    console.log(this.dataSuccess);
+
+                  }));
+
 
                 }
               }
@@ -1123,6 +1162,23 @@ export class DialogTransactionComponent implements OnInit {
     }
   }
 
+  conv(event, index) {
+    console.log(event, index);
+    let idx = parseInt(event)
+    if (idx == index) {
+      console.log(true);
+      return true
+    } else {
+      console.log(false);
+      return false
+    }
+    // return parseInt(event)
+  }
+
+  cek(event) {
+    console.log(event);
+    return event.wbtrbf;
+  }
 
   //  ------------------------------------------------------------------------------------------------
   //  Call Cust Finger Verify                                                                |   3   |

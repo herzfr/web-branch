@@ -29,7 +29,14 @@ export class TransactionService {
   }
 
   requestValidation(body) {
-    return this.http.post(this.apiUrl + 'api/queue/getValidation', body, this.httpOptions)
+    let newBody = body;
+    try {
+      newBody.transbuff = JSON.parse(newBody.transbuff);
+    } catch (error) {
+      console.log("error", error);
+    }
+
+    return this.http.post(this.apiUrl + 'api/queue/getValidation', newBody, this.httpOptions)
   }
 
   verifyCard(card, pin) {
