@@ -417,8 +417,8 @@ export class DialogTransactionComponent implements OnInit {
       }
     })
 
-    console.log(event);
-    console.log(this.form.at(index).value);
+    // console.log(event);
+    // console.log(this.form.at(index).value);
   }
 
   //  ------------------------------------------------------------------------------------------------
@@ -430,10 +430,11 @@ export class DialogTransactionComponent implements OnInit {
     let data: any = this.form.at(index).value;
     console.log(this.form.at(index).value);
 
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
+    for (const key in this.form.at(index).value) {
+      if (this.form.at(index).value.hasOwnProperty(key)) {
         const element = data[key];
 
+        console.log(key);
         console.log(element);
 
         //  Change Key Name
@@ -478,24 +479,30 @@ export class DialogTransactionComponent implements OnInit {
             data.wsbilid = element;
             delete data.ib;
             break;
+          case 'py':
+            data.wspayc = data.py + data.sp;
+            delete data.py;
+            // delete data.sp;
+            break;
+          case 'sp':
+            delete data.sp;
+            // delete data.sp;
             break;
           default:
             break;
         }
+
       }
     }
 
-    // if payment methode
-    if (data.wstype === this.paymentCode) {
-      data.wspayc = data.py + data.sp
-      delete data.py;
-      delete data.sp;
-    }
 
     console.log(data);
 
     let transId = data.wstran;
     let dataObj = this.findDataByTransactionId(transId, this.data);
+    // console.log(dataObj);
+
+
     let payLoad = JSON.stringify(data);
     dataObj.transbuff = JSON.parse(payLoad)
     // let payLoadHex = JSON.parse(JSON.stringify(data.value))
@@ -507,18 +514,20 @@ export class DialogTransactionComponent implements OnInit {
         // console.log(e['message']);
         if (e['validate'] === 'true') {
           console.log('harus validasi');
-          this.isCloseDialog = false;
+          // this.isCloseDialog = false;
           this.stepDisabledHorizontal = true;
           this.isCancelBtn = false;
           this.isSkipBtn = false;
+          this.updateDataObj(dataObj)
           step.next(); // Go To Step 1
         } else {
           console.log('tidak validasi');
           this.cardReader(data.wsfrom)
-          this.isCloseDialog = false;
+          // this.isCloseDialog = false;
           this.stepDisabledHorizontal = true;
           this.isCancelBtn = false;
           this.isSkipBtn = false;
+          this.updateDataObj(dataObj)
           step.next(); // Skip to Step 2
           step.next(); // Go To Step 3
         }
@@ -627,6 +636,7 @@ export class DialogTransactionComponent implements OnInit {
             dataObj.isValidated = 1;
             dataObj.isRejected = 0;
             console.log(dataObj);
+            this.updateDataObj(dataObj)
             this.cardReader(dataForm.wsfrom)
             this.isWaiting = false;
             this.isApproved = true;
@@ -710,6 +720,7 @@ export class DialogTransactionComponent implements OnInit {
     console.log(objc);
     const targetIdx = this.data.map(item => item.transid).indexOf(objc.transid);
     this.data[targetIdx] = objc;
+    console.log(targetIdx);
     // console.log(this.data);
   }
 
@@ -903,36 +914,39 @@ export class DialogTransactionComponent implements OnInit {
 
                 if (this.stepmom.selectedIndex === index) {
 
-                  const dataForm: any = this.form.at(index).value;
+                  // let dataForm: any = this.form.at(index).value;
+                  let dataForm: any = this.data[index].transbuff;
+                  console.log(this.data[index].transbuff);
+
                   let transId = dataForm.wstran;
-                  let dataObj = this.findDataByTransactionId(dataForm.wstran, this.data);
+                  let dataObj = this.findDataByTransactionId(transId, this.data);
 
                   const dataProcessApi = this.converDataKey(dataObj, dataForm)
                   console.log(dataProcessApi);
 
-                  // this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
-                  //   console.log(res);
-                  //   if (res['success']) {
-                  //     this.dataSuccess.push(res)
-                  //     switch (dataForm.wstype) {
-                  //       case this.informasiSaldoGiroCode:
-                  //         this.isDisplayPrintSaldo = true;
-                  //         this.done()
-                  //         step.next()
-                  //         break;
-                  //       case this.informasiSaldoTabunganCode:
-                  //         this.isDisplayPrintSaldo = true;
-                  //         this.done()
-                  //         step.next()
-                  //         break;
-                  //       default:
-                  //         this.isDisplayPrint = true;
-                  //         this.done()
-                  //         step.next()
-                  //         break;
-                  //     }
-                  //   }
-                  // })
+                  this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
+                    console.log(res);
+                    if (res['success']) {
+                      this.dataSuccess.push(res)
+                      switch (dataForm.wstype) {
+                        case this.informasiSaldoGiroCode:
+                          this.isDisplayPrintSaldo = true;
+                          this.done()
+                          step.next()
+                          break;
+                        case this.informasiSaldoTabunganCode:
+                          this.isDisplayPrintSaldo = true;
+                          this.done()
+                          step.next()
+                          break;
+                        default:
+                          this.isDisplayPrint = true;
+                          this.done()
+                          step.next()
+                          break;
+                      }
+                    }
+                  })
                 }
               }
             })

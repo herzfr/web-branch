@@ -56,6 +56,7 @@ import { LoaderService } from './services/loader.service';
 import { BannerSuccessComponent } from './banner/banner-success/banner-success.component';
 import { BannerRejectComponent } from './banner/banner-reject/banner-reject.component';
 import { TestDialogComponent } from './dialog/test-dialog/test-dialog.component';
+import { DialogPaymentComponent } from './dialog/dialog-payment/dialog-payment.component';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -103,9 +104,10 @@ export const customCurrencyMaskConfig = {
     BannerSuccessComponent,
     BannerRejectComponent,
     TestDialogComponent,
+    DialogPaymentComponent,
   ],
   entryComponents: [TestDialogComponent, DialogErrorComponent, DialogTransactionComponent, HeadTellerDialogComponent, DialogNewCustomerComponent, VerifyDialogComponent,
-    DialogSuccessComponent, HeadCsDialogComponent, HeadConfirmComponent, BannerLoadingComponent, BannerRejectComponent, BannerSuccessComponent],
+    DialogSuccessComponent, HeadCsDialogComponent, HeadConfirmComponent, BannerLoadingComponent, BannerRejectComponent, BannerSuccessComponent, DialogPaymentComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
