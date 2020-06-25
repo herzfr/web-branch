@@ -635,12 +635,11 @@ export class DialogTransactionComponent implements OnInit {
     // get process validation / inquiry 
     // Post STEP 1 DATA for Validation true or false
 
-    // try {
-    dataObj.transbuff = JSON.parse(dataObj.transbuff);
-    // } catch (error) {
-    //   console.log("tidak perlu parse");
-
-    // }   //set data transbufff to objek 
+    try {
+      dataObj.transbuff = JSON.parse(dataObj.transbuff);
+    } catch (error) {
+      console.log("tidak perlu parse");
+    }   //set data transbufff to objek 
 
     console.log("data validation : ", dataObj);
 
