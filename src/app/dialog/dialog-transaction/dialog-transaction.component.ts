@@ -15,7 +15,6 @@ import { TransactionService } from 'src/app/services/transaction.service';
 
 // Module
 import * as securels from 'secure-ls';
-import * as SecureLS from 'secure-ls';
 
 // Config
 import { AppConfiguration } from 'src/app/models/app.configuration';
@@ -24,6 +23,7 @@ import { AppConfiguration } from 'src/app/models/app.configuration';
 import { TransactionModel } from 'src/app/models/transaction-model';
 import { FotonasabahComponent } from '../fotonasabah/fotonasabah.component';
 import { NasabahsignComponent } from '../nasabahsign/nasabahsign.component';
+import { SetortunaiService } from 'src/app/services/transservices/setortunai.service';
 
 // Declare
 declare var $: any;
@@ -188,7 +188,7 @@ export class DialogTransactionComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
     private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone, private appConfig: AppConfiguration,
     private configuration: ConfigurationService, private listConv: ListingService, private utilityService: UtilityService, private callSocket: WebsocketService,
-    private renderer: Renderer2) {
+    private renderer: Renderer2, private setorTunaiService: SetortunaiService) {
 
     // Get All Data Transaction Form Dashboard
     this.data = data.data;
@@ -258,9 +258,8 @@ export class DialogTransactionComponent implements OnInit {
       }
     }
     this.dataForm = forms;
-    console.log(this.dataForm);
-    console.log(this.subMenuPay);
-
+    // console.log(this.dataForm);
+    // console.log(this.subMenuPay);
   }
 
   ngOnInit() {
@@ -380,6 +379,8 @@ export class DialogTransactionComponent implements OnInit {
   //  ------------------------------------------------------------------------------------------------
 
   trigger() {
+    console.log("trigger step one : ");
+
     // console.log(this.stepmom.selectedIndex);
     // console.log(this.form.at(this.stepmom.selectedIndex).get('py').value);
     // console.log(this.form.at(this.stepmom.selectedIndex).get('tp').value);
@@ -427,6 +428,9 @@ export class DialogTransactionComponent implements OnInit {
 
   transactionProcess(index, step: MatStepper) {
 
+    console.log("button proses pressed");
+
+
     let data: any = this.form.at(index).value;
     console.log(this.form.at(index).value);
 
@@ -434,7 +438,7 @@ export class DialogTransactionComponent implements OnInit {
       if (data.hasOwnProperty(key)) {
         const element = data[key];
 
-        console.log(element);
+        console.log("proses button element :", element);
 
         //  Change Key Name
         switch (key) {
@@ -487,12 +491,12 @@ export class DialogTransactionComponent implements OnInit {
 
     // if payment methode
     if (data.wstype === this.paymentCode) {
+      console.log("data payment ");
+
       data.wspayc = data.py + data.sp
       delete data.py;
       delete data.sp;
     }
-
-    console.log(data);
 
     let transId = data.wstran;
     let dataObj = this.findDataByTransactionId(transId, this.data);
@@ -500,7 +504,36 @@ export class DialogTransactionComponent implements OnInit {
     dataObj.transbuff = JSON.parse(payLoad)
     // let payLoadHex = JSON.parse(JSON.stringify(data.value))
 
+
+    // console.log("object inquiry : ", dataObj);
+
+    //case dataobject inquiry by transaction type : 
+
+    switch (dataObj.trntype) {
+      case this.setorTunaiCode:
+        // console.log("setor tunai code ");
+        this.setorTunaiService.processInquiry(dataObj).then(
+          res => {
+            // console.log("res", res);
+            return res;
+          }
+        );
+
+        break;
+      default:
+        break;
+    }
+    // console.log("data object : ", dataObj);
+
+    // get process validation / inquiry 
     // Post STEP 1 DATA for Validation true or false
+
+    try {
+      dataObj.transbuff = JSON.parse(dataObj.transbuff);
+    } catch (error) {
+      console.log("tidak perlu parse");
+
+    }   //set data transbufff to objek 
     this.transacServ.requestValidation(dataObj).subscribe(e => {
       // console.log(e);
       if (e['success']) {
@@ -514,7 +547,15 @@ export class DialogTransactionComponent implements OnInit {
           step.next(); // Go To Step 1
         } else {
           console.log('tidak validasi');
-          this.cardReader(data.wsfrom)
+          console.log('type : ', data);
+
+          if (data.wstype === this.setorTunaiCode) {
+            this.cardReader(data.wstoto)
+          } else {
+            this.cardReader(data.wsfrom);
+          }
+
+
           this.isCloseDialog = false;
           this.stepDisabledHorizontal = true;
           this.isCancelBtn = false;
@@ -978,6 +1019,8 @@ export class DialogTransactionComponent implements OnInit {
   //  ------------------------------------------------------------------------------------------------
   cardReader(event) {
     let accountNumber: any;
+    console.log("event kartu : ", event);
+
     if (event === undefined) {
       this.cardNum = 1234567890000003;
     } else {
