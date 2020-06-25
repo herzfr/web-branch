@@ -24,6 +24,7 @@ import { TransactionModel } from 'src/app/models/transaction-model';
 import { FotonasabahComponent } from '../fotonasabah/fotonasabah.component';
 import { NasabahsignComponent } from '../nasabahsign/nasabahsign.component';
 import { SetortunaiService } from 'src/app/services/transservices/setortunai.service';
+import { DialogPaymentComponent } from '../dialog-payment/dialog-payment.component';
 
 // Declare
 declare var $: any;
@@ -418,8 +419,8 @@ export class DialogTransactionComponent implements OnInit {
       }
     })
 
-    console.log(event);
-    console.log(this.form.at(index).value);
+    // console.log(event);
+    // console.log(this.form.at(index).value);
   }
 
   //  ------------------------------------------------------------------------------------------------
@@ -434,11 +435,64 @@ export class DialogTransactionComponent implements OnInit {
     let data: any = this.form.at(index).value;
     console.log(this.form.at(index).value);
 
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
+    // console.log(data.tp);
+    if (data.tp === this.paymentCode) {
+
+      let obj: any = new Object();
+      obj.payCode = data.py;
+      obj.payDetail = data.sp ? data.sp : "0000";
+      obj.billId = data.ib;
+      obj.amount = data.nm ? data.nm.toString() : "";
+      console.log(obj);
+
+      this.transacServ.retrieveDataPayment(obj).subscribe(res => {
+        // console.log(res);
+        let response = res;
+        if (res['status']) {
+          console.log(res);
+          const dialogConfig = new MatDialogConfig();
+          dialogConfig.backdropClass = 'backdropBackground';
+          dialogConfig.disableClose = true;
+          dialogConfig.width = '1000px';
+          dialogConfig.data = res;
+
+          this.dialog.open(DialogPaymentComponent, dialogConfig).afterClosed().subscribe(status => {
+            // console.log(status);
+            if (status) {
+              console.log(response);
+              this.onProcessData(index, step, response)
+            } else {
+              console.log("batal");
+              // this.onReject(index)
+            }
+
+          });
+
+          this.dialog.open
+        } else {
+          alert('Data Error')
+        }
+      })
+    } else {
+      this.onProcessData(index, step, null)
+    }
+  }
+
+  //  ------------------------------------------------------------------------------------------------
+  //  ON PROCESS DATA                                                                         |   1   |
+  //  ------------------------------------------------------------------------------------------------
+  onProcessData(index, step: MatStepper, response) {
+
+    let data: any = this.form.at(index).value;
+    console.log(this.form.at(index).value);
+
+    for (const key in this.form.at(index).value) {
+      if (this.form.at(index).value.hasOwnProperty(key)) {
         const element = data[key];
 
         console.log("proses button element :", element);
+        console.log(key);
+        console.log(element);
 
         //  Change Key Name
         switch (key) {
@@ -447,8 +501,13 @@ export class DialogTransactionComponent implements OnInit {
             delete data.TransaksiId;
             break;
           case 'nm':
-            data.wsnomn = element.toString();
-            delete data.nm;
+            if (response === null) {
+              data.wsnomn = element.toString();
+              delete data.nm;
+            } else {
+              data.wsnomn = response.amount;
+              delete data.nm;
+            }
             break;
           case 'tn':
             data.wsicas = element;
@@ -482,10 +541,23 @@ export class DialogTransactionComponent implements OnInit {
             data.wsbilid = element;
             delete data.ib;
             break;
+          case 'py':
+            data.wspayc = data.py + data.sp;
+            delete data.py;
+            // delete data.sp;
+            break;
+          case 'sp':
+            delete data.sp;
+            // delete data.sp;
             break;
           default:
             break;
         }
+
+        if (data.tp === this.paymentCode) {
+          data.wsnomn = response.amount;
+        }
+
       }
     }
 
@@ -500,6 +572,9 @@ export class DialogTransactionComponent implements OnInit {
 
     let transId = data.wstran;
     let dataObj = this.findDataByTransactionId(transId, this.data);
+    // console.log(dataObj);
+
+
     let payLoad = JSON.stringify(data);
     dataObj.transbuff = JSON.parse(payLoad)
     // let payLoadHex = JSON.parse(JSON.stringify(data.value))
@@ -540,10 +615,11 @@ export class DialogTransactionComponent implements OnInit {
         // console.log(e['message']);
         if (e['validate'] === 'true') {
           console.log('harus validasi');
-          this.isCloseDialog = false;
+          // this.isCloseDialog = false;
           this.stepDisabledHorizontal = true;
           this.isCancelBtn = false;
           this.isSkipBtn = false;
+          this.updateDataObj(dataObj)
           step.next(); // Go To Step 1
         } else {
           console.log('tidak validasi');
@@ -557,9 +633,12 @@ export class DialogTransactionComponent implements OnInit {
 
 
           this.isCloseDialog = false;
+          this.cardReader(data.wsfrom)
+          // this.isCloseDialog = false;
           this.stepDisabledHorizontal = true;
           this.isCancelBtn = false;
           this.isSkipBtn = false;
+          this.updateDataObj(dataObj)
           step.next(); // Skip to Step 2
           step.next(); // Go To Step 3
         }
@@ -567,6 +646,7 @@ export class DialogTransactionComponent implements OnInit {
         console.log("data tidak berhasil dikirim");
       } // END e['success']
     }) // END transacServ.requestValidation()
+
   }
 
   //  ------------------------------------------------------------------------------------------------
@@ -668,6 +748,7 @@ export class DialogTransactionComponent implements OnInit {
             dataObj.isValidated = 1;
             dataObj.isRejected = 0;
             console.log(dataObj);
+            this.updateDataObj(dataObj)
             this.cardReader(dataForm.wsfrom)
             this.isWaiting = false;
             this.isApproved = true;
@@ -751,6 +832,7 @@ export class DialogTransactionComponent implements OnInit {
     console.log(objc);
     const targetIdx = this.data.map(item => item.transid).indexOf(objc.transid);
     this.data[targetIdx] = objc;
+    console.log(targetIdx);
     // console.log(this.data);
   }
 
@@ -944,36 +1026,39 @@ export class DialogTransactionComponent implements OnInit {
 
                 if (this.stepmom.selectedIndex === index) {
 
-                  const dataForm: any = this.form.at(index).value;
+                  // let dataForm: any = this.form.at(index).value;
+                  let dataForm: any = this.data[index].transbuff;
+                  console.log(this.data[index].transbuff);
+
                   let transId = dataForm.wstran;
-                  let dataObj = this.findDataByTransactionId(dataForm.wstran, this.data);
+                  let dataObj = this.findDataByTransactionId(transId, this.data);
 
                   const dataProcessApi = this.converDataKey(dataObj, dataForm)
                   console.log(dataProcessApi);
 
-                  // this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
-                  //   console.log(res);
-                  //   if (res['success']) {
-                  //     this.dataSuccess.push(res)
-                  //     switch (dataForm.wstype) {
-                  //       case this.informasiSaldoGiroCode:
-                  //         this.isDisplayPrintSaldo = true;
-                  //         this.done()
-                  //         step.next()
-                  //         break;
-                  //       case this.informasiSaldoTabunganCode:
-                  //         this.isDisplayPrintSaldo = true;
-                  //         this.done()
-                  //         step.next()
-                  //         break;
-                  //       default:
-                  //         this.isDisplayPrint = true;
-                  //         this.done()
-                  //         step.next()
-                  //         break;
-                  //     }
-                  //   }
-                  // })
+                  this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
+                    console.log(res);
+                    if (res['success']) {
+                      this.dataSuccess.push(res)
+                      switch (dataForm.wstype) {
+                        case this.informasiSaldoGiroCode:
+                          this.isDisplayPrintSaldo = true;
+                          this.done()
+                          step.next()
+                          break;
+                        case this.informasiSaldoTabunganCode:
+                          this.isDisplayPrintSaldo = true;
+                          this.done()
+                          step.next()
+                          break;
+                        default:
+                          this.isDisplayPrint = true;
+                          this.done()
+                          step.next()
+                          break;
+                      }
+                    }
+                  })
                 }
               }
             })
