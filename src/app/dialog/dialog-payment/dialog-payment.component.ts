@@ -17,4 +17,8 @@ export class DialogPaymentComponent implements OnInit {
   ngOnInit() {
   }
 
+  onProcess(event) {
+    this.dialogRef.close(event)
+  }
+
 }

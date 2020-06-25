@@ -57,7 +57,7 @@ export class DashboardComponent implements OnInit {
   constructor(private dialog: DialogService, public dlg: MatDialog, private queueServ: QueueService,
     private appConfig: AppConfiguration, private sharedService: SharedService, private config: ConfigurationService) {
     this.serverUrl = appConfig.ipSocketServer + "socket";
-    // console.log(this.secureLs.get('token'));
+    console.log(this.secureLs.get('token'));
 
     // console.log("dashboar socket : ", this.serverUrl);
 

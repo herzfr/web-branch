@@ -1,2 +1,20 @@
-<p>dialog-payment works!</p>
-<p>{{ dataInfo }}</p>
+<div mat-dialog-title class="d-flex justify-content-center align-items-center">
+  <p class="h4 mb-0 text-success">Info Payment</p>
+</div>
+<mat-dialog-content id="print-section" class="mat-typography">
+
+  <ng-container>
+    <p class="lead">Nama: {{ dataInfo.name }}</p>
+    <p class="lead">Bill ID / Card: {{ dataInfo.billId }}</p>
+    <p class="lead">Pembayaran: {{ dataInfo.billName }}</p>
+    <p class="lead">Total Tagihan: {{ dataInfo.amount | currency:"Rp " }}</p>
+  </ng-container>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-center">
+  <!-- <button (click)="print()" mat-raised-button>Print</button> -->
+  <button (click)="onProcess(true)" mat-raised-button>Bayar</button>
+  <button (click)="onProcess(false)" mat-raised-button>Cancel</button>
+</mat-dialog-actions>

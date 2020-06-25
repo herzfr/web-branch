@@ -24,6 +24,7 @@ import { AppConfiguration } from 'src/app/models/app.configuration';
 import { TransactionModel } from 'src/app/models/transaction-model';
 import { FotonasabahComponent } from '../fotonasabah/fotonasabah.component';
 import { NasabahsignComponent } from '../nasabahsign/nasabahsign.component';
+import { DialogPaymentComponent } from '../dialog-payment/dialog-payment.component';
 
 // Declare
 declare var $: any;
@@ -430,6 +431,57 @@ export class DialogTransactionComponent implements OnInit {
     let data: any = this.form.at(index).value;
     console.log(this.form.at(index).value);
 
+    // console.log(data.tp);
+    if (data.tp === this.paymentCode) {
+
+      let obj: any = new Object();
+      obj.payCode = data.py;
+      obj.payDetail = data.sp ? data.sp : "0000";
+      obj.billId = data.ib;
+      obj.amount = data.nm ? data.nm.toString() : "";
+      console.log(obj);
+
+      this.transacServ.retrieveDataPayment(obj).subscribe(res => {
+        // console.log(res);
+        let response = res;
+        if (res['status']) {
+          console.log(res);
+          const dialogConfig = new MatDialogConfig();
+          dialogConfig.backdropClass = 'backdropBackground';
+          dialogConfig.disableClose = true;
+          dialogConfig.width = '1000px';
+          dialogConfig.data = res;
+
+          this.dialog.open(DialogPaymentComponent, dialogConfig).afterClosed().subscribe(status => {
+            // console.log(status);
+            if (status) {
+              console.log(response);
+              this.onProcessData(index, step, response)
+            } else {
+              console.log("batal");
+              // this.onReject(index)
+            }
+
+          });
+
+          this.dialog.open
+        } else {
+          alert('Data Error')
+        }
+      })
+    } else {
+      this.onProcessData(index, step, null)
+    }
+  }
+
+  //  ------------------------------------------------------------------------------------------------
+  //  ON PROCESS DATA                                                                         |   1   |
+  //  ------------------------------------------------------------------------------------------------
+  onProcessData(index, step: MatStepper, response) {
+
+    let data: any = this.form.at(index).value;
+    console.log(this.form.at(index).value);
+
     for (const key in this.form.at(index).value) {
       if (this.form.at(index).value.hasOwnProperty(key)) {
         const element = data[key];
@@ -444,8 +496,13 @@ export class DialogTransactionComponent implements OnInit {
             delete data.TransaksiId;
             break;
           case 'nm':
-            data.wsnomn = element.toString();
-            delete data.nm;
+            if (response === null) {
+              data.wsnomn = element.toString();
+              delete data.nm;
+            } else {
+              data.wsnomn = response.amount;
+              delete data.nm;
+            }
             break;
           case 'tn':
             data.wsicas = element;
@@ -492,6 +549,10 @@ export class DialogTransactionComponent implements OnInit {
             break;
         }
 
+        if (data.tp === this.paymentCode) {
+          data.wsnomn = response.amount;
+        }
+
       }
     }
 
@@ -535,6 +596,7 @@ export class DialogTransactionComponent implements OnInit {
         console.log("data tidak berhasil dikirim");
       } // END e['success']
     }) // END transacServ.requestValidation()
+
   }
 
   //  ------------------------------------------------------------------------------------------------

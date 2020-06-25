@@ -83,6 +83,10 @@ export class TransactionService {
     return this.http.get(this.apiUrl + 'api/payment/byCode?code=' + param, this.httpOptions)
   }
 
+  retrieveDataPayment(body) {
+    return this.http.post(this.apiUrl + 'api/payment/inquiry', body, this.httpOptions)
+  }
+
 
 
 }
