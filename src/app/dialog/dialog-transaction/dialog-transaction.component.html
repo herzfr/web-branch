@@ -344,7 +344,15 @@
                     BISA
 
                     <div *ngFor="let v of cek(it.value) | keyvalue">
-                      {{ v.key | titlecustom2 }} : {{ v.value }}
+                      <div class="form-group row mb-0">
+                        <label
+                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">
+                          {{ v.key | titlecustom2 }}
+                          <span class="text-right">:</span></label>
+                        <div class="col-sm-8">
+                          <label class="form-control-plaintext">{{ v.value }}</label>
+                        </div>
+                      </div>
                     </div>
 
                   </div>
