@@ -58,8 +58,6 @@ export class TransferonusService {
 
     console.log("data Object yang dikirimkan : ", dataObject);
 
-
-
     let promise = new Promise((resolve, reject) => {
       // proses transaksi ke table wbtrans 
       this.queueService.processTransactionDataQ(dataProses).subscribe(response => {
@@ -95,13 +93,14 @@ export class TransferonusService {
             wbtcno: this.utilityService.asciiToHexa(traceNo.toString()),
             wbusid: this.utilityService.asciiToHexa(this.userId),
             wbustm: this.utilityService.asciiToHexa(this.userTerminal ? this.userTerminal : ""),
+            wbtrty: "0030003000300030003000300032",
             wbtrbf: {
               wstype: "0030003000300030003000300032",
               wsfrom: this.utilityService.asciiToHexa(wsfrom),
               wstoto: this.utilityService.asciiToHexa(wstoto),
               wsnomn: this.utilityService.asciiToHexa(wsnom),
               wsbrta: this.utilityService.asciiToHexa(wsbrta),
-              wbicsh: this.utilityService.asciiToHexa(dataProses.isCash ? dataObject.isCash : "000"),
+              // wbicsh: this.utilityService.asciiToHexa(dataProses.isCash ? dataObject.isCash : "000"),
               wbicus: "003000300031"
             },
             wbstop: "0045004E0044"
@@ -176,6 +175,7 @@ export class TransferonusService {
           wbtcno: this.utilityService.asciiToHexa(traceNo.toString()),
           wbusid: this.utilityService.asciiToHexa(this.userId),
           wbustm: this.utilityService.asciiToHexa(this.userTerminal ? this.userTerminal : ""),
+          wbtrty: "0039003000300030003000300032",
           wbtrbf: {
             wstype: "0039003000300030003000300032",
             wsfrom: this.utilityService.asciiToHexa(transBuffer.wsfrom),
@@ -207,11 +207,11 @@ export class TransferonusService {
   }
 
   sendInquiry(body: any) {
-    return this.http.post(this.apiUrl + 'api/inquiry/setor', body, this.httpOptions)
+    return this.http.post(this.apiUrl + 'api/inquiry/overbooking', body, this.httpOptions)
   }
 
   sendPosting(body: any) {
-    return this.http.post(this.apiUrl + 'api/posting/setor', body, this.httpOptions)
+    return this.http.post(this.apiUrl + 'api/posting/overbooking', body, this.httpOptions)
   }
 
 

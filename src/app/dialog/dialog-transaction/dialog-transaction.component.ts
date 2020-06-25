@@ -445,9 +445,6 @@ export class DialogTransactionComponent implements OnInit {
 
   transactionProcess(index, step: MatStepper) {
 
-    console.log("button proses pressed");
-
-
     let data: any = this.form.at(index).value;
     console.log(this.form.at(index).value);
 
@@ -611,10 +608,7 @@ export class DialogTransactionComponent implements OnInit {
             return res;
           }
         );
-
         break;
-
-
       case this.transferAntarRekCode:
         console.log("type transfer on us", dataObj);
 
@@ -622,7 +616,7 @@ export class DialogTransactionComponent implements OnInit {
           .then(
             res => {
               console.log("respons balikan as : ", res);
-              this.reffNo = res['traceNo'];
+              // this.reffNo = res['traceNo'];
             }
           );
 
