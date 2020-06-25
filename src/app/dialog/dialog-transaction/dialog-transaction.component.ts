@@ -159,8 +159,9 @@ export class DialogTransactionComponent implements OnInit {
 
   //  Default Pic Var
   private base64Image = 'assets/png/avatar.png';
-  private base64Sign = 'assets/png/signature.png';
-  private NAME_CUST = 'John Lennon';
+  private base64Sign = 'assets/png/blankimage.png';
+  // private base64Sign = '';
+  private NAME_CUST = '';
   private imageID;
 
   // Server Address
@@ -602,9 +603,10 @@ export class DialogTransactionComponent implements OnInit {
             console.log("res", "respons balikan as : ", res);
             this.reffNo = res['traceNo'];
             this.transBuffReply = res['wbtrbf']
+            this.NAME_CUST = this.transBuffReply.wstonm;
+
             console.log("trace no result ", this.reffNo);
             console.log("transbuff dari as : ", this.transBuffReply);
-
 
             return res;
           }
@@ -622,7 +624,7 @@ export class DialogTransactionComponent implements OnInit {
               console.log("respons balikan as : ", res);
               this.reffNo = res['traceNo'];
             }
-          )
+          );
 
         break;
       default:
@@ -646,9 +648,7 @@ export class DialogTransactionComponent implements OnInit {
 
     // }   //set data transbufff to objek 
 
-
     console.log("data validation : ", dataObj);
-
 
     this.transacServ.requestValidation(dataObj).subscribe(e => {
       // console.log(e);
@@ -1085,10 +1085,10 @@ export class DialogTransactionComponent implements OnInit {
                     dataObj.wbtrbf = this.transBuffReply;
 
                     this.setorTunaiService.prosesPosting(dataObj)
-                    // .then(response => {
-                    //   console.log("balikan response  as : ", response);
+                      .then(response => {
+                        console.log("balikan response  as : ", response);
 
-                    // });
+                      });
 
                   } else if (dataObj.trntype == this.transferAntarRekCode) {
 
@@ -1163,20 +1163,20 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   conv(event, index) {
-    console.log(event, index);
+    // console.log(event, index);
     let idx = parseInt(event)
     if (idx == index) {
-      console.log(true);
+      // console.log(true);
       return true
     } else {
-      console.log(false);
+      // console.log(false);
       return false
     }
     // return parseInt(event)
   }
 
   cek(event) {
-    console.log(event);
+    // console.log(event);
     return event.wbtrbf;
   }
 

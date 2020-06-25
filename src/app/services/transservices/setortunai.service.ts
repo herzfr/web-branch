@@ -141,100 +141,77 @@ export class SetortunaiService {
   // posting setor tunai function 
   async prosesPosting(dataObject: any) {
 
-    console.log("data object that sending : ", dataObject);
-
     let dataProses = dataObject;
     var transBuffer = dataProses.transbuff;
+    let transbuffAs = dataObject.wbtrbf;
     transBuffer = transBuffer;
 
     console.log("data proses : ", dataProses);
+    console.log("transbuff as : ", transbuffAs);
 
+    //change from hex to ascii
+    for (const key in transBuffer) {
+      if (transBuffer.hasOwnProperty(key)) {
+        const element = transBuffer[key];
+        console.log("data element : ", element);
+        console.log("data key : ", key);
+        transBuffer[key] = this.utilityService.hexToAscii(element);
+      }
+    }
 
+    dataProses.userid = this.userId;
+    dataProses.userterminal = this.userTerminal;
+    dataProses.queuedate = this.utilityService.getDateWithDash();
+    dataProses.transbuff = JSON.stringify(dataProses.transbuff);
 
-    // //change from hex to ascii
-    // for (const key in transBuffer) {
-    //   if (transBuffer.hasOwnProperty(key)) {
-    //     const element = transBuffer[key];
-    //     console.log("data element : ", element);
-    //     console.log("data key : ", key);
-    //     transBuffer[key] = this.utilityService.hexToAscii(element);
-    //   }
-    // }
+    let promise = new Promise((resolve, reject) => {
+      this.queueService.processTransactionDataQ(dataProses).subscribe(response => {
+        // console.log("wbtrans response : ", response);
 
-    // dataProses.userid = this.userId;
-    // dataProses.userterminal = this.userTerminal;
-    // dataProses.queuedate = this.utilityService.getDateWithDash();
-    // dataProses.transbuff = JSON.stringify(dataProses.transbuff);
+        let traceNo = response['traceno'];
+        let postingObject: any = {
+          wbtmsg: "0030003100300030",
+          wbproc: "003900300030003000300030",
+          wbtrid: this.utilityService.asciiToHexa(dataProses.transid),
+          wbbrcd: this.utilityService.asciiToHexa(dataProses.branchcode),
+          wbfgid: this.utilityService.asciiToHexa(dataProses.userid ? dataProses.userid : ""),
+          wbscid: this.utilityService.asciiToHexa(dataProses.scanid ? dataProses.scanid : ""),
+          wbqucd: "0030003000300030003000300030003000300031",
+          wbqudt: this.utilityService.asciiToHexa(this.utilityService.getDateWithoutSeparator()),
+          wbrfno: this.utilityService.asciiToHexa(traceNo.toString()),
+          wbstat: this.utilityService.asciiToHexa("200"),
+          wbtmid: this.utilityService.asciiToHexa(dataProses.terminalid),
+          wbtsen: this.utilityService.asciiToHexa(this.utilityService.convertMilisToDateTimeStamp(dataProses.timestampentry)),
+          wbtspr: this.utilityService.asciiToHexa(this.utilityService.getDateTimeStamp()),
+          wbtcno: this.utilityService.asciiToHexa(traceNo.toString()),
+          wbusid: this.utilityService.asciiToHexa(this.userId),
+          wbustm: this.utilityService.asciiToHexa(this.userTerminal ? this.userTerminal : ""),
+          wbtrty: "0039003000300030003000300031",
+          wbtrbf: {
+            wstype: "0039003000300030003000300031",
+            wstoto: this.utilityService.asciiToHexa(transBuffer.wstoto),
+            wsnomn: this.utilityService.asciiToHexa(this.utilityService.leftPadding(transBuffer.wsnomn, "", 17)),
+            wbicsh: this.utilityService.asciiToHexa(dataProses.isCash ? dataProses.isCash : "000"),
+            wbicus: "003000300031",
+            wsapprc: this.utilityService.asciiToHexa(transbuffAs.wsapprc ? transbuffAs.wsapprc : ""),
+            wstonm: this.utilityService.asciiToHexa(transbuffAs.wstonm ? transbuffAs.wstonm : ""),
+          },
+          wbstop: "0045004E0044"
+        };
 
-    // let promise = new Promise((resolve, reject) => {
-    //   this.queueService.processTransactionDataQ(dataProses).subscribe(response => {
-    //     console.log("wbtrans response : ", response);
+        console.log("data object posting : ", JSON.stringify(postingObject));
 
-    //     let traceNo = response['traceno'];
-    //     let postingObject: any = {
-    //       wbtmsg: "0030003100300030",
-    //       wbproc: "003900300030003000300030",
-    //       wbtrid: this.utilityService.asciiToHexa(dataProses.transid),
-    //       wbbrcd: this.utilityService.asciiToHexa(dataProses.branchcode),
-    //       wbfgid: this.utilityService.asciiToHexa(dataProses.userid ? dataProses.userid : ""),
-    //       wbscid: this.utilityService.asciiToHexa(dataProses.scanid ? dataProses.scanid : ""),
-    //       wbqucd: "0030003000300030003000300030003000300031",
-    //       wbqudt: this.utilityService.asciiToHexa(this.utilityService.getDateWithoutSeparator()),
-    //       wbrfno: this.utilityService.asciiToHexa(traceNo.toString()),
-    //       wbstat: this.utilityService.asciiToHexa("200"),
-    //       wbtmid: this.utilityService.asciiToHexa(dataProses.terminalid),
-    //       wbtsen: this.utilityService.asciiToHexa(this.utilityService.convertMilisToDateTimeStamp(dataProses.timestampentry)),
-    //       wbtspr: this.utilityService.asciiToHexa(this.utilityService.getDateTimeStamp()),
-    //       wbtcno: this.utilityService.asciiToHexa(traceNo.toString()),
-    //       wbusid: this.utilityService.asciiToHexa(this.userId),
-    //       wbustm: this.utilityService.asciiToHexa(this.userTerminal ? this.userTerminal : ""),
-    //       wbtrbf: {
-    //         wstype: "0039003000300030003000300031",
-    //         wstoto: this.utilityService.asciiToHexa(transBuffer.wstoto),
-    //         wsnomn: this.utilityService.asciiToHexa(this.utilityService.leftPadding(transBuffer.wsnomn, "", 17)),
-    //         wbicsh: this.utilityService.asciiToHexa(dataProses.isCash ? dataProses.isCash : "000"),
-    //         wbicus: "003000300031",
-    //         // wsapprc: "20200626200747761000",
+        this.sendPosting(JSON.stringify(postingObject)).subscribe(resp => {
+          console.log("as response : ", resp);
+          resolve(resp);
+        })
+      }, err => {
+        reject(err);
+      });
 
+    });
 
-    //         //     "wstype": "0000001",
-    //         // "wsbcod": "",
-    //         // "wsbrta": "",
-    //         // "wsfrom": "",
-    //         // "wstoto": "1001000002",
-    //         // "wsnomn": "00000000001000000",
-    //         // "wbicsh": "",
-    //         // "wbicus": "001",
-    //         // "wspayc": "",
-    //         // "wsbilid": "",
-    //         // "wsblclr": "",
-    //         // "wsbllg": "",
-    //         // "wsblhld": "",
-    //         // "wsbloth": "",
-    //         // "wsfrnm": "",
-    //         // "wstonm": "Cox Ganteng Banget",
-    //         // "wsapprc": "20200626200747761000",
-    //         // "wsotov": "",
-    //         // "wsdspo": "",
-    //         // "wsprto": ""
-    //       },
-    //       wbstop: "0045004E0044"
-    //     };
-
-    //     console.log("data object posting : ", JSON.stringify(postingObject));
-
-    //     // this.sendPosting(JSON.stringify(postingObject)).subscribe(resp => {
-    //     //   console.log("as response : ", resp);
-    //     //   resolve(resp);
-
-    //     // })
-    //   }, err => {
-    //     reject(err);
-    //   });
-
-    // });
-
-    // return promise;
+    return promise;
 
   }
 
