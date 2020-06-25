@@ -25,6 +25,7 @@ import { TransactionModel } from 'src/app/models/transaction-model';
 import { FotonasabahComponent } from '../fotonasabah/fotonasabah.component';
 import { NasabahsignComponent } from '../nasabahsign/nasabahsign.component';
 import { DialogPaymentComponent } from '../dialog-payment/dialog-payment.component';
+import { Observable } from 'rxjs';
 
 // Declare
 declare var $: any;
@@ -53,6 +54,7 @@ export class DialogTransactionComponent implements OnInit {
   private form: FormArray;
   private formGroup: FormGroup;
   private dataSuccess = new Array;
+  // private dataSuccess: Observable<Array<any>>
 
   // Model
   transactionModel: TransactionModel = new TransactionModel();
@@ -185,6 +187,7 @@ export class DialogTransactionComponent implements OnInit {
   // Data Select Payment
   private menuPayment: any;
   private subMenuPay: any = [];
+
 
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
     private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone, private appConfig: AppConfiguration,
@@ -398,6 +401,13 @@ export class DialogTransactionComponent implements OnInit {
 
   }
 
+
+  // getDataSuccess(event) {
+  //   console.log(event);
+  //   let data = this.dataSuccess.find(x => x.code === event);
+  //   console.log(data);
+  //   return data;
+  // }
 
   //  ------------------------------------------------------------------------------------------------
   //  IF Payment Function                                                                     |   1   |
@@ -986,29 +996,47 @@ export class DialogTransactionComponent implements OnInit {
                   const dataProcessApi = this.converDataKey(dataObj, dataForm)
                   console.log(dataProcessApi);
 
-                  this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
-                    console.log(res);
-                    if (res['success']) {
-                      this.dataSuccess.push(res)
-                      switch (dataForm.wstype) {
-                        case this.informasiSaldoGiroCode:
-                          this.isDisplayPrintSaldo = true;
-                          this.done()
-                          step.next()
-                          break;
-                        case this.informasiSaldoTabunganCode:
-                          this.isDisplayPrintSaldo = true;
-                          this.done()
-                          step.next()
-                          break;
-                        default:
-                          this.isDisplayPrint = true;
-                          this.done()
-                          step.next()
-                          break;
+                  let dataConfirm = new Promise((resolve, reject) => {
+
+                    this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
+                      console.log(res);
+                      if (res['success']) {
+                        // this.dataSuccess.push(res)
+                        // console.log(this.dataSuccess);
+
+                        resolve(res)
+
+                        switch (dataForm.wstype) {
+                          case this.informasiSaldoGiroCode:
+                            this.isDisplayPrintSaldo = true;
+                            this.done()
+                            step.next()
+                            break;
+                          case this.informasiSaldoTabunganCode:
+                            this.isDisplayPrintSaldo = true;
+                            this.done()
+                            step.next()
+                            break;
+                          default:
+                            this.isDisplayPrint = true;
+                            this.done()
+                            step.next()
+                            break;
+                        }
                       }
-                    }
+                    })
+
                   })
+
+
+                  console.log(dataConfirm.then(callback => {
+                    // console.log(callback);
+                    this.dataSuccess.push(callback)
+                    console.log(this.dataSuccess);
+
+                  }));
+
+
                 }
               }
             })
@@ -1028,6 +1056,23 @@ export class DialogTransactionComponent implements OnInit {
     }
   }
 
+  conv(event, index) {
+    console.log(event, index);
+    let idx = parseInt(event)
+    if (idx == index) {
+      console.log(true);
+      return true
+    } else {
+      console.log(false);
+      return false
+    }
+    // return parseInt(event)
+  }
+
+  cek(event) {
+    console.log(event);
+    return event.wbtrbf;
+  }
 
   //  ------------------------------------------------------------------------------------------------
   //  Call Cust Finger Verify                                                                |   3   |

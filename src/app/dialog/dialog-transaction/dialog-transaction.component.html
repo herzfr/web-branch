@@ -337,9 +337,18 @@
                   <img src="assets/svgs/logo-blue.svg" class="mb-3" alt="img-thumbnail">
                 </div>
                 <p class="h6 text-center">Bukti Transaksi</p>
-                <div *ngFor="let item of env.controls | keyvalue">
+                <div *ngFor="let it of dataSuccess | keyvalue">
 
-                  <ng-container *ngIf="item.key != 'TransaksiId'">
+                  <div *ngIf="conv(it.key, i)">
+                    BISA
+
+                    <div *ngFor="let v of cek(it.value) | keyvalue">
+                      {{ v.key | titlecustom2 }} : {{ v.value }}
+                    </div>
+
+                  </div>
+
+                  <!-- <ng-container *ngIf="item.key != 'TransaksiId'">
 
                     <div [ngSwitch]="item.key">
                       <div *ngSwitchCase="'nm'" class="form-group row mb-0">
@@ -359,6 +368,25 @@
                           <label class="form-control-plaintext">{{ item.value.value | valuecustom }}</label>
                         </div>
                       </div>
+                      <div *ngSwitchCase="'py'" class="form-group row mb-0">
+                        <label
+                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom  }}
+                          <span class="text-right">:</span></label>
+
+                        <div class="form-check col-sm-8 align-items-center d-flex">
+                          <label class="form-control-plaintext">{{ item.key | paymentcustom: item.value.value }}</label>
+                        </div>
+                      </div>
+
+                      <div *ngSwitchCase="'sp'" class="form-group row mb-0">
+                        <label
+                          class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom  }}
+                          <span class="text-right">:</span></label>
+
+                        <div class="form-check col-sm-8 align-items-center d-flex">
+                          <label class="form-control-plaintext">{{ item.key | paymentcustom: item.value.value }}</label>
+                        </div>
+                      </div>
                       <div *ngSwitchDefault class="form-group row mb-0">
                         <label
                           class="col-sm-4 col-form-label font-weight-bold align-items-center d-flex justify-content-between">{{ item.key | titlecustom  }}
@@ -370,7 +398,7 @@
                       </div>
                     </div>
 
-                  </ng-container>
+                  </ng-container> -->
 
                 </div>
               </div>

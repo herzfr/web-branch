@@ -57,6 +57,7 @@ import { BannerSuccessComponent } from './banner/banner-success/banner-success.c
 import { BannerRejectComponent } from './banner/banner-reject/banner-reject.component';
 import { TestDialogComponent } from './dialog/test-dialog/test-dialog.component';
 import { DialogPaymentComponent } from './dialog/dialog-payment/dialog-payment.component';
+import { PaymentCustomPipe } from './pipes/paymentcustom.pipe';
 
 export function initializerFn(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -100,6 +101,7 @@ export const customCurrencyMaskConfig = {
     Titlecustom2Pipe,
     ValuecustomPipe,
     SortbypipePipe,
+    PaymentCustomPipe,
     BannerLoadingComponent,
     BannerSuccessComponent,
     BannerRejectComponent,
