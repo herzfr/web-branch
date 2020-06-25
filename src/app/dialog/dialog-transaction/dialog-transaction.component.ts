@@ -579,50 +579,40 @@ export class DialogTransactionComponent implements OnInit {
     let dataObj = this.findDataByTransactionId(transId, this.data);
     // console.log(dataObj);
 
-
     let payLoad = JSON.stringify(data);
     dataObj.transbuff = JSON.parse(payLoad)
     // let payLoadHex = JSON.parse(JSON.stringify(data.value))
 
+    console.log("data object : ", dataObj);
+
+
     switch (dataObj.trntype) {
       case this.setorTunaiCode:
-        console.log("setor tunai code ", dataObj);
         this.setorTunaiService.processInquiry(dataObj).then(
           res => {
-            console.log("res", "respons balikan as : ", res);
             this.reffNo = res['traceNo'];
             this.transBuffReply = res['wbtrbf']
             this.NAME_CUST = this.transBuffReply.wstonm;
-
-            console.log("trace no result ", this.reffNo);
-            console.log("transbuff dari as : ", this.transBuffReply);
-
             return res;
           }
         );
         break;
       case this.transferAntarRekCode:
         console.log("type transfer on us", dataObj);
-
         this.transferOnUsService.processInquiry(dataObj)
           .then(
             res => {
               console.log("respons balikan as : ", res);
+              this.transBuffReply = res['wbtrbf']
+              this.NAME_CUST = this.transBuffReply.wstonm;
               // this.reffNo = res['traceNo'];
             }
           );
-
         break;
       default:
         break;
     }
 
-
-    // console.log("object inquiry : ", dataObj);
-
-    //case dataobject inquiry by transaction type : 
-
-    // console.log("data object : ", dataObj);
 
     // get process validation / inquiry 
     // Post STEP 1 DATA for Validation true or false
@@ -1062,6 +1052,9 @@ export class DialogTransactionComponent implements OnInit {
                   const dataProcessApi = this.converDataKey(dataObj, dataForm)
                   console.log(dataProcessApi);
 
+                  console.log("data type : ", dataObj.trntype);
+
+
 
                   if (dataObj.trntype == this.setorTunaiCode) {
                     console.log("data setor  tunai ");
@@ -1076,8 +1069,12 @@ export class DialogTransactionComponent implements OnInit {
                       });
 
                   } else if (dataObj.trntype == this.transferAntarRekCode) {
+                    console.log("data transfer on us ", dataObj);
+                    console.log("data transbuf as : ", this.transBuffReply);
+
 
                     dataObj.reffno = this.reffNo;
+                    dataObj.wbtrbf = this.transBuffReply;
                     this.transferOnUsService.prosesPosting(dataObj).then(response => {
                       console.log("balikan reponse as : ", response);
 
@@ -1231,7 +1228,7 @@ export class DialogTransactionComponent implements OnInit {
     console.log("event kartu : ", event);
 
     if (event === undefined) {
-      this.cardNum = 1234567890000003;
+      this.cardNum = 1234567890000002;
     } else {
       accountNumber = event;
       console.log("account number :", accountNumber.value);

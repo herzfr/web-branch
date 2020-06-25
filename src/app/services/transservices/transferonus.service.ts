@@ -129,14 +129,23 @@ export class TransferonusService {
       })
     });
 
-    // return promise;
+    return promise;
   }
 
-  // posting setor tunai function 
+  // posting transfer on us tunai function 
   async prosesPosting(dataObject: any) {
+
+    console.log("data yang dikirim kan : ", dataObject);
+
+
+
     let dataProses = dataObject;
     var transBuffer = dataProses.transbuff;
+    let transbuffAs = dataObject.wbtrbf;
     transBuffer = transBuffer;
+
+    console.log("transbuff as : ", transbuffAs);
+
 
     //change from hex to ascii
     for (const key in transBuffer) {
@@ -182,8 +191,10 @@ export class TransferonusService {
             wstoto: this.utilityService.asciiToHexa(transBuffer.wstoto),
             wsnomn: this.utilityService.asciiToHexa(transBuffer.wsnomn),
             wsbrta: this.utilityService.asciiToHexa(transBuffer.wsbrta),
-            wbicsh: this.utilityService.asciiToHexa(dataProses.isCash ? dataProses.isCash : "000"),
-            wbicus: "003000300031"
+            // wbicsh: this.utilityService.asciiToHexa(dataProses.isCash ? dataProses.isCash : "000"),
+            wbicus: "003000300031",
+            wstonm: this.utilityService.asciiToHexa(transbuffAs.wstonm ? transbuffAs.wstonm : ""),
+            wsapprc: this.utilityService.asciiToHexa(transbuffAs.wsapprc ? transbuffAs.wsapprc : "")
           },
           wbstop: "0045004E0044"
         };
