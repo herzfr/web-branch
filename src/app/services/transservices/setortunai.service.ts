@@ -84,6 +84,8 @@ export class SetortunaiService {
           let wstoto = dataProses.transbuff.wstoto;
           let wsnom = dataProses.transbuff.wsnomn;
 
+
+
           //create hexa object for inquiry 
           let inquiryObject: any = {
             wbtmsg: "0030003100300030",
@@ -93,7 +95,7 @@ export class SetortunaiService {
             wbfgid: this.utilityService.asciiToHexa(dataProses.userid ? dataProses.userid : ""),
             wbscid: this.utilityService.asciiToHexa(dataProses.scanid ? dataProses.scanid : ""),
             wbqucd: "0030003000300030003000300030003000300031",
-            wbqudt: this.utilityService.asciiToHexa(dataProses.queuedate),
+            wbqudt: this.utilityService.asciiToHexa(dataProses.queuedate.replace(/-/g, "")),
             wbrfno: this.utilityService.asciiToHexa(reffNo),
             wbstat: this.utilityService.asciiToHexa("200"),
             wbtmid: this.utilityService.asciiToHexa(dataProses.terminalid),

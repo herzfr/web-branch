@@ -101,6 +101,11 @@ export class DashboardComponent implements OnInit {
           console.log("transtype : ", transBf.tp);
 
 
+          console.log("tab : ", this.transferAntarBankCode);
+          console.log("tar : ", this.transferAntarRekCode);
+
+
+
           switch (transBf.tp) {
             case this.tarikTunaiCode:
               transBf.tp = 'Tarik Tunai';

@@ -32,7 +32,6 @@ export class UtilityService {
     return moment.utc(value).format('DDMMYYYYHHmmss');
   }
 
-
   getDate() {
     var log = new Date();
     return moment(log).format('DD/MM/YYYY');
@@ -40,7 +39,7 @@ export class UtilityService {
 
   getDateWithoutSeparator() {
     var log = new Date();
-    return moment(log).format('DD/MM/YYYY');
+    return moment(log).format('DDMMYYYY');
   }
 
   getDateWithDash() {

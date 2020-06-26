@@ -1207,17 +1207,23 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   cek(event) {
-    // console.log(event);
+    console.log(event);
     let data: any = event.wbtrbf;
     console.log(data.wstype);
     console.log(this.setorTunaiCode);
 
+
+    if (data.wstype === "9000001") {
+      data.wstype = this.setorTunaiCode;
+    }
 
     let show: any = new Object();
 
 
     switch (data.wstype) {
       case this.setorTunaiCode:
+        console.log("ini setor tunai code ");
+
         show.wstype = data.wstype;
         show.wstonm = data.wstonm;
         show.wstoto = data.wstoto;
