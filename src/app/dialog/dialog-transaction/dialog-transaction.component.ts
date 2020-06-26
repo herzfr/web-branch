@@ -1221,9 +1221,7 @@ export class DialogTransactionComponent implements OnInit {
 
 
     switch (data.wstype) {
-      case this.setorTunaiCode:
-        console.log("ini setor tunai code ");
-
+      case "9000001":
         show.wstype = data.wstype;
         show.wstonm = data.wstonm;
         show.wstoto = data.wstoto;

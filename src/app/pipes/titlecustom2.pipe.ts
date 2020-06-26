@@ -17,10 +17,10 @@ export class Titlecustom2Pipe implements PipeTransform {
                 return 'Tipe Transaksi';
                 break;
             case 'wsfrom':
-                return 'Dari Rek.';
+                return 'Rekening Asal';
                 break;
             case 'wstoto':
-                return 'Ke Rek';
+                return 'Rekening Tujuan';
                 break;
             case 'wsbrta':
                 return 'Berita';
@@ -36,6 +36,9 @@ export class Titlecustom2Pipe implements PipeTransform {
                 break;
             case 'wstran':
                 return 'Transaksi ID';
+                break;
+            case 'wstonm':
+                return 'Nama Pemilik Rekening';
                 break;
             default:
                 break;
