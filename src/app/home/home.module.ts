@@ -16,6 +16,7 @@ import { NasabahsignComponent } from '../dialog/nasabahsign/nasabahsign.componen
 import { SignaturePadModule } from '@ng-plus/signature-pad';
 import { SetortunaiService } from '../services/transservices/setortunai.service';
 import { TransferonusService } from '../services/transservices/transferonus.service';
+import { TariktunaiService } from '../services/transservices/tariktunai.service';
 
 
 @NgModule({
@@ -37,7 +38,7 @@ import { TransferonusService } from '../services/transservices/transferonus.serv
     LottieModule.forRoot({ player: playerFactory, useCache: true }),
     SignaturePadModule
   ],
-  providers: [SetortunaiService, TransferonusService
+  providers: [SetortunaiService, TransferonusService,  TariktunaiService
   ]
 })
 export class HomeModule { }

@@ -27,6 +27,7 @@ import { SetortunaiService } from 'src/app/services/transservices/setortunai.ser
 import { DialogPaymentComponent } from '../dialog-payment/dialog-payment.component';
 import { TransferonusService } from 'src/app/services/transservices/transferonus.service';
 import { Observable } from 'rxjs';
+import { TariktunaiService } from 'src/app/services/transservices/tariktunai.service';
 
 // Declare
 declare var $: any;
@@ -92,6 +93,7 @@ export class DialogTransactionComponent implements OnInit {
 
   private reffNo;
   private transBuffReply: any;
+  private currDataType;
 
   private config = {
     allowNumbersOnly: true,
@@ -198,7 +200,7 @@ export class DialogTransactionComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<DialogTransactionComponent>, @Inject(MAT_DIALOG_DATA) data, public dialog: MatDialog, private _formBuilder: FormBuilder,
     private queueServ: QueueService, private transacServ: TransactionService, private sanitizer: DomSanitizer, private ngZone: NgZone, private appConfig: AppConfiguration,
     private configuration: ConfigurationService, private listConv: ListingService, private utilityService: UtilityService, private callSocket: WebsocketService,
-    private renderer: Renderer2, private setorTunaiService: SetortunaiService, private transferOnUsService: TransferonusService) {
+    private renderer: Renderer2, private setorTunaiService: SetortunaiService, private transferOnUsService: TransferonusService, private tarikTunaiService: TariktunaiService) {
 
     // Get All Data Transaction Form Dashboard
     this.data = data.data;
@@ -585,6 +587,7 @@ export class DialogTransactionComponent implements OnInit {
 
     console.log("data object : ", dataObj);
 
+    this.currDataType = dataObj.trntype;
 
     switch (dataObj.trntype) {
       case this.setorTunaiCode:
@@ -810,18 +813,16 @@ export class DialogTransactionComponent implements OnInit {
     // let payLoadHex = JSON.parse(JSON.stringify(data.value))
     dataObj.isValidated = 0
 
-
-
     this.transacServ.verifyFingerHead(this.headSelectTeller['username'], this.token).subscribe(e => {
-      console.log(e);
+      // console.log(e);
       if (e['success']) {
         this.callSocket.initSocketHeadTellerConnectionOver('vldspv').then(value => {
-          console.log(JSON.parse(value));
+          // console.log(JSON.parse(value));
           const data = JSON.parse(value)
-          console.log(data);
+          // console.log(data);
 
           if (data.success) {
-            console.log("data cocok");
+            // console.log("data cocok");
             dataObj.isValidated = 1;
             dataObj.isRejected = 0;
             // console.log(dataObj);
@@ -845,10 +846,10 @@ export class DialogTransactionComponent implements OnInit {
   //  Update Object                                                                          |   x   |
   //  ------------------------------------------------------------------------------------------------
   updateDataObj(objc) {
-    console.log(objc);
+    // console.log(objc);
     const targetIdx = this.data.map(item => item.transid).indexOf(objc.transid);
     this.data[targetIdx] = objc;
-    console.log(targetIdx);
+    // console.log(targetIdx);
     // console.log(this.data);
   }
 
@@ -998,7 +999,8 @@ export class DialogTransactionComponent implements OnInit {
       $('.otp-input').prop('readonly', true);
 
       this.transacServ.verifyCard(this.cardNum, event).subscribe(res => {
-        console.log(res);
+
+        console.log("verify card : ", res);
 
         if (res['success']) {
           this.isScanFinger = true;
@@ -1010,9 +1012,18 @@ export class DialogTransactionComponent implements OnInit {
 
           this.transacServ.getInfoCardPerson(res['record']).subscribe(e => {
             // console.log(e);
+            console.log("data type :", this.currDataType);
+
+            if (this.currDataType == this.setorTunaiCode || this.currDataType == this.transferAntarRekCode) {
+              console.log("transfer antar rek and setor tunai");
+            } else {
+              console.log("bukan setor dll ");
+              this.NAME_CUST = e['name']
+            }
+
             this.base64Image = 'data:image/png;base64,' + e['imagepict']
             this.base64Sign = 'data:image/png;base64,' + e['imagesign']
-            this.NAME_CUST = e['name']
+
             this.imageID = e['imageid']
             this.images64()
             this.sign64()
@@ -1124,7 +1135,17 @@ export class DialogTransactionComponent implements OnInit {
 
                     }));
 
-                  } else {
+                  } else if (dataObj.trntype == this.tarikTunaiCode) {
+                    console.log("data tarik tunai ");
+
+                    this.tarikTunaiService.setorTunaiProses(dataProcessApi).subscribe(res => {
+                      console.log("res", res);
+                      this.isDisplayPrint = true;
+                      this.done()
+                      step.next()
+                    });
+                  }
+                  else {
 
                     let dataConfirm = new Promise((resolve, reject) => {
 
@@ -1207,10 +1228,10 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   cek(event) {
-    console.log(event);
+    // console.log(event);
     let data: any = event.wbtrbf;
-    console.log(data.wstype);
-    console.log(this.setorTunaiCode);
+    // console.log(data.wstype);
+    // console.log(this.setorTunaiCode);
 
 
     if (data.wstype === "9000001") {
