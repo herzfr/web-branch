@@ -1095,12 +1095,12 @@ export class DialogTransactionComponent implements OnInit {
                         });
                     });
 
-                    console.log(dataConfirm.then(callback => {
+                    dataConfirm.then(callback => {
                       // console.log(callback);
                       this.dataSuccess.push(callback)
                       console.log(this.dataSuccess);
 
-                    }));
+                    });
 
                   } else if (dataObj.trntype == this.transferAntarRekCode) {
                     console.log("data transfer on us ", dataObj);
@@ -1130,12 +1130,12 @@ export class DialogTransactionComponent implements OnInit {
                       })
                     })
 
-                    console.log(dataConfirm.then(callback => {
+                    dataConfirm.then(callback => {
                       // console.log(callback);
                       this.dataSuccess.push(callback)
                       console.log(this.dataSuccess);
 
-                    }));
+                    });
 
                   } else if (dataObj.trntype == this.tarikTunaiCode) {
                     console.log("data tarik tunai ");
@@ -1146,17 +1146,18 @@ export class DialogTransactionComponent implements OnInit {
                       this.done()
                       step.next()
                     });
+
                   }
                   else {
 
                     let dataConfirm = new Promise((resolve, reject) => {
 
                       this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(response => {
-                        console.log(res);
+                        console.log(response);
                         if (response['success']) {
                           // this.dataSuccess.push(res)
                           // console.log(this.dataSuccess);
-                          response['transid'] = dataObj.transid;
+                          // response['transid'] = dataObj.transid;
 
                           resolve(response)
 
@@ -1182,12 +1183,13 @@ export class DialogTransactionComponent implements OnInit {
 
                     })
 
-                    console.log(dataConfirm.then(callback => {
+                    dataConfirm.then(callback => {
                       // console.log(callback);
                       this.dataSuccess.push(callback)
                       console.log(this.dataSuccess);
 
-                    }));
+                    });
+
 
                   }
 
@@ -1213,11 +1215,13 @@ export class DialogTransactionComponent implements OnInit {
   conv(event, index) {
 
     let dataForm: any = this.form.at(index).value;
+    console.log(this.data[index]);
 
-    console.log(event.wbtrid);
-    console.log(dataForm.wstran);
 
-    if (event.wbtrid == dataForm.wstran) {
+    console.log(event);
+    console.log(dataForm);
+
+    if (event.transid == dataForm.wstran || dataForm.TransaksiId) {
       // console.log(true);
       return true
     } else {
@@ -1229,13 +1233,9 @@ export class DialogTransactionComponent implements OnInit {
   cek(event) {
     // console.log(event);
     let data: any = event.wbtrbf;
-    console.log(data.wstype);
-    console.log(this.setorTunaiCode);
-    console.log(this.transferAntarRekCode);
 
-    // if (data.wstype === "9000001") {
-    //   data.wstype = this.setorTunaiCode;
-    // }
+    console.log(this.paymentCode);
+    console.log(data);
 
     var re = this.transferAntarRekCode.substr(0, 1);
     var newstr = this.transferAntarRekCode.replace(re, "9");
@@ -1243,6 +1243,8 @@ export class DialogTransactionComponent implements OnInit {
 
     let show: any = new Object();
 
+
+    // console.log(data.trntype);
 
     switch (data.wstype) {
       case this.setorTunaiCode.replace(this.setorTunaiCode.substr(0, 1), "9"):
@@ -1263,33 +1265,61 @@ export class DialogTransactionComponent implements OnInit {
         show.wsbrta = data.wsbrta;
         console.log(show);
         return show;
+      case this.paymentCode:
+        show.wstype = data.wstype;
+        // show.wsfrnm = 
+        // show.wsfrom = 
+        // show.wstonm = 
+        // show.wstoto = 
+        // show.wsnomn = 
+        // show.wsbrta = 
+        console.log(show);
+        return show;
+      case this.transferAntarBankCode:
+        show.wstype = data.wstype;
+        // show.wsfrnm = 
+        // show.wsfrom = 
+        // show.wstonm = 
+        // show.wstoto = 
+        // show.wsnomn = 
+        // show.wsbrta = 
+        console.log(show);
+        return show;
+      case this.tarikTunaiCode:
+        show.wstype = data.wstype;
+        // show.wsfrnm = 
+        // show.wsfrom = 
+        // show.wstonm = 
+        // show.wstoto = 
+        // show.wsnomn = 
+        // show.wsbrta = 
+        console.log(show);
+        return show;
+      case this.informasiSaldoGiroCode:
+        show.wstype = data.wstype;
+        // show.wsfrnm = 
+        // show.wsfrom = 
+        // show.wstonm = 
+        // show.wstoto = 
+        // show.wsnomn = 
+        // show.wsbrta = 
+        console.log(show);
+        return show;
+      case this.informasiSaldoTabunganCode:
+        show.wstype = data.wstype;
+        // show.wsfrnm = 
+        // show.wsfrom = 
+        // show.wstonm = 
+        // show.wstoto = 
+        // show.wsnomn = 
+        // show.wsbrta = 
+        console.log(show);
+        return show;
         break;
       default: break;
     }
 
     console.log(show);
-
-    // wbicsh: ""
-    // wbicus: "001"
-    // wsapprc: "202006271023498800009000002900000"
-    // wsbcod: ""
-    // wsbilid: ""
-    // wsblclr: ""
-    // wsblhld: ""
-    // wsbllg: ""
-    // wsbloth: ""
-    // wsbrta: "party party"
-    // wsdspo: ""
-    // wsfrnm: "Cox Ganteng Banget Lagi"
-    // wsfrom: "1001000003"
-    // wsnomn: "00000000030000000"
-    // wsotov: ""
-    // wspayc: ""
-    // wsprto: ""
-    // wstonm: "Kucing GumBall"
-    // wstoto: "1001000002"
-    // wstype: "9000002"
-
 
   }
 
@@ -1321,7 +1351,7 @@ export class DialogTransactionComponent implements OnInit {
     console.log("event kartu : ", event);
 
     if (event === undefined) {
-      this.cardNum = 1234567890000002;
+      this.cardNum = 1234567890000003;
     } else {
       accountNumber = event;
       console.log("account number :", accountNumber.value);
