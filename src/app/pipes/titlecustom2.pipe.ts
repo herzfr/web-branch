@@ -43,6 +43,15 @@ export class Titlecustom2Pipe implements PipeTransform {
             case 'wsfrnm':
                 return 'Pemilik Rekening Asal';
                 break;
+            case 'wspaym':
+                return 'Pembayaran';
+                break;
+            case 'wsspym':
+                return 'Detail';
+                break;
+            case 'wsbilid':
+                return 'Bill ID';
+                break;
             default:
                 break;
         }

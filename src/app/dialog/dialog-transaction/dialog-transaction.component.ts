@@ -1136,18 +1136,19 @@ export class DialogTransactionComponent implements OnInit {
                       console.log(this.dataSuccess);
 
                     });
-
-                  } else if (dataObj.trntype == this.tarikTunaiCode) {
-                    console.log("data tarik tunai ");
-
-                    this.tarikTunaiService.setorTunaiProses(dataProcessApi).subscribe(res => {
-                      console.log("res", res);
-                      this.isDisplayPrint = true;
-                      this.done()
-                      step.next()
-                    });
-
                   }
+
+                  // } else if (dataObj.trntype == this.tarikTunaiCode) {
+                  //   console.log("data tarik tunai ");
+
+                  //   this.tarikTunaiService.setorTunaiProses(dataProcessApi).subscribe(res => {
+                  //     console.log("res", res);
+                  //     this.isDisplayPrint = true;
+                  //     this.done()
+                  //     step.next()
+                  //   });
+
+                  // }
                   else {
 
                     let dataConfirm = new Promise((resolve, reject) => {
@@ -1267,12 +1268,37 @@ export class DialogTransactionComponent implements OnInit {
         return show;
       case this.paymentCode:
         show.wstype = data.wstype;
-        // show.wsfrnm = 
-        // show.wsfrom = 
-        // show.wstonm = 
-        // show.wstoto = 
-        // show.wsnomn = 
-        // show.wsbrta = 
+        show.wsbilid = data.wsbilid;
+        show.wsnomn = data.wsnomn;
+        console.log(data.wspayc.substr(0, 6));
+        console.log(this.menuPayment.find(x => x.code === data.wspayc.substr(0, 6)).name);
+        console.log(this.subMenuPay.find(x => x.code === data.wspayc.substr(6, 10)).name);
+
+
+        show.wspaym = this.menuPayment.find(x => x.code === data.wspayc.substr(0, 6)).name ? this.menuPayment.find(x => x.code === data.wspayc.substr(0, 6)).name : "";
+        show.wsspym = this.subMenuPay.find(x => x.code === data.wspayc.substr(6, 10)).name ? this.subMenuPay.find(x => x.code === data.wspayc.substr(6, 10)).name : "";
+        // show.wsspym = this.transacServ.getDataSubPayment(data.wspayc.substr(0, 6)).subscribe(e => {
+        // if (this.subMenuPay.length > 0) {
+        //   show.wsspym = ""
+        // }
+        //   let es: any = e
+        //   es.find(x => x.code === data.wspayc.substr(6, 10)).name;
+        // });
+
+
+
+        //         wsapprc: ""
+        // wsbilid: "basdasd234234"
+        // wsfrom: ""
+        // wsicas: ""
+        // wsidid: null
+        // wsnomn: "00000000001000000"
+        // wspayc: "1000010758"
+        // wstonm: ""
+        // wstoto: null
+        // wstran: "234234232300260620200915570001"
+        // wstype: "0000006"
+
         console.log(show);
         return show;
       case this.transferAntarBankCode:
@@ -1306,7 +1332,7 @@ export class DialogTransactionComponent implements OnInit {
         console.log(show);
         return show;
       case this.informasiSaldoTabunganCode:
-        show.wstype = data.wstype;
+        show.wstype = data.trntype;
         // show.wsfrnm = 
         // show.wsfrom = 
         // show.wstonm = 
