@@ -38,7 +38,10 @@ export class Titlecustom2Pipe implements PipeTransform {
                 return 'Transaksi ID';
                 break;
             case 'wstonm':
-                return 'Nama Pemilik Rekening';
+                return 'Pemilik Rekening Tujuan';
+                break;
+            case 'wsfrnm':
+                return 'Pemilik Rekening Asal';
                 break;
             default:
                 break;

@@ -1010,9 +1010,9 @@ export class DialogTransactionComponent implements OnInit {
 
           this.transacServ.getInfoCardPerson(res['record']).subscribe(e => {
             // console.log(e);
-            this.base64Image = 'data:image/png;base64,' + e['imagepict']
-            this.base64Sign = 'data:image/png;base64,' + e['imagesign']
-            this.NAME_CUST = e['name']
+            // this.base64Image = 'data:image/png;base64,' + e['imagepict']
+            // this.base64Sign = 'data:image/png;base64,' + e['imagesign']
+            // this.NAME_CUST = e['name']
             this.imageID = e['imageid']
             this.images64()
             this.sign64()
@@ -1071,6 +1071,7 @@ export class DialogTransactionComponent implements OnInit {
                           if (response['success']) {
                             // this.dataSuccess.push(res)
                             // console.log(this.dataSuccess);
+                            response['transid'] = dataObj.transid;
 
                             resolve(response)
 
@@ -1105,6 +1106,7 @@ export class DialogTransactionComponent implements OnInit {
                         if (response['success']) {
                           // this.dataSuccess.push(res)
                           // console.log(this.dataSuccess);
+                          response['transid'] = dataObj.transid;
 
                           resolve(response)
 
@@ -1128,13 +1130,14 @@ export class DialogTransactionComponent implements OnInit {
 
                     let dataConfirm = new Promise((resolve, reject) => {
 
-                      this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(res => {
+                      this.queueServ.processTransactionDataQ2(dataProcessApi).subscribe(response => {
                         console.log(res);
-                        if (res['success']) {
+                        if (response['success']) {
                           // this.dataSuccess.push(res)
                           // console.log(this.dataSuccess);
+                          response['transid'] = dataObj.transid;
 
-                          resolve(res)
+                          resolve(response)
 
                           switch (dataForm.wstype) {
                             case this.informasiSaldoGiroCode:
@@ -1167,13 +1170,6 @@ export class DialogTransactionComponent implements OnInit {
 
                   }
 
-
-
-
-
-
-
-
                 }
               }
             })
@@ -1194,16 +1190,19 @@ export class DialogTransactionComponent implements OnInit {
   }
 
   conv(event, index) {
-    // console.log(event, index);
-    let idx = parseInt(event)
-    if (idx == index) {
+
+    let dataForm: any = this.form.at(index).value;
+
+    console.log(event.wbtrid);
+    console.log(dataForm.wstran);
+
+    if (event.wbtrid == dataForm.wstran) {
       // console.log(true);
       return true
     } else {
       // console.log(false);
       return false
     }
-    // return parseInt(event)
   }
 
   cek(event) {
@@ -1211,48 +1210,66 @@ export class DialogTransactionComponent implements OnInit {
     let data: any = event.wbtrbf;
     console.log(data.wstype);
     console.log(this.setorTunaiCode);
+    console.log(this.transferAntarRekCode);
 
+    // if (data.wstype === "9000001") {
+    //   data.wstype = this.setorTunaiCode;
+    // }
 
-    if (data.wstype === "9000001") {
-      data.wstype = this.setorTunaiCode;
-    }
+    var re = this.transferAntarRekCode.substr(0, 1);
+    var newstr = this.transferAntarRekCode.replace(re, "9");
+    console.log(newstr)
 
     let show: any = new Object();
 
 
     switch (data.wstype) {
-      case "9000001":
+      case this.setorTunaiCode.replace(this.setorTunaiCode.substr(0, 1), "9"):
         show.wstype = data.wstype;
         show.wstonm = data.wstonm;
+        show.wsnomn = parseFloat(data.wsnomn);
         show.wstoto = data.wstoto;
-        show.wsnomn = data.wsnomn;
+        console.log(show);
+        return show;
+        break;
+      case this.transferAntarRekCode.replace(this.transferAntarRekCode.substr(0, 1), "9"):
+        show.wstype = data.wstype;
+        show.wsfrnm = data.wsfrnm;
+        show.wsfrom = data.wsfrom;
+        show.wstonm = data.wstonm;
+        show.wstoto = data.wstoto;
+        show.wsnomn = parseFloat(data.wsnomn);
+        show.wsbrta = data.wsbrta;
+        console.log(show);
+        return show;
         break;
       default: break;
     }
 
+    console.log(show);
 
     // wbicsh: ""
     // wbicus: "001"
-    // wsapprc: "20200626200747761000"
+    // wsapprc: "202006271023498800009000002900000"
     // wsbcod: ""
     // wsbilid: ""
     // wsblclr: ""
     // wsblhld: ""
     // wsbllg: ""
     // wsbloth: ""
-    // wsbrta: ""
+    // wsbrta: "party party"
     // wsdspo: ""
-    // wsfrnm: ""
-    // wsfrom: ""
-    // wsnomn: "00000000001000000"
+    // wsfrnm: "Cox Ganteng Banget Lagi"
+    // wsfrom: "1001000003"
+    // wsnomn: "00000000030000000"
     // wsotov: ""
     // wspayc: ""
     // wsprto: ""
-    // wstonm: "Cox Ganteng Banget"
+    // wstonm: "Kucing GumBall"
     // wstoto: "1001000002"
-    // wstype: "0000001"
+    // wstype: "9000002"
 
-    return show;
+
   }
 
   //  ------------------------------------------------------------------------------------------------
