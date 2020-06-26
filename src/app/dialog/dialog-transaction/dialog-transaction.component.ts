@@ -1052,9 +1052,16 @@ export class DialogTransactionComponent implements OnInit {
                 $('#scan-finger').removeClass('blink')
 
                 if (this.stepmom.selectedIndex === index) {
+                  let dataForm: any;
+
+                  try {
+                    dataForm = JSON.parse(this.data[index].transbuff);
+                  } catch (error) {
+                    dataForm = this.data[index].transbuff;
+                  }
 
                   // let dataForm: any = this.form.at(index).value;
-                  let dataForm: any = this.data[index].transbuff;
+                  // let dataForm: any = JSON.parse(this.data[index].transbuff);
                   console.log(this.data[index].transbuff);
 
                   let transId = dataForm.wstran;
@@ -1158,7 +1165,7 @@ export class DialogTransactionComponent implements OnInit {
                         if (response['success']) {
                           // this.dataSuccess.push(res)
                           // console.log(this.dataSuccess);
-                          // response['transid'] = dataObj.transid;
+                          response['transid'] = dataObj.transid;
 
                           resolve(response)
 
@@ -1222,7 +1229,7 @@ export class DialogTransactionComponent implements OnInit {
     console.log(event);
     console.log(dataForm);
 
-    if (event.transid == dataForm.wstran || dataForm.TransaksiId) {
+    if (event.transid == dataForm.wstran || event.transid == dataForm.TransaksiId) {
       // console.log(true);
       return true
     } else {
@@ -1270,55 +1277,25 @@ export class DialogTransactionComponent implements OnInit {
         show.wstype = data.wstype;
         show.wsbilid = data.wsbilid;
         show.wsnomn = data.wsnomn;
-        console.log(data.wspayc.substr(0, 6));
-        console.log(this.menuPayment.find(x => x.code === data.wspayc.substr(0, 6)).name);
-        console.log(this.subMenuPay.find(x => x.code === data.wspayc.substr(6, 10)).name);
-
-
-        show.wspaym = this.menuPayment.find(x => x.code === data.wspayc.substr(0, 6)).name ? this.menuPayment.find(x => x.code === data.wspayc.substr(0, 6)).name : "";
-        show.wsspym = this.subMenuPay.find(x => x.code === data.wspayc.substr(6, 10)).name ? this.subMenuPay.find(x => x.code === data.wspayc.substr(6, 10)).name : "";
-        // show.wsspym = this.transacServ.getDataSubPayment(data.wspayc.substr(0, 6)).subscribe(e => {
-        // if (this.subMenuPay.length > 0) {
-        //   show.wsspym = ""
-        // }
-        //   let es: any = e
-        //   es.find(x => x.code === data.wspayc.substr(6, 10)).name;
-        // });
-
-
-
-        //         wsapprc: ""
-        // wsbilid: "basdasd234234"
-        // wsfrom: ""
-        // wsicas: ""
-        // wsidid: null
-        // wsnomn: "00000000001000000"
-        // wspayc: "1000010758"
-        // wstonm: ""
-        // wstoto: null
-        // wstran: "234234232300260620200915570001"
-        // wstype: "0000006"
-
+        show.wsspym = this.menuPayment.find(x => x.code === data.wspayc.substr(0, 6)).name ? this.menuPayment.find(x => x.code === data.wspayc.substr(0, 6)).name : "";
         console.log(show);
         return show;
       case this.transferAntarBankCode:
         show.wstype = data.wstype;
-        // show.wsfrnm = 
-        // show.wsfrom = 
-        // show.wstonm = 
-        // show.wstoto = 
-        // show.wsnomn = 
-        // show.wsbrta = 
+        show.wsbcod = data.wsbcod;
+        show.wsfrnm = data.wsfrnm;
+        show.wsfrom = data.wsfrom;
+        show.wstonm = data.wstonm;
+        show.wstoto = data.wstoto;
+        show.wsnomn = data.wsnomn;
+        show.wsbrta = data.wsbrta;
         console.log(show);
         return show;
       case this.tarikTunaiCode:
         show.wstype = data.wstype;
-        // show.wsfrnm = 
-        // show.wsfrom = 
-        // show.wstonm = 
-        // show.wstoto = 
-        // show.wsnomn = 
-        // show.wsbrta = 
+        show.wstonm = data.wstonm;
+        show.wsfrom = data.wsfrom;
+        show.wsnomn = data.wsnomn;
         console.log(show);
         return show;
       case this.informasiSaldoGiroCode:
@@ -1404,10 +1381,11 @@ export class DialogTransactionComponent implements OnInit {
   //  ------------------------------------------------------------------------------------------------
   done() {
     this.refresh()
-    console.log(this.dataSuccess.length);
-    console.log(this.form.length);
-    // let dataLength = this.dataSuccess.length
-    if (this.dataSuccess.length === this.form.length) {
+    // console.log(this.dataSuccess.length);
+    // console.log(this.form.length);
+    // console.log(this.form);
+    let dataLength = this.dataSuccess.length + 1;
+    if (dataLength === this.form.length) {
       this.isDoneBtn = true;
     } else {
       console.log('masih belum');
