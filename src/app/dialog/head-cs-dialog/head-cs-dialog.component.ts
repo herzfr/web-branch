@@ -78,8 +78,6 @@ export class HeadCsDialogComponent implements OnInit {
 
     console.log("data ls : ", data);
 
-
-
     this.allImage = this.dataLs.wsbiom;
     // console.log("data : ", this.dataLs);
 
