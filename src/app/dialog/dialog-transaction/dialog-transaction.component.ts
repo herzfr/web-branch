@@ -651,8 +651,6 @@ export class DialogTransactionComponent implements OnInit {
           } else {
             this.cardReader(data.wsfrom);
           }
-
-          // this.isCloseDialog = false;
           // this.isCloseDialog = false;
           this.stepDisabledHorizontal = true;
           this.isCancelBtn = false;
